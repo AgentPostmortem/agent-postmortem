@@ -1,12 +1,10 @@
 /**
- * Auto-generated Supabase TypeScript types.
- *
- * In production, regenerate this file with:
- *   npx supabase gen types typescript --project-id <project-id> > types/supabase.ts
- *
- * The stub below ensures TypeScript compilation succeeds before generation.
+ * Supabase TypeScript types — kept in sync with supabase/migrations/0001_init.sql.
+ * Regenerate after schema changes with:
+ *   npx supabase gen types typescript --project-id <id> > types/supabase.ts
  */
 export type Database = {
+  
   public: {
     Tables: {
       agents: {
@@ -16,6 +14,7 @@ export type Database = {
           name: string;
           company: string;
           description: string | null;
+          total_failures: number;
           created_at: string;
         };
         Insert: {
@@ -24,6 +23,7 @@ export type Database = {
           name: string;
           company: string;
           description?: string | null;
+          total_failures?: number;
           created_at?: string;
         };
         Update: {
@@ -32,64 +32,73 @@ export type Database = {
           name?: string;
           company?: string;
           description?: string | null;
+          total_failures?: number;
           created_at?: string;
         };
+        Relationships: [];
       };
       posts: {
         Row: {
           id: string;
           case_number: string;
-          title: string;
           agent_id: string;
-          outcome: string;
+          title: string;
           prompt: string | null;
-          damage_level: number;
+          outcome: string;
+          damage_level: 1 | 2 | 3 | 4 | 5;
           estimated_cost_usd: number | null;
-          vote_score: number;
-          is_anonymous: boolean;
-          author_handle: string | null;
+          screenshot_urls: string[];
+          submitter_handle: string | null;
+          submitter_email: string | null;
+          edit_token_hash: string;
           ip_hash: string;
+          is_anonymous: boolean;
+          vote_score: number;
           status: "pending" | "approved" | "rejected";
-          screenshots: string[] | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
           case_number?: string;
-          title: string;
           agent_id: string;
-          outcome: string;
+          title: string;
           prompt?: string | null;
-          damage_level: number;
+          outcome: string;
+          damage_level: 1 | 2 | 3 | 4 | 5;
           estimated_cost_usd?: number | null;
-          vote_score?: number;
-          is_anonymous?: boolean;
-          author_handle?: string | null;
+          screenshot_urls?: string[];
+          submitter_handle?: string | null;
+          submitter_email?: string | null;
+          edit_token_hash: string;
           ip_hash: string;
+          is_anonymous?: boolean;
+          vote_score?: number;
           status?: "pending" | "approved" | "rejected";
-          screenshots?: string[] | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
           case_number?: string;
-          title?: string;
           agent_id?: string;
-          outcome?: string;
+          title?: string;
           prompt?: string | null;
-          damage_level?: number;
+          outcome?: string;
+          damage_level?: 1 | 2 | 3 | 4 | 5;
           estimated_cost_usd?: number | null;
-          vote_score?: number;
-          is_anonymous?: boolean;
-          author_handle?: string | null;
+          screenshot_urls?: string[];
+          submitter_handle?: string | null;
+          submitter_email?: string | null;
+          edit_token_hash?: string;
           ip_hash?: string;
+          is_anonymous?: boolean;
+          vote_score?: number;
           status?: "pending" | "approved" | "rejected";
-          screenshots?: string[] | null;
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       tags: {
         Row: {
@@ -113,20 +122,13 @@ export type Database = {
           description?: string | null;
           created_at?: string;
         };
+        Relationships: [];
       };
       post_tags: {
-        Row: {
-          post_id: string;
-          tag_id: string;
-        };
-        Insert: {
-          post_id: string;
-          tag_id: string;
-        };
-        Update: {
-          post_id?: string;
-          tag_id?: string;
-        };
+        Row: { post_id: string; tag_id: string };
+        Insert: { post_id: string; tag_id: string };
+        Update: { post_id?: string; tag_id?: string };
+        Relationships: [];
       };
       votes: {
         Row: {
@@ -150,6 +152,7 @@ export type Database = {
           direction?: "up" | "down";
           created_at?: string;
         };
+        Relationships: [];
       };
       comments: {
         Row: {
@@ -182,6 +185,7 @@ export type Database = {
           status?: "visible" | "hidden" | "removed";
           created_at?: string;
         };
+        Relationships: [];
       };
       team_waitlist: {
         Row: {
@@ -208,6 +212,7 @@ export type Database = {
           use_case?: string | null;
           created_at?: string;
         };
+        Relationships: [];
       };
       reports: {
         Row: {
@@ -234,6 +239,7 @@ export type Database = {
           resolved?: boolean;
           created_at?: string;
         };
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
