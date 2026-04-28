@@ -1,0 +1,225 @@
+import * as React from "react";
+
+interface EditTokenEmailProps {
+  caseNumber: string;
+  caseTitle: string;
+  editUrl: string;
+}
+
+/**
+ * React Email template for the one-time edit token email.
+ * Styled to match the forensic case file aesthetic.
+ */
+export function EditTokenEmail({
+  caseNumber,
+  caseTitle,
+  editUrl,
+}: EditTokenEmailProps) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Edit Token — {caseNumber}</title>
+      </head>
+      <body
+        style={{
+          backgroundColor: "#0a0a0b",
+          fontFamily: "Georgia, serif",
+          margin: "0",
+          padding: "0",
+        }}
+      >
+        <table
+          width="100%"
+          cellPadding="0"
+          cellSpacing="0"
+          style={{ backgroundColor: "#0a0a0b" }}
+        >
+          <tbody>
+            <tr>
+              <td align="center" style={{ padding: "40px 16px" }}>
+                <table
+                  width="560"
+                  cellPadding="0"
+                  cellSpacing="0"
+                  style={{
+                    backgroundColor: "#111113",
+                    border: "1px solid #222226",
+                    borderRadius: "4px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <tbody>
+                    {/* Red top bar */}
+                    <tr>
+                      <td
+                        style={{
+                          backgroundColor: "#dc2626",
+                          height: "3px",
+                          fontSize: "0",
+                          lineHeight: "0",
+                        }}
+                      >
+                        &nbsp;
+                      </td>
+                    </tr>
+
+                    {/* Header */}
+                    <tr>
+                      <td style={{ padding: "32px 40px 24px" }}>
+                        <p
+                          style={{
+                            fontFamily: "monospace",
+                            fontSize: "10px",
+                            letterSpacing: "0.2em",
+                            textTransform: "uppercase",
+                            color: "#5a5a5a",
+                            margin: "0 0 8px",
+                          }}
+                        >
+                          AgentPostmortem
+                        </p>
+                        <p
+                          style={{
+                            fontFamily: "monospace",
+                            fontSize: "16px",
+                            letterSpacing: "0.15em",
+                            textTransform: "uppercase",
+                            color: "#dc2626",
+                            margin: "0",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {caseNumber}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* Divider */}
+                    <tr>
+                      <td
+                        style={{
+                          borderTop: "1px solid #222226",
+                          padding: "0",
+                          fontSize: "0",
+                        }}
+                      >
+                        &nbsp;
+                      </td>
+                    </tr>
+
+                    {/* Body */}
+                    <tr>
+                      <td style={{ padding: "32px 40px" }}>
+                        <p
+                          style={{
+                            color: "#9a9a9a",
+                            fontSize: "13px",
+                            fontFamily: "monospace",
+                            letterSpacing: "0.05em",
+                            textTransform: "uppercase",
+                            margin: "0 0 8px",
+                          }}
+                        >
+                          Case Edit Token
+                        </p>
+                        <p
+                          style={{
+                            color: "#f0f0f0",
+                            fontSize: "18px",
+                            fontFamily: "Georgia, serif",
+                            lineHeight: "1.4",
+                            margin: "0 0 24px",
+                          }}
+                        >
+                          {caseTitle}
+                        </p>
+                        <p
+                          style={{
+                            color: "#9a9a9a",
+                            fontSize: "14px",
+                            lineHeight: "1.6",
+                            margin: "0 0 28px",
+                          }}
+                        >
+                          You submitted this case to AgentPostmortem. Use the
+                          link below to edit or retract your submission. This
+                          link is single-use and expires in 72 hours.
+                        </p>
+
+                        {/* CTA */}
+                        <table cellPadding="0" cellSpacing="0">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <a
+                                  href={editUrl}
+                                  style={{
+                                    display: "inline-block",
+                                    backgroundColor: "#1f0a0a",
+                                    border: "1px solid #dc2626",
+                                    borderRadius: "3px",
+                                    color: "#dc2626",
+                                    fontFamily: "monospace",
+                                    fontSize: "11px",
+                                    fontWeight: "bold",
+                                    letterSpacing: "0.15em",
+                                    textDecoration: "none",
+                                    textTransform: "uppercase",
+                                    padding: "12px 24px",
+                                  }}
+                                >
+                                  Edit Case Report
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <p
+                          style={{
+                            color: "#5a5a5a",
+                            fontSize: "11px",
+                            fontFamily: "monospace",
+                            marginTop: "20px",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          Or copy this URL: {editUrl}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* Footer */}
+                    <tr>
+                      <td
+                        style={{
+                          borderTop: "1px solid #222226",
+                          padding: "16px 40px",
+                        }}
+                      >
+                        <p
+                          style={{
+                            color: "#333338",
+                            fontSize: "10px",
+                            fontFamily: "monospace",
+                            letterSpacing: "0.1em",
+                            margin: "0",
+                          }}
+                        >
+                          AgentPostmortem — agentpostmortem.com — Your email
+                          will not be stored after this message is sent.
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </body>
+    </html>
+  );
+}

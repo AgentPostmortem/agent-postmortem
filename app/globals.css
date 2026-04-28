@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    /* Subtle dot-grid texture */
+    background-image: radial-gradient(circle, #1e1e22 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-attachment: fixed;
+  }
+
+  /* Thin scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+  /* Red text selection */
+  ::selection { background: #dc2626; color: #fff; }
+
+  /* Tabular numbers everywhere monospace is used */
+  .font-mono { font-variant-numeric: tabular-nums; }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep scrollability */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer components {
+  /* Stamped label — e.g. RESTRICTED, CASE FILE */
+  .stamp {
+    @apply inline-flex items-center gap-1.5 rounded border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em];
+  }
+  .stamp-red {
+    @apply border-accent-red/40 text-accent-red/80;
+  }
+  .stamp-muted {
+    @apply border-border-strong text-text-tertiary;
+  }
+
+  /* Section label above content */
+  .section-label {
+    @apply mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-text-tertiary;
+  }
+
+  /* Horizontal rule with label */
+  .rule-label {
+    @apply flex items-center gap-3 text-text-tertiary;
+  }
+  .rule-label::before,
+  .rule-label::after {
+    content: '';
+    @apply flex-1 border-t border-border-default;
+  }
+}

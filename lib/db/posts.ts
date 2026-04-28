@@ -1,0 +1,130 @@
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import type { Post } from "@/types";
+
+export type FeedTab = "hot" | "new" | "week" | "hof";
+
+function rowToPost(row: Record<string, unknown>): Post {
+  const agent = row.agents as Record<string, unknown> | null;
+  const postTags = row.post_tags as Array<{ tags: { slug: string } }> | null;
+
+  return {
+    id: row.id as string,
+    caseNumber: row.case_number as string,
+    title: row.title as string,
+    agentSlug: (agent?.slug as string) ?? "other",
+    agentName: (agent?.name as string) ?? "Unknown",
+    outcome: row.outcome as string,
+    prompt: (row.prompt as string | null) ?? undefined,
+    damageLevel: row.damage_level as 1 | 2 | 3 | 4 | 5,
+    estimatedCostUsd: (row.estimated_cost_usd as number | null) ?? null,
+    tags: postTags?.map((pt) => pt.tags.slug) ?? [],
+    voteScore: (row.vote_score as number) ?? 0,
+    createdAt: row.created_at as string,
+    isAnonymous: (row.is_anonymous as boolean) ?? true,
+    authorHandle: (row.submitter_handle as string | null) ?? undefined,
+    screenshots: (row.screenshot_urls as string[] | null) ?? [],
+  };
+}
+
+export async function fetchFeedPosts(tab: FeedTab, limit = 20): Promise<Post[]> {
+  try {
+    const supabase = createSupabaseServerClient();
+
+    let query = supabase
+      .from("posts")
+      .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
+      .eq("status", "approved")
+      .limit(limit);
+
+    if (tab === "new") {
+      query = query.order("created_at", { ascending: false });
+    } else if (tab === "week") {
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      query = query.gte("created_at", weekAgo).order("vote_score", { ascending: false });
+    } else if (tab === "hof") {
+      query = query.order("vote_score", { ascending: false });
+    } else {
+      // hot — sort by recency-weighted score
+      query = query.order("vote_score", { ascending: false }).order("created_at", { ascending: false });
+    }
+
+    const { data, error } = await query;
+    if (error || !data) return [];
+    return data.map((row) => rowToPost(row as Record<string, unknown>));
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchPostByCase(caseNumber: string): Promise<Post | null> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
+      .eq("case_number", caseNumber.toUpperCase())
+      .eq("status", "approved")
+      .single();
+
+    if (error || !data) return null;
+    return rowToPost(data as Record<string, unknown>);
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchPostsByAgent(slug: string, limit = 20): Promise<Post[]> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`*, agents!inner(slug, name, company), post_tags(tags(slug, label))`)
+      .eq("agents.slug", slug)
+      .eq("status", "approved")
+      .order("vote_score", { ascending: false })
+      .limit(limit);
+
+    if (error || !data) return [];
+    return data.map((row) => rowToPost(row as Record<string, unknown>));
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchPostsByTag(tagSlug: string, limit = 20): Promise<Post[]> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`*, agents(slug, name, company), post_tags!inner(tags!inner(slug, label))`)
+      .eq("post_tags.tags.slug", tagSlug)
+      .eq("status", "approved")
+      .order("vote_score", { ascending: false })
+      .limit(limit);
+
+    if (error || !data) return [];
+    return data.map((row) => rowToPost(row as Record<string, unknown>));
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchSiteStats(): Promise<{ totalPosts: number; totalAgents: number; totalDamage: number }> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data } = await supabase
+      .from("posts")
+      .select("estimated_cost_usd, agent_id")
+      .eq("status", "approved");
+
+    if (!data) return { totalPosts: 0, totalAgents: 0, totalDamage: 0 };
+
+    const rows = data as Array<{ estimated_cost_usd: number | null; agent_id: string }>;
+    const totalDamage = rows.reduce((sum, p) => sum + (p.estimated_cost_usd ?? 0), 0);
+    const uniqueAgents = new Set(rows.map((p) => p.agent_id)).size;
+
+    return { totalPosts: data.length, totalAgents: uniqueAgents, totalDamage };
+  } catch {
+    return { totalPosts: 0, totalAgents: 0, totalDamage: 0 };
+  }
+}
