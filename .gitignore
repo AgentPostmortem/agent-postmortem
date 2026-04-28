@@ -1,6 +1,14 @@
 # claude code
 .claude/
 
+# internal planning docs
+Agents.md
+Plan.md
+SETUP.md
+
+# database migrations (add manually when ready to open-source)
+/supabase/
+
 # dependencies
 /node_modules
 /.pnp
