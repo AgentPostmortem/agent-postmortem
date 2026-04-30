@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { z } from "zod";
 import { submitSchema } from "@/lib/schemas/submit";
-import { AGENTS } from "@/lib/constants/agents";
-import { TAGS } from "@/lib/constants/tags";
 import { cn } from "@/lib/utils/cn";
+
+interface AgentOption { slug: string; name: string; company: string }
+interface TagOption { slug: string; label: string }
 
 type FormData = Partial<z.infer<typeof submitSchema>>;
 type FieldErrors = Partial<Record<keyof z.infer<typeof submitSchema>, string>>;
@@ -58,6 +59,13 @@ export function SubmitForm() {
   const [attribution, setAttribution] = useState<"anonymous" | "handle" | "company">("anonymous");
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
   const [uploadPreviews, setUploadPreviews] = useState<string[]>([]);
+  const [agents, setAgents] = useState<AgentOption[]>([]);
+  const [tags, setTags] = useState<TagOption[]>([]);
+
+  useEffect(() => {
+    fetch("/api/agents").then((r) => r.json()).then(setAgents).catch(() => {});
+    fetch("/api/tags").then((r) => r.json()).then(setTags).catch(() => {});
+  }, []);
 
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
     setForm((p) => ({ ...p, [key]: value }));
@@ -157,7 +165,7 @@ export function SubmitForm() {
           className={cn(inputBase, "appearance-none")}
         >
           <option value="">— Select agent —</option>
-          {AGENTS.map((a) => (
+          {agents.map((a) => (
             <option key={a.slug} value={a.slug}>{a.name} ({a.company})</option>
           ))}
         </select>
@@ -270,7 +278,7 @@ export function SubmitForm() {
       {/* Section 4: Tags */}
       <FormSection number="4" title="Classification Tags">
         <div className="flex flex-wrap gap-2">
-          {TAGS.map((tag) => {
+          {tags.map((tag) => {
             const active = selectedTags.includes(tag.slug);
             return (
               <button
