@@ -46,15 +46,11 @@ async function fetchCase(caseNumber: string): Promise<CaseData | null> {
   }
 }
 
-async function loadGoogleFont(text: string) {
-  // Request TTF via legacy User-Agent — modern UAs get woff2 which Satori cannot parse
-  const url = `https://fonts.googleapis.com/css2?family=Inter:wght@600&text=${encodeURIComponent(text)}`;
-  const css = await fetch(url, {
-    headers: { "User-Agent": "Mozilla/4.0 (compatible; MSIE 8.0)" },
-  }).then((r) => r.text());
-  const match = css.match(/src: url\(([^)]+)\)/);
-  if (!match) return null;
-  return fetch(match[1]).then((r) => r.arrayBuffer());
+async function loadFont(): Promise<ArrayBuffer> {
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const res = await fetch(`${siteUrl}/fonts/Inter-SemiBold.ttf`);
+  return res.arrayBuffer();
 }
 
 export async function GET(
@@ -74,16 +70,7 @@ export async function GET(
         : `$${data.estimatedCostUsd}`
     : null;
 
-  const allText = [
-    data.title,
-    data.agentName,
-    data.company,
-    "AgentPostmortem",
-    data.caseNumber,
-    severityLabel ?? "",
-  ].join(" ");
-  const fontData = await loadGoogleFont(allText).catch(() => null);
-
+  const fontData = await loadFont().catch(() => null);
   const fonts = fontData
     ? [{ name: "Inter", data: fontData, style: "normal" as const }]
     : [];
