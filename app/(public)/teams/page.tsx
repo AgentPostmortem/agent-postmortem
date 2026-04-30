@@ -53,8 +53,12 @@ const FEATURES = [
 
 export default function TeamsPage() {
   const [formData, setFormData] = useState<Partial<WaitlistForm>>({});
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [errors, setErrors] = useState<Partial<Record<keyof WaitlistForm, string>>>({});
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof WaitlistForm, string>>
+  >({});
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

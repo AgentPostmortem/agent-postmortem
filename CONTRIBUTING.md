@@ -108,7 +108,7 @@ See the [README](README.md) for a full breakdown of the directory structure.
 ## Code style
 
 - **TypeScript strict mode** — no `any`, no type assertions unless unavoidable
-- **No comments explaining what code does** — only add a comment when the *why* is non-obvious
+- **No comments explaining what code does** — only add a comment when the _why_ is non-obvious
 - **No unused code** — don't leave dead imports or variables
 - **Tailwind only** — no inline styles, no CSS modules
 - **Server components by default** — only add `"use client"` when interactivity is required
@@ -118,6 +118,7 @@ See the [README](README.md) for a full breakdown of the directory structure.
 ## Reporting issues
 
 Open a GitHub issue with:
+
 - What you expected to happen
 - What actually happened
 - Steps to reproduce

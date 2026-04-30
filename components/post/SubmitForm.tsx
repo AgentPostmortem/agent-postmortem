@@ -5,36 +5,59 @@ import { z } from "zod";
 import { submitSchema } from "@/lib/schemas/submit";
 import { cn } from "@/lib/utils/cn";
 
-interface AgentOption { slug: string; name: string; company: string }
-interface TagOption { slug: string; label: string }
+interface AgentOption {
+  slug: string;
+  name: string;
+  company: string;
+}
+interface TagOption {
+  slug: string;
+  label: string;
+}
 
 type FormData = Partial<z.infer<typeof submitSchema>>;
 type FieldErrors = Partial<Record<keyof z.infer<typeof submitSchema>, string>>;
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
 const DAMAGE_LABELS: Record<number, { label: string; desc: string }> = {
-  1: { label: "Minimal",  desc: "Inconvenience, easily recovered" },
-  2: { label: "Low",      desc: "Minor financial or time loss" },
+  1: { label: "Minimal", desc: "Inconvenience, easily recovered" },
+  2: { label: "Low", desc: "Minor financial or time loss" },
   3: { label: "Moderate", desc: "Significant disruption or cost" },
-  4: { label: "Severe",   desc: "Major financial or reputational harm" },
+  4: { label: "Severe", desc: "Major financial or reputational harm" },
   5: { label: "Critical", desc: "Catastrophic, irreversible damage" },
 };
 
-function FormSection({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
+function FormSection({
+  number,
+  title,
+  children,
+}: {
+  number: string;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="overflow-hidden rounded border border-border-default bg-bg-surface">
       <div className="flex items-center gap-3 border-b border-border-default bg-bg-elevated px-4 py-2.5">
         <span className="flex h-5 w-5 items-center justify-center rounded-full border border-border-strong font-mono text-[10px] text-text-tertiary">
           {number}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-tertiary">{title}</span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-tertiary">
+          {title}
+        </span>
       </div>
       <div className="p-4">{children}</div>
     </div>
   );
 }
 
-function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
+function FieldLabel({
+  children,
+  required,
+}: {
+  children: React.ReactNode;
+  required?: boolean;
+}) {
   return (
     <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
       {children}
@@ -45,26 +68,39 @@ function FieldLabel({ children, required }: { children: React.ReactNode; require
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <p className="mt-1 font-mono text-[10px] text-accent-red">{message}</p>;
+  return (
+    <p className="mt-1 font-mono text-[10px] text-accent-red">{message}</p>
+  );
 }
 
 const inputBase =
   "w-full rounded border border-border-default bg-bg-elevated px-3 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-colors focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-border-strong";
 
 export function SubmitForm() {
-  const [form, setForm] = useState<FormData>({ damageLevel: 3, isAnonymous: true });
+  const [form, setForm] = useState<FormData>({
+    damageLevel: 3,
+    isAnonymous: true,
+  });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [attribution, setAttribution] = useState<"anonymous" | "handle" | "company">("anonymous");
+  const [attribution, setAttribution] = useState<
+    "anonymous" | "handle" | "company"
+  >("anonymous");
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
   const [uploadPreviews, setUploadPreviews] = useState<string[]>([]);
   const [agents, setAgents] = useState<AgentOption[]>([]);
   const [tags, setTags] = useState<TagOption[]>([]);
 
   useEffect(() => {
-    fetch("/api/agents").then((r) => r.json()).then(setAgents).catch(() => {});
-    fetch("/api/tags").then((r) => r.json()).then(setTags).catch(() => {});
+    fetch("/api/agents")
+      .then((r) => r.json())
+      .then(setAgents)
+      .catch(() => {});
+    fetch("/api/tags")
+      .then((r) => r.json())
+      .then(setTags)
+      .catch(() => {});
   }, []);
 
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
@@ -73,18 +109,27 @@ export function SubmitForm() {
   }
 
   function toggleTag(slug: string) {
-    setSelectedTags((p) => p.includes(slug) ? p.filter((t) => t !== slug) : [...p, slug]);
+    setSelectedTags((p) =>
+      p.includes(slug) ? p.filter((t) => t !== slug) : [...p, slug],
+    );
   }
 
-  const handleFiles = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []).slice(0, 5 - screenshotFiles.length);
-    setScreenshotFiles((p) => [...p, ...files]);
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (ev) => setUploadPreviews((p) => [...p, ev.target?.result as string]);
-      reader.readAsDataURL(file);
-    });
-  }, [screenshotFiles]);
+  const handleFiles = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files ?? []).slice(
+        0,
+        5 - screenshotFiles.length,
+      );
+      setScreenshotFiles((p) => [...p, ...files]);
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (ev) =>
+          setUploadPreviews((p) => [...p, ev.target?.result as string]);
+        reader.readAsDataURL(file);
+      });
+    },
+    [screenshotFiles],
+  );
 
   function removeFile(i: number) {
     setScreenshotFiles((p) => p.filter((_, j) => j !== i));
@@ -93,7 +138,11 @@ export function SubmitForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const payload = { ...form, tags: selectedTags, isAnonymous: attribution === "anonymous" };
+    const payload = {
+      ...form,
+      tags: selectedTags,
+      isAnonymous: attribution === "anonymous",
+    };
     const result = submitSchema.safeParse(payload);
     if (!result.success) {
       const fe: FieldErrors = {};
@@ -114,8 +163,15 @@ export function SubmitForm() {
           body: JSON.stringify({ filename: file.name, contentType: file.type }),
         });
         if (r.ok) {
-          const { url, publicUrl } = await r.json() as { url: string; publicUrl: string };
-          await fetch(url, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
+          const { url, publicUrl } = (await r.json()) as {
+            url: string;
+            publicUrl: string;
+          };
+          await fetch(url, {
+            method: "PUT",
+            body: file,
+            headers: { "Content-Type": file.type },
+          });
           screenshotUrls.push(publicUrl);
         }
       }
@@ -139,11 +195,13 @@ export function SubmitForm() {
         </div>
         <h2 className="font-serif text-xl text-text-primary">Case Filed</h2>
         <p className="mt-2 text-sm text-text-secondary">
-          Your report is in the moderation queue. Once approved, it will be assigned a permanent case number.
+          Your report is in the moderation queue. Once approved, it will be
+          assigned a permanent case number.
         </p>
         {form.email && (
           <p className="mt-2 text-sm text-text-secondary">
-            An edit token has been sent to <span className="font-mono text-text-primary">{form.email}</span>.
+            An edit token has been sent to{" "}
+            <span className="font-mono text-text-primary">{form.email}</span>.
           </p>
         )}
       </div>
@@ -155,7 +213,6 @@ export function SubmitForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-
       {/* Section 1: Agent */}
       <FormSection number="1" title="Agent Involved">
         <FieldLabel required>Which AI agent failed?</FieldLabel>
@@ -166,7 +223,9 @@ export function SubmitForm() {
         >
           <option value="">— Select agent —</option>
           {agents.map((a) => (
-            <option key={a.slug} value={a.slug}>{a.name} ({a.company})</option>
+            <option key={a.slug} value={a.slug}>
+              {a.name} ({a.company})
+            </option>
           ))}
         </select>
         <FieldError message={errors.agentSlug} />
@@ -194,7 +253,12 @@ export function SubmitForm() {
           </div>
 
           <div>
-            <FieldLabel>Prompt / Instruction given <span className="normal-case tracking-normal text-text-tertiary">(optional)</span></FieldLabel>
+            <FieldLabel>
+              Prompt / Instruction given{" "}
+              <span className="normal-case tracking-normal text-text-tertiary">
+                (optional)
+              </span>
+            </FieldLabel>
             <textarea
               value={form.prompt ?? ""}
               onChange={(e) => set("prompt", e.target.value)}
@@ -230,7 +294,12 @@ export function SubmitForm() {
                 max={5}
                 step={1}
                 value={damageLevel}
-                onChange={(e) => set("damageLevel", Number(e.target.value) as 1 | 2 | 3 | 4 | 5)}
+                onChange={(e) =>
+                  set(
+                    "damageLevel",
+                    Number(e.target.value) as 1 | 2 | 3 | 4 | 5,
+                  )
+                }
                 className="w-full accent-accent-red"
               />
               <div className="flex items-center justify-between">
@@ -241,36 +310,61 @@ export function SubmitForm() {
                       className={cn(
                         "h-1.5 w-6 rounded-full transition-colors",
                         n <= damageLevel
-                          ? damageLevel >= 4 ? "bg-accent-red" : "bg-accent-red/50"
-                          : "bg-border-strong"
+                          ? damageLevel >= 4
+                            ? "bg-accent-red"
+                            : "bg-accent-red/50"
+                          : "bg-border-strong",
                       )}
                     />
                   ))}
                 </div>
                 <div className="text-right">
-                  <span className={cn("font-mono text-xs font-semibold", damageLevel >= 4 ? "text-accent-red" : "text-text-secondary")}>
+                  <span
+                    className={cn(
+                      "font-mono text-xs font-semibold",
+                      damageLevel >= 4
+                        ? "text-accent-red"
+                        : "text-text-secondary",
+                    )}
+                  >
                     {damageLevel} — {damageInfo.label}
                   </span>
-                  <p className="font-mono text-[10px] text-text-tertiary">{damageInfo.desc}</p>
+                  <p className="font-mono text-[10px] text-text-tertiary">
+                    {damageInfo.desc}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
           <div>
-            <FieldLabel>Estimated financial damage <span className="normal-case tracking-normal text-text-tertiary">(optional)</span></FieldLabel>
+            <FieldLabel>
+              Estimated financial damage{" "}
+              <span className="normal-case tracking-normal text-text-tertiary">
+                (optional)
+              </span>
+            </FieldLabel>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-sm text-text-tertiary">$</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-sm text-text-tertiary">
+                $
+              </span>
               <input
                 type="number"
                 min={0}
                 value={form.estimatedCostUsd ?? ""}
-                onChange={(e) => set("estimatedCostUsd", e.target.value ? Number(e.target.value) : undefined)}
+                onChange={(e) =>
+                  set(
+                    "estimatedCostUsd",
+                    e.target.value ? Number(e.target.value) : undefined,
+                  )
+                }
                 placeholder="0"
                 className={cn(inputBase, "pl-7")}
               />
             </div>
-            <p className="mt-1 font-mono text-[10px] text-text-tertiary">USD. Best estimate — leave blank if unknown.</p>
+            <p className="mt-1 font-mono text-[10px] text-text-tertiary">
+              USD. Best estimate — leave blank if unknown.
+            </p>
           </div>
         </div>
       </FormSection>
@@ -289,7 +383,7 @@ export function SubmitForm() {
                   "rounded border px-2.5 py-1 font-mono text-xs transition-all",
                   active
                     ? "border-accent-red bg-accent-red-soft text-accent-red"
-                    : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary"
+                    : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                 )}
               >
                 {tag.label}
@@ -307,7 +401,11 @@ export function SubmitForm() {
             {uploadPreviews.map((src, i) => (
               <div key={i} className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt={`Preview ${i + 1}`} className="h-20 w-20 rounded border border-border-default object-cover" />
+                <img
+                  src={src}
+                  alt={`Preview ${i + 1}`}
+                  className="h-20 w-20 rounded border border-border-default object-cover"
+                />
                 <button
                   type="button"
                   onClick={() => removeFile(i)}
@@ -358,10 +456,14 @@ export function SubmitForm() {
                 "rounded border py-2.5 font-mono text-[11px] uppercase tracking-wider transition-all",
                 attribution === opt
                   ? "border-accent-red bg-accent-red-soft text-accent-red"
-                  : "border-border-default text-text-tertiary hover:border-border-strong"
+                  : "border-border-default text-text-tertiary hover:border-border-strong",
               )}
             >
-              {opt === "anonymous" ? "Anonymous" : opt === "handle" ? "@ Handle" : "Company"}
+              {opt === "anonymous"
+                ? "Anonymous"
+                : opt === "handle"
+                  ? "@ Handle"
+                  : "Company"}
             </button>
           ))}
         </div>
@@ -371,14 +473,21 @@ export function SubmitForm() {
               type="text"
               value={form.authorHandle ?? ""}
               onChange={(e) => set("authorHandle", e.target.value)}
-              placeholder={attribution === "handle" ? "@your_handle" : "Your Company Name"}
+              placeholder={
+                attribution === "handle" ? "@your_handle" : "Your Company Name"
+              }
               className={inputBase}
             />
           </div>
         )}
 
         <div className="mt-4">
-          <FieldLabel>Email <span className="normal-case tracking-normal text-text-tertiary">(optional — for edit token)</span></FieldLabel>
+          <FieldLabel>
+            Email{" "}
+            <span className="normal-case tracking-normal text-text-tertiary">
+              (optional — for edit token)
+            </span>
+          </FieldLabel>
           <input
             type="email"
             value={form.email ?? ""}
@@ -397,7 +506,8 @@ export function SubmitForm() {
       {status === "error" && (
         <div className="rounded border border-accent-red bg-accent-red-soft px-4 py-3">
           <p className="font-mono text-xs text-accent-red">
-            Submission failed. Please try again or email hello@agentpostmortem.com.
+            Submission failed. Please try again or email
+            hello@agentpostmortem.com.
           </p>
         </div>
       )}
@@ -412,7 +522,8 @@ export function SubmitForm() {
       </button>
 
       <p className="text-center font-mono text-[10px] text-text-tertiary">
-        All submissions are reviewed before publication · PII automatically redacted
+        All submissions are reviewed before publication · PII automatically
+        redacted
       </p>
     </form>
   );

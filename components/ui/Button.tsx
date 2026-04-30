@@ -17,8 +17,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     "border border-border-strong bg-bg-elevated text-text-primary hover:border-border-default hover:bg-bg-surface",
   ghost:
     "border border-transparent text-text-secondary hover:text-text-primary hover:border-border-default",
-  danger:
-    "border border-accent-red bg-accent-red text-white hover:opacity-90",
+  danger: "border border-accent-red bg-accent-red text-white hover:opacity-90",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -38,7 +37,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) {
     return (
       <button
@@ -48,7 +47,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           "inline-flex items-center justify-center gap-2 rounded font-mono text-xs uppercase tracking-widest transition-colors disabled:cursor-not-allowed disabled:opacity-50",
           variantClasses[variant],
           sizeClasses[size],
-          className
+          className,
         )}
         {...props}
       >
@@ -58,5 +57,5 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </button>
     );
-  }
+  },
 );

@@ -31,14 +31,13 @@ export default async function HomePage({ searchParams }: PageProps) {
     stats.totalDamage >= 1_000_000
       ? `$${(stats.totalDamage / 1_000_000).toFixed(1)}M`
       : stats.totalDamage >= 1_000
-      ? `$${(stats.totalDamage / 1_000).toFixed(0)}k`
-      : stats.totalDamage > 0
-      ? `$${stats.totalDamage}`
-      : null;
+        ? `$${(stats.totalDamage / 1_000).toFixed(0)}k`
+        : stats.totalDamage > 0
+          ? `$${stats.totalDamage}`
+          : null;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-
       {/* Hero */}
       <div className="mb-10 border-b border-border-default pb-10">
         <div className="mb-4 flex items-center gap-2">
@@ -47,7 +46,8 @@ export default async function HomePage({ searchParams }: PageProps) {
         </div>
 
         <h1 className="font-serif text-4xl font-normal leading-[1.1] tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
-          Every AI Agent<br />
+          Every AI Agent
+          <br />
           <span className="text-text-secondary">Failure,</span>{" "}
           <span className="relative">
             Documented.
@@ -65,12 +65,27 @@ export default async function HomePage({ searchParams }: PageProps) {
         {(stats.totalPosts > 0 || formattedDamage) && (
           <div className="mt-7 flex flex-wrap gap-px overflow-hidden rounded border border-border-default bg-border-default">
             {[
-              { value: stats.totalPosts.toLocaleString(), label: "Cases Filed" },
-              { value: formattedDamage ?? "—", label: "Estimated Damage", red: true },
-              { value: stats.totalAgents.toString(), label: "Agents Implicated" },
+              {
+                value: stats.totalPosts.toLocaleString(),
+                label: "Cases Filed",
+              },
+              {
+                value: formattedDamage ?? "—",
+                label: "Estimated Damage",
+                red: true,
+              },
+              {
+                value: stats.totalAgents.toString(),
+                label: "Agents Implicated",
+              },
             ].map((stat) => (
-              <div key={stat.label} className="flex-1 bg-bg-surface px-5 py-3.5 min-w-[100px]">
-                <div className={`font-mono text-2xl font-semibold tabular-nums ${stat.red ? "text-accent-red" : "text-text-primary"}`}>
+              <div
+                key={stat.label}
+                className="flex-1 bg-bg-surface px-5 py-3.5 min-w-[100px]"
+              >
+                <div
+                  className={`font-mono text-2xl font-semibold tabular-nums ${stat.red ? "text-accent-red" : "text-text-primary"}`}
+                >
                   {stat.value}
                 </div>
                 <div className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
@@ -109,7 +124,11 @@ export default async function HomePage({ searchParams }: PageProps) {
                 return (
                   <Link
                     key={tab.value}
-                    href={tab.value === "hof" ? "/hall-of-fame" : `/?tab=${tab.value}`}
+                    href={
+                      tab.value === "hof"
+                        ? "/hall-of-fame"
+                        : `/?tab=${tab.value}`
+                    }
                     className={[
                       "relative pb-3 pr-5 font-mono text-[11px] uppercase tracking-wider transition-colors",
                       isActive
@@ -153,7 +172,10 @@ export default async function HomePage({ searchParams }: PageProps) {
                   </Link>
                 );
               })}
-              <Link href="/agent" className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red">
+              <Link
+                href="/agent"
+                className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
+              >
                 All agents →
               </Link>
             </SidebarCard>
@@ -194,7 +216,13 @@ export default async function HomePage({ searchParams }: PageProps) {
   );
 }
 
-function SidebarCard({ title, children }: { title: string; children: React.ReactNode }) {
+function SidebarCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded border border-border-default bg-bg-surface p-4">
       <div className="mb-3 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
@@ -211,7 +239,9 @@ function EmptyFeed() {
       <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded border border-border-strong">
         <span className="font-mono text-text-tertiary">✕</span>
       </div>
-      <p className="font-serif text-lg text-text-secondary">No cases on file yet.</p>
+      <p className="font-serif text-lg text-text-secondary">
+        No cases on file yet.
+      </p>
       <p className="mt-2 text-sm text-text-tertiary">
         Connect Supabase or{" "}
         <Link href="/submit" className="text-accent-red hover:underline">

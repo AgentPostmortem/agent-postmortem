@@ -26,7 +26,10 @@ function rowToPost(row: Record<string, unknown>): Post {
   };
 }
 
-export async function fetchFeedPosts(tab: FeedTab, limit = 20): Promise<Post[]> {
+export async function fetchFeedPosts(
+  tab: FeedTab,
+  limit = 20,
+): Promise<Post[]> {
   try {
     const supabase = createSupabaseServerClient();
 
@@ -39,13 +42,19 @@ export async function fetchFeedPosts(tab: FeedTab, limit = 20): Promise<Post[]> 
     if (tab === "new") {
       query = query.order("created_at", { ascending: false });
     } else if (tab === "week") {
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      query = query.gte("created_at", weekAgo).order("vote_score", { ascending: false });
+      const weekAgo = new Date(
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+      ).toISOString();
+      query = query
+        .gte("created_at", weekAgo)
+        .order("vote_score", { ascending: false });
     } else if (tab === "hof") {
       query = query.order("vote_score", { ascending: false });
     } else {
       // hot — sort by recency-weighted score
-      query = query.order("vote_score", { ascending: false }).order("created_at", { ascending: false });
+      query = query
+        .order("vote_score", { ascending: false })
+        .order("created_at", { ascending: false });
     }
 
     const { data, error } = await query;
@@ -56,7 +65,9 @@ export async function fetchFeedPosts(tab: FeedTab, limit = 20): Promise<Post[]> 
   }
 }
 
-export async function fetchPostByCase(caseNumber: string): Promise<Post | null> {
+export async function fetchPostByCase(
+  caseNumber: string,
+): Promise<Post | null> {
   try {
     const supabase = createSupabaseServerClient();
     const { data, error } = await supabase
@@ -73,12 +84,17 @@ export async function fetchPostByCase(caseNumber: string): Promise<Post | null> 
   }
 }
 
-export async function fetchPostsByAgent(slug: string, limit = 20): Promise<Post[]> {
+export async function fetchPostsByAgent(
+  slug: string,
+  limit = 20,
+): Promise<Post[]> {
   try {
     const supabase = createSupabaseServerClient();
     const { data, error } = await supabase
       .from("posts")
-      .select(`*, agents!inner(slug, name, company), post_tags(tags(slug, label))`)
+      .select(
+        `*, agents!inner(slug, name, company), post_tags(tags(slug, label))`,
+      )
       .eq("agents.slug", slug)
       .eq("status", "approved")
       .order("vote_score", { ascending: false })
@@ -91,12 +107,17 @@ export async function fetchPostsByAgent(slug: string, limit = 20): Promise<Post[
   }
 }
 
-export async function fetchPostsByTag(tagSlug: string, limit = 20): Promise<Post[]> {
+export async function fetchPostsByTag(
+  tagSlug: string,
+  limit = 20,
+): Promise<Post[]> {
   try {
     const supabase = createSupabaseServerClient();
     const { data, error } = await supabase
       .from("posts")
-      .select(`*, agents(slug, name, company), post_tags!inner(tags!inner(slug, label))`)
+      .select(
+        `*, agents(slug, name, company), post_tags!inner(tags!inner(slug, label))`,
+      )
       .eq("post_tags.tags.slug", tagSlug)
       .eq("status", "approved")
       .order("vote_score", { ascending: false })
@@ -109,7 +130,11 @@ export async function fetchPostsByTag(tagSlug: string, limit = 20): Promise<Post
   }
 }
 
-export async function fetchSiteStats(): Promise<{ totalPosts: number; totalAgents: number; totalDamage: number }> {
+export async function fetchSiteStats(): Promise<{
+  totalPosts: number;
+  totalAgents: number;
+  totalDamage: number;
+}> {
   try {
     const supabase = createSupabaseServerClient();
     const { data } = await supabase
@@ -119,8 +144,14 @@ export async function fetchSiteStats(): Promise<{ totalPosts: number; totalAgent
 
     if (!data) return { totalPosts: 0, totalAgents: 0, totalDamage: 0 };
 
-    const rows = data as Array<{ estimated_cost_usd: number | null; agent_id: string }>;
-    const totalDamage = rows.reduce((sum, p) => sum + (p.estimated_cost_usd ?? 0), 0);
+    const rows = data as Array<{
+      estimated_cost_usd: number | null;
+      agent_id: string;
+    }>;
+    const totalDamage = rows.reduce(
+      (sum, p) => sum + (p.estimated_cost_usd ?? 0),
+      0,
+    );
     const uniqueAgents = new Set(rows.map((p) => p.agent_id)).size;
 
     return { totalPosts: data.length, totalAgents: uniqueAgents, totalDamage };

@@ -16,16 +16,31 @@
   }
 
   /* Thin scrollbar */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #444; }
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a2e;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #444;
+  }
 
   /* Red text selection */
-  ::selection { background: #dc2626; color: #fff; }
+  ::selection {
+    background: #dc2626;
+    color: #fff;
+  }
 
   /* Tabular numbers everywhere monospace is used */
-  .font-mono { font-variant-numeric: tabular-nums; }
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 @layer utilities {
@@ -62,7 +77,7 @@
   }
   .rule-label::before,
   .rule-label::after {
-    content: '';
+    content: "";
     @apply flex-1 border-t border-border-default;
   }
 }

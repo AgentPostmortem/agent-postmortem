@@ -16,14 +16,14 @@ Cases are submitted anonymously or with attribution, reviewed before publication
 
 ## Stack
 
-| Layer | Tech |
-|---|---|
-| Framework | Next.js 14 (App Router) |
-| Database | Supabase (Postgres + RLS) |
-| Storage | Cloudflare R2 (screenshots) |
-| Email | Resend (edit token delivery) |
-| Hosting | Vercel |
-| Styling | Tailwind CSS |
+| Layer     | Tech                         |
+| --------- | ---------------------------- |
+| Framework | Next.js 14 (App Router)      |
+| Database  | Supabase (Postgres + RLS)    |
+| Storage   | Cloudflare R2 (screenshots)  |
+| Email     | Resend (edit token delivery) |
+| Hosting   | Vercel                       |
+| Styling   | Tailwind CSS                 |
 
 ---
 

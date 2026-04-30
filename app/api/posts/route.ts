@@ -35,8 +35,10 @@ export async function POST(req: NextRequest) {
 
     if (isRateLimited(ipHash)) {
       return NextResponse.json(
-        { error: "Too many submissions. You can submit up to 3 cases per hour." },
-        { status: 429 }
+        {
+          error: "Too many submissions. You can submit up to 3 cases per hour.",
+        },
+        { status: 429 },
       );
     }
 
@@ -45,7 +47,7 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Validation failed.", issues: parsed.error.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -70,7 +72,10 @@ export async function POST(req: NextRequest) {
       .in("slug", data.tags);
 
     if (tagsErr) {
-      return NextResponse.json({ error: "Failed to resolve tags." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to resolve tags." },
+        { status: 500 },
+      );
     }
 
     // Redact PII from user-submitted text
@@ -107,7 +112,10 @@ export async function POST(req: NextRequest) {
 
     if (postErr || !post) {
       console.error("[posts] insert error:", postErr);
-      return NextResponse.json({ error: "Failed to save submission." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to save submission." },
+        { status: 500 },
+      );
     }
 
     // Insert post_tags junction rows
@@ -137,11 +145,17 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { caseNumber: post.case_number, message: "Submission received. It will appear after review." },
-      { status: 201 }
+      {
+        caseNumber: post.case_number,
+        message: "Submission received. It will appear after review.",
+      },
+      { status: 201 },
     );
   } catch (err) {
     console.error("[posts] unexpected error:", err);
-    return NextResponse.json({ error: "Internal server error." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error." },
+      { status: 500 },
+    );
   }
 }

@@ -20,7 +20,8 @@ export async function sendEditTokenEmail({
   editToken,
   caseTitle,
 }: SendEditTokenEmailParams): Promise<void> {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://agentpostmortem.com";
+  const appUrl =
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://agentpostmortem.com";
   const editUrl = `${appUrl}/case/${caseNumber.toLowerCase()}/edit?token=${editToken}`;
 
   const { error } = await resend.emails.send({

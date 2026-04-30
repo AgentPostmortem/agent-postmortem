@@ -2,10 +2,7 @@ import { z } from "zod";
 
 export const submitSchema = z.object({
   /** Slug of the agent involved (from AGENTS constant) */
-  agentSlug: z
-    .string()
-    .min(1, "Please select the AI agent involved.")
-    .max(64),
+  agentSlug: z.string().min(1, "Please select the AI agent involved.").max(64),
 
   /** Public case title */
   title: z
@@ -26,19 +23,10 @@ export const submitSchema = z.object({
     .max(10000, "Outcome description must be 10,000 characters or fewer."),
 
   /** Severity 1–5 */
-  damageLevel: z
-    .number()
-    .int()
-    .min(1)
-    .max(5) as z.ZodType<1 | 2 | 3 | 4 | 5>,
+  damageLevel: z.number().int().min(1).max(5) as z.ZodType<1 | 2 | 3 | 4 | 5>,
 
   /** Approximate USD financial damage — 0 for reputational only */
-  estimatedCostUsd: z
-    .number()
-    .int()
-    .min(0)
-    .max(100_000_000)
-    .optional(),
+  estimatedCostUsd: z.number().int().min(0).max(100_000_000).optional(),
 
   /** Tags — at least one required */
   tags: z
@@ -50,10 +38,7 @@ export const submitSchema = z.object({
   isAnonymous: z.boolean().default(true),
 
   /** Optional display handle or company name (when not anonymous) */
-  authorHandle: z
-    .string()
-    .max(64)
-    .optional(),
+  authorHandle: z.string().max(64).optional(),
 
   /** Optional email to receive the edit token — never stored long-term */
   email: z

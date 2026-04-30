@@ -31,16 +31,14 @@ export function DamageLevel({
                   : level === 3
                     ? "bg-accent-red opacity-70"
                     : "bg-accent-red opacity-40"
-                : "bg-border-strong"
+                : "bg-border-strong",
             )}
           />
         ))}
       </div>
 
       {showLabel && (
-        <span className="font-mono text-xs text-text-secondary">
-          {label}
-        </span>
+        <span className="font-mono text-xs text-text-secondary">{label}</span>
       )}
     </div>
   );

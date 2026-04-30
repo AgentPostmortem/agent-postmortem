@@ -11,7 +11,10 @@ export async function GET() {
     .order("label");
 
   if (error) {
-    return NextResponse.json({ error: "Failed to fetch tags." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch tags." },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json(data ?? []);

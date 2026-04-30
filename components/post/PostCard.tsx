@@ -33,21 +33,25 @@ const SEVERITY_BORDER: Record<number, string> = {
 
 export function PostCard({ post }: PostCardProps) {
   const date = new Intl.DateTimeFormat("en-US", {
-    month: "short", day: "numeric", year: "numeric",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   }).format(new Date(post.createdAt));
 
-  const cost = post.estimatedCostUsd != null
-    ? post.estimatedCostUsd >= 1_000_000
-      ? `$${(post.estimatedCostUsd / 1_000_000).toFixed(1)}M`
-      : post.estimatedCostUsd >= 1_000
-      ? `$${(post.estimatedCostUsd / 1_000).toFixed(0)}k`
-      : `$${post.estimatedCostUsd}`
-    : null;
+  const cost =
+    post.estimatedCostUsd != null
+      ? post.estimatedCostUsd >= 1_000_000
+        ? `$${(post.estimatedCostUsd / 1_000_000).toFixed(1)}M`
+        : post.estimatedCostUsd >= 1_000
+          ? `$${(post.estimatedCostUsd / 1_000).toFixed(0)}k`
+          : `$${post.estimatedCostUsd}`
+      : null;
 
   return (
-    <article className={`group relative overflow-hidden rounded border border-border-default bg-bg-surface border-l-2 transition-all hover:border-border-strong hover:bg-bg-elevated ${SEVERITY_BORDER[post.damageLevel]}`}>
+    <article
+      className={`group relative overflow-hidden rounded border border-border-default bg-bg-surface border-l-2 transition-all hover:border-border-strong hover:bg-bg-elevated ${SEVERITY_BORDER[post.damageLevel]}`}
+    >
       <div className="flex">
-
         {/* Vote column */}
         <div className="flex w-11 shrink-0 flex-col items-center justify-start border-r border-border-default pt-3.5 pb-3">
           <VoteButtons postId={post.id} initialScore={post.voteScore} compact />
@@ -55,7 +59,6 @@ export function PostCard({ post }: PostCardProps) {
 
         {/* Body */}
         <div className="min-w-0 flex-1 px-4 py-3.5">
-
           {/* Case number row */}
           <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
             <span className="font-mono text-[10px] tracking-widest text-text-tertiary">
@@ -72,8 +75,12 @@ export function PostCard({ post }: PostCardProps) {
             <span className="text-border-strong text-xs">·</span>
 
             {/* Severity pill */}
-            <span className={`inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${post.damageLevel >= 4 ? "text-accent-red" : "text-text-tertiary"}`}>
-              <span className={`inline-block h-1.5 w-1.5 rounded-full ${SEVERITY_COLOR[post.damageLevel]}`} />
+            <span
+              className={`inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${post.damageLevel >= 4 ? "text-accent-red" : "text-text-tertiary"}`}
+            >
+              <span
+                className={`inline-block h-1.5 w-1.5 rounded-full ${SEVERITY_COLOR[post.damageLevel]}`}
+              />
               {SEVERITY_LABEL[post.damageLevel]}
             </span>
 

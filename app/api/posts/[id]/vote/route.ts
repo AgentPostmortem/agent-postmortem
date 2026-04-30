@@ -34,13 +34,19 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     const ipHash = hashIp(ip);
 
     if (isRateLimited(ipHash)) {
-      return NextResponse.json({ error: "Too many votes. Slow down." }, { status: 429 });
+      return NextResponse.json(
+        { error: "Too many votes. Slow down." },
+        { status: 429 },
+      );
     }
 
     const body: unknown = await req.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "Invalid direction." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid direction." },
+        { status: 400 },
+      );
     }
 
     const { direction } = parsed.data;
@@ -90,7 +96,9 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       }
     } else {
       // New vote
-      await supabase.from("votes").insert({ post_id: postId, ip_hash: ipHash, direction });
+      await supabase
+        .from("votes")
+        .insert({ post_id: postId, ip_hash: ipHash, direction });
       delta = direction === "up" ? 1 : -1;
     }
 
@@ -105,6 +113,9 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ score: (post.vote_score ?? 0) + delta });
   } catch (err) {
     console.error("[vote] unexpected error:", err);
-    return NextResponse.json({ error: "Internal server error." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error." },
+      { status: 500 },
+    );
   }
 }

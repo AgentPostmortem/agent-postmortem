@@ -5,23 +5,24 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   elevated?: boolean;
 }
 
-export const Card = forwardRef<HTMLDivElement, CardProps>(
-  function Card({ elevated = false, className, children, ...props }, ref) {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "rounded border border-border-default",
-          elevated ? "bg-bg-elevated" : "bg-bg-surface",
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  }
-);
+export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
+  { elevated = false, className, children, ...props },
+  ref,
+) {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded border border-border-default",
+        elevated ? "bg-bg-elevated" : "bg-bg-surface",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 
 interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 

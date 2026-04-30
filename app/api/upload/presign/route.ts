@@ -37,21 +37,38 @@ export async function POST(req: NextRequest) {
     const ipHash = hashIp(ip);
 
     if (isRateLimited(ipHash)) {
-      return NextResponse.json({ error: "Too many upload requests. Try again later." }, { status: 429 });
+      return NextResponse.json(
+        { error: "Too many upload requests. Try again later." },
+        { status: 429 },
+      );
     }
 
     const body: unknown = await req.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+      return NextResponse.json(
+        { error: parsed.error.issues[0].message },
+        { status: 400 },
+      );
     }
 
     const { filename, contentType } = parsed.data;
-    const result = await getPresignedUploadUrl(filename, contentType, "screenshots");
+    const result = await getPresignedUploadUrl(
+      filename,
+      contentType,
+      "screenshots",
+    );
 
-    return NextResponse.json({ url: result.uploadUrl, publicUrl: result.publicUrl, key: result.key });
+    return NextResponse.json({
+      url: result.uploadUrl,
+      publicUrl: result.publicUrl,
+      key: result.key,
+    });
   } catch (err) {
     console.error("[presign] error:", err);
-    return NextResponse.json({ error: "Failed to generate upload URL." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to generate upload URL." },
+      { status: 500 },
+    );
   }
 }

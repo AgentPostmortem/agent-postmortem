@@ -11,7 +11,11 @@ type VoteButtonsProps = {
   compact?: boolean;
 };
 
-export function VoteButtons({ postId, initialScore, compact = false }: VoteButtonsProps) {
+export function VoteButtons({
+  postId,
+  initialScore,
+  compact = false,
+}: VoteButtonsProps) {
   const [vote, setVote] = useState<VoteState>(null);
   const [score, setScore] = useState(initialScore);
   const [loading, setLoading] = useState(false);
@@ -35,7 +39,9 @@ export function VoteButtons({ postId, initialScore, compact = false }: VoteButto
       await fetch(`/api/posts/${postId}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ direction: prev === direction ? null : direction }),
+        body: JSON.stringify({
+          direction: prev === direction ? null : direction,
+        }),
       });
     } catch {
       setVote(prev);
@@ -45,7 +51,8 @@ export function VoteButtons({ postId, initialScore, compact = false }: VoteButto
     }
   }
 
-  const fmt = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+  const fmt = (n: number) =>
+    n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
 
   if (compact) {
     return (
@@ -56,15 +63,21 @@ export function VoteButtons({ postId, initialScore, compact = false }: VoteButto
           aria-label="Upvote"
           className={cn(
             "leading-none transition-colors disabled:opacity-40",
-            vote === "up" ? "text-accent-red" : "text-text-tertiary hover:text-text-secondary"
+            vote === "up"
+              ? "text-accent-red"
+              : "text-text-tertiary hover:text-text-secondary",
           )}
         >
           <svg width="10" height="7" viewBox="0 0 10 7" fill="currentColor">
             <path d="M5 0L10 7H0L5 0Z" />
           </svg>
         </button>
-        <span className={cn("font-mono text-[11px] font-medium tabular-nums leading-none",
-          vote === "up" ? "text-accent-red" : "text-text-secondary")}>
+        <span
+          className={cn(
+            "font-mono text-[11px] font-medium tabular-nums leading-none",
+            vote === "up" ? "text-accent-red" : "text-text-secondary",
+          )}
+        >
           {fmt(score)}
         </span>
         <button
@@ -73,7 +86,9 @@ export function VoteButtons({ postId, initialScore, compact = false }: VoteButto
           aria-label="Downvote"
           className={cn(
             "leading-none transition-colors disabled:opacity-40",
-            vote === "down" ? "text-text-secondary" : "text-text-tertiary hover:text-text-secondary"
+            vote === "down"
+              ? "text-text-secondary"
+              : "text-text-tertiary hover:text-text-secondary",
           )}
         >
           <svg width="10" height="7" viewBox="0 0 10 7" fill="currentColor">
@@ -94,7 +109,7 @@ export function VoteButtons({ postId, initialScore, compact = false }: VoteButto
           "flex items-center gap-1.5 rounded border px-2.5 py-1.5 font-mono text-xs transition-all disabled:opacity-40",
           vote === "up"
             ? "border-accent-red bg-accent-red-soft text-accent-red"
-            : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary"
+            : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
         )}
       >
         <svg width="8" height="6" viewBox="0 0 10 7" fill="currentColor">
@@ -110,7 +125,7 @@ export function VoteButtons({ postId, initialScore, compact = false }: VoteButto
           "rounded border px-2 py-1.5 text-xs transition-all disabled:opacity-40",
           vote === "down"
             ? "border-border-strong text-text-secondary"
-            : "border-border-default text-text-tertiary hover:border-border-strong"
+            : "border-border-default text-text-tertiary hover:border-border-strong",
         )}
       >
         <svg width="8" height="6" viewBox="0 0 10 7" fill="currentColor">

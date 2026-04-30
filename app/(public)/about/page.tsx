@@ -58,10 +58,10 @@ export default function AboutPage() {
         <h2>Moderation</h2>
 
         <p>
-          Every submission is reviewed before publication. We reject cases
-          that are vague, unverifiable, or appear to be targeted harassment.
-          Approved cases are assigned a permanent case number (APM-XXXX) and
-          indexed immediately.
+          Every submission is reviewed before publication. We reject cases that
+          are vague, unverifiable, or appear to be targeted harassment. Approved
+          cases are assigned a permanent case number (APM-XXXX) and indexed
+          immediately.
         </p>
 
         <h2>For Teams</h2>

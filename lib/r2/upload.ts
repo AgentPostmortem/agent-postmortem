@@ -35,7 +35,7 @@ interface PresignUploadResult {
 export async function getPresignedUploadUrl(
   filename: string,
   contentType: string,
-  folder = "screenshots"
+  folder = "screenshots",
 ): Promise<PresignUploadResult> {
   const ext = filename.split(".").pop() ?? "bin";
   const key = `${folder}/${randomUUID()}.${ext}`;

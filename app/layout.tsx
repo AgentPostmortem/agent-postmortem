@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "A public ledger of AI agent failures. Real cases, real damages. Submitted anonymously. Read so you don't repeat.",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://agentpostmortem.com"
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://agentpostmortem.com",
   ),
   openGraph: {
     siteName: "AgentPostmortem",

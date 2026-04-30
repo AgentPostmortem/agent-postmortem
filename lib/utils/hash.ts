@@ -15,7 +15,7 @@ export function hashIp(ip: string): string {
   if (!pepper) {
     throw new Error(
       "IP_HASH_PEPPER environment variable is not set. " +
-        "Generate one with: openssl rand -hex 32"
+        "Generate one with: openssl rand -hex 32",
     );
   }
   return createHmac("sha256", pepper).update(ip.trim()).digest("hex");

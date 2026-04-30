@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
 import { AGENTS } from "@/lib/constants/agents";
-import type { Post } from "@/types";
+import { fetchPostsByAgent } from "@/lib/db/posts";
 
 interface PageProps {
   params: { slug: string };
@@ -19,56 +20,109 @@ export async function generateMetadata({
   };
 }
 
-export async function generateStaticParams() {
-  return AGENTS.map((agent) => ({ slug: agent.slug }));
-}
-
-// Placeholder — replace with Supabase query filtered by agent
-const PLACEHOLDER_POSTS: Post[] = [
-  {
-    id: "1",
-    caseNumber: "APM-0001",
-    title: "Agent deleted production database after misreading schema migration",
-    agentSlug: "devin",
-    agentName: "Devin",
-    outcome:
-      "Automated agent executed DROP TABLE on live database during a routine migration task.",
-    damageLevel: 5,
-    estimatedCostUsd: 85000,
-    tags: ["deleted-data", "code-disaster"],
-    voteScore: 1247,
-    createdAt: "2024-11-15T09:23:00Z",
-    isAnonymous: true,
-  },
-];
-
-export default function AgentPage({ params }: PageProps) {
+export default async function AgentPage({ params }: PageProps) {
   const agent = AGENTS.find((a) => a.slug === params.slug);
   if (!agent) notFound();
 
-  const posts = PLACEHOLDER_POSTS.filter((p) => p.agentSlug === params.slug);
+  const posts = await fetchPostsByAgent(params.slug);
+
+  const totalDamage = posts.reduce(
+    (sum, p) => sum + (p.estimatedCostUsd ?? 0),
+    0,
+  );
+  const formattedDamage =
+    totalDamage >= 1_000_000
+      ? `$${(totalDamage / 1_000_000).toFixed(1)}M`
+      : totalDamage >= 1_000
+        ? `$${(totalDamage / 1_000).toFixed(0)}k`
+        : totalDamage > 0
+          ? `$${totalDamage}`
+          : null;
+
+  const avgSeverity = posts.length
+    ? (posts.reduce((sum, p) => sum + p.damageLevel, 0) / posts.length).toFixed(
+        1,
+      )
+    : null;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8 border-b border-border-default pb-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
-          Agent Profile
-        </p>
-        <h1 className="mt-2 font-serif text-3xl font-normal text-text-primary">
-          {agent.name}
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">{agent.company}</p>
-        <p className="mt-3 font-mono text-sm text-text-tertiary">
-          {posts.length} documented failure{posts.length !== 1 ? "s" : ""}
-        </p>
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+      {/* Breadcrumb */}
+      <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
+        <Link href="/" className="hover:text-text-secondary">
+          Registry
+        </Link>
+        <span>/</span>
+        <span>Agents</span>
+        <span>/</span>
+        <span>{agent.name}</span>
       </div>
 
+      {/* Agent header */}
+      <div className="mb-8 overflow-hidden rounded border border-border-default bg-bg-surface">
+        <div className="border-b border-border-default bg-bg-elevated px-5 py-2.5">
+          <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+            Agent Profile
+          </span>
+        </div>
+        <div className="p-5">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h1 className="font-serif text-3xl font-normal text-text-primary">
+                {agent.name}
+              </h1>
+              <p className="mt-0.5 font-mono text-sm text-text-secondary">
+                {agent.company}
+              </p>
+              <p className="mt-3 max-w-lg text-sm leading-relaxed text-text-secondary">
+                {agent.description}
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="flex gap-px overflow-hidden rounded border border-border-default bg-border-default">
+              {[
+                { value: posts.length.toString(), label: "Cases" },
+                ...(formattedDamage
+                  ? [{ value: formattedDamage, label: "Damage", red: true }]
+                  : []),
+                ...(avgSeverity
+                  ? [{ value: avgSeverity + "/5", label: "Avg Severity" }]
+                  : []),
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="bg-bg-surface px-4 py-3 min-w-[80px]"
+                >
+                  <div
+                    className={`font-mono text-xl font-semibold tabular-nums ${s.red ? "text-accent-red" : "text-text-primary"}`}
+                  >
+                    {s.value}
+                  </div>
+                  <div className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Posts */}
       {posts.length === 0 ? (
-        <p className="text-center text-text-tertiary">
-          No cases filed yet for this agent.
-        </p>
+        <div className="rounded border border-dashed border-border-default py-16 text-center">
+          <p className="font-serif text-lg text-text-secondary">
+            No cases filed for {agent.name} yet.
+          </p>
+          <p className="mt-2 text-sm text-text-tertiary">
+            <Link href="/submit" className="text-accent-red hover:underline">
+              File the first report →
+            </Link>
+          </p>
+        </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {posts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}

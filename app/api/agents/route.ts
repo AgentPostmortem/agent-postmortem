@@ -11,7 +11,10 @@ export async function GET() {
     .order("name");
 
   if (error) {
-    return NextResponse.json({ error: "Failed to fetch agents." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch agents." },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json(data ?? []);

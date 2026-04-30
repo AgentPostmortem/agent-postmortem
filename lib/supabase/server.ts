@@ -28,6 +28,6 @@ export function createSupabaseServerClient() {
           }
         },
       },
-    }
+    },
   );
 }

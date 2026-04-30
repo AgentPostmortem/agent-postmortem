@@ -4,7 +4,6 @@
  *   npx supabase gen types typescript --project-id <id> > types/supabase.ts
  */
 export type Database = {
-  
   public: {
     Tables: {
       agents: {

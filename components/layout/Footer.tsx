@@ -15,7 +15,9 @@ export function Footer() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <div className="h-1.5 w-1.5 rounded-sm bg-accent-red" />
-            <span className="font-serif text-sm text-text-tertiary">AgentPostmortem</span>
+            <span className="font-serif text-sm text-text-tertiary">
+              AgentPostmortem
+            </span>
           </div>
 
           <nav className="flex flex-wrap gap-x-5 gap-y-1.5">

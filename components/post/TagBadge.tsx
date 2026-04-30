@@ -16,7 +16,7 @@ export function TagBadge({ tag, className, linked = true }: TagBadgeProps) {
   const classes = cn(
     "inline-flex items-center rounded border border-border-default bg-bg-elevated px-2 py-0.5 font-mono text-xs text-text-tertiary transition-colors",
     linked && "hover:border-border-strong hover:text-text-secondary",
-    className
+    className,
   );
 
   if (!linked) {

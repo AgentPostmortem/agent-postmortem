@@ -18,13 +18,36 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 border-b border-border-default bg-bg-canvas/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
-
           {/* Logo */}
-          <Link href="/" className="group flex items-center gap-3" aria-label="AgentPostmortem home" onClick={() => setOpen(false)}>
+          <Link
+            href="/"
+            className="group flex items-center gap-3"
+            aria-label="AgentPostmortem home"
+            onClick={() => setOpen(false)}
+          >
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-accent-red/30 bg-accent-red-soft">
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-                <rect x="1" y="1" width="11" height="11" rx="1.5" stroke="#dc2626" strokeWidth="1.2" />
-                <path d="M3.5 4h6M3.5 6.5h6M3.5 9h3.5" stroke="#dc2626" strokeWidth="1.2" strokeLinecap="round" />
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 13 13"
+                fill="none"
+                aria-hidden="true"
+              >
+                <rect
+                  x="1"
+                  y="1"
+                  width="11"
+                  height="11"
+                  rx="1.5"
+                  stroke="#dc2626"
+                  strokeWidth="1.2"
+                />
+                <path
+                  d="M3.5 4h6M3.5 6.5h6M3.5 9h3.5"
+                  stroke="#dc2626"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
               </svg>
             </div>
             <div>
@@ -66,9 +89,15 @@ export function Header() {
               aria-expanded={open}
               className="flex h-8 w-8 flex-col items-center justify-center gap-[5px] md:hidden"
             >
-              <span className={`h-px w-5 bg-text-secondary transition-all duration-200 ${open ? "translate-y-[7px] rotate-45" : ""}`} />
-              <span className={`h-px w-5 bg-text-secondary transition-all duration-200 ${open ? "opacity-0" : ""}`} />
-              <span className={`h-px w-5 bg-text-secondary transition-all duration-200 ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
+              <span
+                className={`h-px w-5 bg-text-secondary transition-all duration-200 ${open ? "translate-y-[7px] rotate-45" : ""}`}
+              />
+              <span
+                className={`h-px w-5 bg-text-secondary transition-all duration-200 ${open ? "opacity-0" : ""}`}
+              />
+              <span
+                className={`h-px w-5 bg-text-secondary transition-all duration-200 ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
+              />
             </button>
           </div>
         </div>
@@ -88,7 +117,8 @@ export function Header() {
                       : "text-text-secondary hover:text-text-primary"
                   }`}
                 >
-                  {link.label === "File Report" ? "+ " : ""}{link.label}
+                  {link.label === "File Report" ? "+ " : ""}
+                  {link.label}
                 </Link>
               ))}
             </nav>

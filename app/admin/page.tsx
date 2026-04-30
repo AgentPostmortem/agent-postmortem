@@ -21,7 +21,10 @@ interface AdminPost {
   status: PostStatus;
   created_at: string;
   agents: { id: string; name: string; slug: string } | null;
-  post_tags: { tag_id: string; tags: { id: string; slug: string; label: string } | null }[];
+  post_tags: {
+    tag_id: string;
+    tags: { id: string; slug: string; label: string } | null;
+  }[];
 }
 
 interface TabCounts {
@@ -54,7 +57,11 @@ export default function AdminPage() {
 
   const [tab, setTab] = useState<PostStatus>("pending");
   const [posts, setPosts] = useState<AdminPost[]>([]);
-  const [counts, setCounts] = useState<TabCounts>({ pending: 0, approved: 0, rejected: 0 });
+  const [counts, setCounts] = useState<TabCounts>({
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+  });
   const [selected, setSelected] = useState<AdminPost | null>(null);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -186,7 +193,8 @@ export default function AdminPage() {
               <span className="text-green-400">{counts.approved}</span> approved
             </span>
             <span className="text-text-tertiary">
-              <span className="text-accent-red">{counts.rejected}</span> rejected
+              <span className="text-accent-red">{counts.rejected}</span>{" "}
+              rejected
             </span>
           </div>
         </div>
@@ -207,9 +215,7 @@ export default function AdminPage() {
               ].join(" ")}
             >
               {label}
-              <span className="ml-2 text-text-tertiary">
-                {counts[key]}
-              </span>
+              <span className="ml-2 text-text-tertiary">{counts[key]}</span>
             </button>
           ))}
         </div>
@@ -322,7 +328,7 @@ export default function AdminPage() {
                     <dd className="mt-0.5 text-text-secondary">
                       {selected.is_anonymous
                         ? "Anonymous"
-                        : selected.submitter_handle ?? "Named (no handle)"}
+                        : (selected.submitter_handle ?? "Named (no handle)")}
                       {selected.submitter_email && (
                         <span className="ml-2 text-text-tertiary">
                           · {selected.submitter_email}
@@ -342,7 +348,7 @@ export default function AdminPage() {
                             <Badge key={tags.id} variant="default">
                               {tags.label}
                             </Badge>
-                          ) : null
+                          ) : null,
                         )}
                       </dd>
                     </div>
