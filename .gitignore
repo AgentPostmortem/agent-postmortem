@@ -7,7 +7,9 @@ Plan.md
 SETUP.md
 
 # database migrations (add manually when ready to open-source)
-/supabase/
+/supabase/*
+!/supabase/migrations/
+!/supabase/migrations/*.sql
 
 # dependencies
 /node_modules

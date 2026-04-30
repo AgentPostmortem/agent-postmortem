@@ -6,23 +6,11 @@ import { sendEditTokenEmail } from "@/lib/resend/send";
 import { hashIp, getClientIp } from "@/lib/utils/hash";
 import { redactPii } from "@/lib/utils/pii";
 import { randomBytes, createHash } from "crypto";
+import { logEvent } from "@/lib/observability/events";
+import { consumeSharedRateLimit } from "@/lib/rate-limit/shared";
 
-// Rate limit: 3 submissions per IP per hour
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const WINDOW_MS = 60 * 60 * 1000;
+const WINDOW_SECONDS = 60 * 60;
 const MAX_SUBMISSIONS = 3;
-
-function isRateLimited(ipHash: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ipHash);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ipHash, { count: 1, resetAt: now + WINDOW_MS });
-    return false;
-  }
-  if (entry.count >= MAX_SUBMISSIONS) return true;
-  entry.count++;
-  return false;
-}
 
 const bodySchema = submitSchema.extend({
   screenshotUrls: z.array(z.string().url()).max(5).optional(),
@@ -33,7 +21,20 @@ export async function POST(req: NextRequest) {
     const ip = getClientIp(req.headers);
     const ipHash = hashIp(ip);
 
-    if (isRateLimited(ipHash)) {
+    const rateLimit = await consumeSharedRateLimit(
+      `posts:${ipHash}`,
+      WINDOW_SECONDS,
+      MAX_SUBMISSIONS,
+    );
+
+    if (!rateLimit.allowed) {
+      logEvent({
+        event: "submit.rate_limited",
+        level: "warn",
+        ipHash,
+        remaining: rateLimit.remaining,
+        resetAt: rateLimit.resetAt,
+      });
       return NextResponse.json(
         {
           error: "Too many submissions. You can submit up to 3 cases per hour.",
@@ -120,6 +121,12 @@ export async function POST(req: NextRequest) {
 
     if (postErr || !post) {
       console.error("[posts] insert error:", postErr);
+      logEvent({
+        event: "submit.persist_failed",
+        level: "error",
+        ipHash,
+        error: postErr?.message ?? "unknown",
+      });
       return NextResponse.json(
         { error: "Failed to save submission." },
         { status: 500 },
@@ -147,11 +154,30 @@ export async function POST(req: NextRequest) {
           caseTitle: cleanTitle,
         });
         editLinkSent = true;
+        logEvent({
+          event: "submit.edit_link_sent",
+          ipHash,
+          postId: post.id,
+        });
       } catch (emailErr) {
         // Non-fatal — post is saved, email just failed
         console.error("[posts] email error:", emailErr);
+        logEvent({
+          event: "submit.edit_link_failed",
+          level: "warn",
+          ipHash,
+          postId: post.id,
+        });
       }
     }
+
+    logEvent({
+      event: "submit.created",
+      ipHash,
+      postId: post.id,
+      editLinkSent,
+      tagCount: tags.length,
+    });
 
     return NextResponse.json(
       {
@@ -162,6 +188,11 @@ export async function POST(req: NextRequest) {
     );
   } catch (err) {
     console.error("[posts] unexpected error:", err);
+    logEvent({
+      event: "submit.unexpected_error",
+      level: "error",
+      error: err instanceof Error ? err.message : "unknown",
+    });
     return NextResponse.json(
       { error: "Internal server error." },
       { status: 500 },

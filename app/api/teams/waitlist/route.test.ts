@@ -3,6 +3,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const hashIp = vi.fn(() => "hashed-ip");
 const getClientIp = vi.fn(() => "127.0.0.1");
+const consumeSharedRateLimit = vi.fn(async () => ({
+  allowed: true,
+  remaining: 4,
+  resetAt: new Date().toISOString(),
+  currentCount: 1,
+}));
 const from = vi.fn();
 
 vi.mock("@/lib/supabase/admin", () => ({
@@ -12,6 +18,14 @@ vi.mock("@/lib/supabase/admin", () => ({
 vi.mock("@/lib/utils/hash", () => ({
   hashIp,
   getClientIp,
+}));
+
+vi.mock("@/lib/rate-limit/shared", () => ({
+  consumeSharedRateLimit,
+}));
+
+vi.mock("@/lib/observability/events", () => ({
+  logEvent: vi.fn(),
 }));
 
 function createRequest(body: unknown) {

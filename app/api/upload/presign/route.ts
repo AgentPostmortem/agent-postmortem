@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getPresignedUploadUrl } from "@/lib/r2/upload";
 import { hashIp, getClientIp } from "@/lib/utils/hash";
+import { logEvent } from "@/lib/observability/events";
+import { consumeSharedRateLimit } from "@/lib/rate-limit/shared";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -14,29 +16,26 @@ const schema = z.object({
   size: z.number().max(MAX_SIZE_BYTES, "File must be under 5 MB.").optional(),
 });
 
-// Simple in-memory rate limit: max 10 presign requests per IP per 10 min
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const WINDOW_MS = 10 * 60 * 1000;
+const WINDOW_SECONDS = 10 * 60;
 const MAX_REQUESTS = 10;
-
-function isRateLimited(ipHash: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ipHash);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ipHash, { count: 1, resetAt: now + WINDOW_MS });
-    return false;
-  }
-  if (entry.count >= MAX_REQUESTS) return true;
-  entry.count++;
-  return false;
-}
 
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req.headers);
     const ipHash = hashIp(ip);
 
-    if (isRateLimited(ipHash)) {
+    const rateLimit = await consumeSharedRateLimit(
+      `upload:${ipHash}`,
+      WINDOW_SECONDS,
+      MAX_REQUESTS,
+    );
+
+    if (!rateLimit.allowed) {
+      logEvent({
+        event: "upload_presign.rate_limited",
+        level: "warn",
+        ipHash,
+      });
       return NextResponse.json(
         { error: "Too many upload requests. Try again later." },
         { status: 429 },
@@ -73,6 +72,11 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error("[presign] error:", err);
+    logEvent({
+      event: "upload_presign.failed",
+      level: "error",
+      error: err instanceof Error ? err.message : "unknown",
+    });
     return NextResponse.json(
       { error: "Failed to generate upload URL." },
       { status: 500 },

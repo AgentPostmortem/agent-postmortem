@@ -2,27 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { hashIp, getClientIp } from "@/lib/utils/hash";
+import { logEvent } from "@/lib/observability/events";
+import { consumeSharedRateLimit } from "@/lib/rate-limit/shared";
 
 const schema = z.object({
   direction: z.enum(["up", "down"]).nullable(),
 });
 
-// Rate limit: 60 vote actions per IP per 10 min
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const WINDOW_MS = 10 * 60 * 1000;
+const WINDOW_SECONDS = 10 * 60;
 const MAX_VOTES = 60;
-
-function isRateLimited(ipHash: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ipHash);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ipHash, { count: 1, resetAt: now + WINDOW_MS });
-    return false;
-  }
-  if (entry.count >= MAX_VOTES) return true;
-  entry.count++;
-  return false;
-}
 
 interface RouteParams {
   params: { id: string };
@@ -33,7 +21,19 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     const ip = getClientIp(req.headers);
     const ipHash = hashIp(ip);
 
-    if (isRateLimited(ipHash)) {
+    const rateLimit = await consumeSharedRateLimit(
+      `votes:${ipHash}`,
+      WINDOW_SECONDS,
+      MAX_VOTES,
+    );
+
+    if (!rateLimit.allowed) {
+      logEvent({
+        event: "vote.rate_limited",
+        level: "warn",
+        ipHash,
+        postId: params.id,
+      });
       return NextResponse.json(
         { error: "Too many votes. Slow down." },
         { status: 429 },
@@ -100,15 +100,36 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
 
     if (updatedPostErr || !updatedPost) {
       console.error("[vote] score refresh error:", updatedPostErr);
+      logEvent({
+        event: "vote.refresh_failed",
+        level: "error",
+        ipHash,
+        postId,
+        error: updatedPostErr?.message ?? "unknown",
+      });
       return NextResponse.json(
         { error: "Failed to refresh vote score." },
         { status: 500 },
       );
     }
 
+    logEvent({
+      event: "vote.recorded",
+      ipHash,
+      postId,
+      direction,
+      score: updatedPost.vote_score,
+    });
+
     return NextResponse.json({ score: updatedPost.vote_score });
   } catch (err) {
     console.error("[vote] unexpected error:", err);
+    logEvent({
+      event: "vote.unexpected_error",
+      level: "error",
+      error: err instanceof Error ? err.message : "unknown",
+      postId: params.id,
+    });
     return NextResponse.json(
       { error: "Internal server error." },
       { status: 500 },

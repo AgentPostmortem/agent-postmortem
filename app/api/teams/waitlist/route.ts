@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { hashIp, getClientIp } from "@/lib/utils/hash";
+import { logEvent } from "@/lib/observability/events";
+import { consumeSharedRateLimit } from "@/lib/rate-limit/shared";
 
 const schema = z.object({
   email: z.string().email(),
@@ -10,32 +12,25 @@ const schema = z.object({
   useCase: z.string().trim().max(2000).optional(),
 });
 
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const WINDOW_MS = 60 * 60 * 1000;
+const WINDOW_SECONDS = 60 * 60;
 const MAX_REQUESTS = 5;
-
-function isRateLimited(ipHash: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ipHash);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ipHash, { count: 1, resetAt: now + WINDOW_MS });
-    return false;
-  }
-
-  if (entry.count >= MAX_REQUESTS) {
-    return true;
-  }
-
-  entry.count++;
-  return false;
-}
 
 export async function POST(req: NextRequest) {
   try {
     const ipHash = hashIp(getClientIp(req.headers));
 
-    if (isRateLimited(ipHash)) {
+    const rateLimit = await consumeSharedRateLimit(
+      `waitlist:${ipHash}`,
+      WINDOW_SECONDS,
+      MAX_REQUESTS,
+    );
+
+    if (!rateLimit.allowed) {
+      logEvent({
+        event: "waitlist.rate_limited",
+        level: "warn",
+        ipHash,
+      });
       return NextResponse.json(
         { error: "Too many waitlist requests. Try again later." },
         { status: 429 },
@@ -60,6 +55,12 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       if (error.code === "23505") {
+        logEvent({
+          event: "waitlist.duplicate",
+          level: "warn",
+          ipHash,
+          email: parsed.data.email.toLowerCase(),
+        });
         return NextResponse.json(
           { error: "That email is already on the waitlist." },
           { status: 409 },
@@ -67,15 +68,32 @@ export async function POST(req: NextRequest) {
       }
 
       console.error("[teams/waitlist] insert error:", error);
+      logEvent({
+        event: "waitlist.failed",
+        level: "error",
+        ipHash,
+        error: error.message,
+      });
       return NextResponse.json(
         { error: "Failed to join the waitlist." },
         { status: 500 },
       );
     }
 
+    logEvent({
+      event: "waitlist.created",
+      ipHash,
+      email: parsed.data.email.toLowerCase(),
+    });
+
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (error) {
     console.error("[teams/waitlist] unexpected error:", error);
+    logEvent({
+      event: "waitlist.unexpected_error",
+      level: "error",
+      error: error instanceof Error ? error.message : "unknown",
+    });
     return NextResponse.json(
       { error: "Internal server error." },
       { status: 500 },

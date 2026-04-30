@@ -183,6 +183,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      rate_limits: {
+        Row: {
+          key: string;
+          window_started_at: string;
+          count: number;
+          updated_at: string;
+        };
+        Insert: {
+          key: string;
+          window_started_at: string;
+          count: number;
+          updated_at?: string;
+        };
+        Update: {
+          key?: string;
+          window_started_at?: string;
+          count?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       team_waitlist: {
         Row: {
           id: string;
@@ -239,7 +260,21 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      consume_rate_limit: {
+        Args: {
+          p_key: string;
+          p_window_seconds: number;
+          p_max_requests: number;
+        };
+        Returns: {
+          allowed: boolean;
+          remaining: number;
+          reset_at: string;
+          current_count: number;
+        }[];
+      };
+    };
     Enums: Record<string, never>;
   };
 };
