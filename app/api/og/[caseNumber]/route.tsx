@@ -15,19 +15,38 @@ interface CaseData {
   tags: string[];
 }
 
-// In production: fetch from Supabase
-function getCaseData(caseNumber: string): CaseData {
+async function fetchCase(caseNumber: string): Promise<CaseData | null> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+
+  const res = await fetch(
+    `${url}/rest/v1/posts?case_number=eq.${encodeURIComponent(caseNumber.toUpperCase())}&status=eq.approved&select=case_number,title,outcome,damage_level,estimated_cost_usd,agents(name,company),post_tags(tags(slug))&limit=1`,
+    {
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      next: { revalidate: 3600 },
+    },
+  );
+
+  if (!res.ok) return null;
+  const rows = await res.json();
+  if (!rows || rows.length === 0) return null;
+
+  const row = rows[0];
   return {
-    caseNumber: caseNumber.toUpperCase(),
-    title:
-      "Agent deleted production database after misreading schema migration",
-    agentName: "Devin",
-    company: "Cognition AI",
-    damageLevel: 5,
-    estimatedCostUsd: 85000,
-    outcome:
-      "Automated agent executed DROP TABLE on live database. Six hours of customer data lost.",
-    tags: ["deleted-data", "code-disaster"],
+    caseNumber: row.case_number,
+    title: row.title,
+    agentName: row.agents?.name ?? "Unknown",
+    company: row.agents?.company ?? "",
+    damageLevel: row.damage_level,
+    estimatedCostUsd: row.estimated_cost_usd ?? null,
+    outcome: row.outcome ?? "",
+    tags: (row.post_tags ?? [])
+      .map((pt: { tags: { slug: string } | null }) => pt.tags?.slug)
+      .filter(Boolean),
   };
 }
 
@@ -35,11 +54,22 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: { caseNumber: string } },
 ) {
-  const data = getCaseData(params.caseNumber);
-  const severityLabel = SEVERITY_LABELS[data.damageLevel as 1 | 2 | 3 | 4 | 5];
+  const data = await fetchCase(params.caseNumber);
 
-  // Severity bar color segments
+  if (!data) {
+    return new Response("Case not found", { status: 404 });
+  }
+
+  const severityLabel = SEVERITY_LABELS[data.damageLevel as 1 | 2 | 3 | 4 | 5];
   const filledPips = data.damageLevel;
+
+  const costFormatted = data.estimatedCostUsd
+    ? data.estimatedCostUsd >= 1_000_000
+      ? `$${(data.estimatedCostUsd / 1_000_000).toFixed(1)}M`
+      : data.estimatedCostUsd >= 1_000
+        ? `$${(data.estimatedCostUsd / 1_000).toFixed(0)}k`
+        : `$${data.estimatedCostUsd}`
+    : null;
 
   return new ImageResponse(
     <div
@@ -66,7 +96,7 @@ export async function GET(
         }}
       />
 
-      {/* Left red vertical rule */}
+      {/* Left vertical rule */}
       <div
         style={{
           position: "absolute",
@@ -78,7 +108,7 @@ export async function GET(
         }}
       />
 
-      {/* Watermark grid lines */}
+      {/* Grid watermark */}
       <div
         style={{
           position: "absolute",
@@ -199,15 +229,14 @@ export async function GET(
             color: "#9a9a9a",
             marginBottom: "32px",
             maxWidth: "800px",
-            display: "-webkit-box",
             overflow: "hidden",
           }}
         >
-          {data.outcome.substring(0, 120)}
-          {data.outcome.length > 120 ? "…" : ""}
+          {data.outcome.substring(0, 140)}
+          {data.outcome.length > 140 ? "…" : ""}
         </div>
 
-        {/* Bottom row: severity + cost */}
+        {/* Bottom row */}
         <div
           style={{
             display: "flex",
@@ -244,8 +273,8 @@ export async function GET(
             </div>
           </div>
 
-          {/* Cost estimate */}
-          {data.estimatedCostUsd && (
+          {/* Cost */}
+          {costFormatted && (
             <div
               style={{
                 display: "flex",
@@ -273,50 +302,51 @@ export async function GET(
                   fontWeight: "bold",
                 }}
               >
-                ${data.estimatedCostUsd.toLocaleString()}
+                {costFormatted}
               </span>
             </div>
           )}
 
           {/* Tags */}
-          <div
-            style={{
-              display: "flex",
-              gap: "6px",
-              flexWrap: "wrap",
-              maxWidth: "300px",
-              justifyContent: "flex-end",
-            }}
-          >
-            {data.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  fontFamily: "monospace",
-                  fontSize: "10px",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "#9a9a9a",
-                  border: "1px solid #222226",
-                  padding: "3px 8px",
-                  borderRadius: "3px",
-                  backgroundColor: "#111113",
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          {data.tags.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                gap: "6px",
+                flexWrap: "wrap",
+                maxWidth: "300px",
+                justifyContent: "flex-end",
+              }}
+            >
+              {data.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "10px",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: "#9a9a9a",
+                    border: "1px solid #222226",
+                    padding: "3px 8px",
+                    borderRadius: "3px",
+                    backgroundColor: "#111113",
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Bottom accent stripe */}
+      {/* Footer */}
       <div
         style={{
           height: "1px",
           backgroundColor: "#222226",
           marginLeft: "80px",
-          marginRight: "0",
         }}
       />
       <div
@@ -350,9 +380,6 @@ export async function GET(
         </span>
       </div>
     </div>,
-    {
-      width: 1200,
-      height: 630,
-    },
+    { width: 1200, height: 630 },
   );
 }
