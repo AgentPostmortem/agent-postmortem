@@ -47,9 +47,12 @@ async function fetchCase(caseNumber: string): Promise<CaseData | null> {
 }
 
 async function loadGoogleFont(text: string) {
-  const url = `https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&text=${encodeURIComponent(text)}`;
-  const css = await fetch(url).then((r) => r.text());
-  const match = css.match(/src: url\(([^)]+)\) format\('(opentype|truetype)'\)/);
+  // Request TTF via legacy User-Agent — modern UAs get woff2 which Satori cannot parse
+  const url = `https://fonts.googleapis.com/css2?family=Inter:wght@600&text=${encodeURIComponent(text)}`;
+  const css = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/4.0 (compatible; MSIE 8.0)" },
+  }).then((r) => r.text());
+  const match = css.match(/src: url\(([^)]+)\)/);
   if (!match) return null;
   return fetch(match[1]).then((r) => r.arrayBuffer());
 }
@@ -71,7 +74,14 @@ export async function GET(
         : `$${data.estimatedCostUsd}`
     : null;
 
-  const allText = [data.title, data.agentName, data.company, "AgentPostmortem", data.caseNumber, severityLabel ?? ""].join(" ");
+  const allText = [
+    data.title,
+    data.agentName,
+    data.company,
+    "AgentPostmortem",
+    data.caseNumber,
+    severityLabel ?? "",
+  ].join(" ");
   const fontData = await loadGoogleFont(allText).catch(() => null);
 
   const fonts = fontData
@@ -79,107 +89,207 @@ export async function GET(
     : [];
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: "1200px",
+        height: "630px",
+        backgroundColor: "#0a0a0b",
+        display: "flex",
+        flexDirection: "column",
+        fontFamily: "Inter, sans-serif",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Red top stripe */}
       <div
         style={{
-          width: "1200px",
-          height: "630px",
-          backgroundColor: "#0a0a0b",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "4px",
+          backgroundColor: "#dc2626",
+        }}
+      />
+
+      {/* Left rule */}
+      <div
+        style={{
+          position: "absolute",
+          top: "4px",
+          left: "80px",
+          bottom: 0,
+          width: "1px",
+          backgroundColor: "#1e1e22",
+        }}
+      />
+
+      {/* Grid watermark */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent, transparent 59px, #111113 59px, #111113 60px), repeating-linear-gradient(90deg, transparent, transparent 119px, #111113 119px, #111113 120px)",
+          opacity: 0.5,
+        }}
+      />
+
+      {/* Content */}
+      <div
+        style={{
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Inter, sans-serif",
-          position: "relative",
-          overflow: "hidden",
+          padding: "56px 100px 48px 120px",
+          flex: 1,
         }}
       >
-        {/* Red top stripe */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "4px",
-            backgroundColor: "#dc2626",
-          }}
-        />
-
-        {/* Left rule */}
-        <div
-          style={{
-            position: "absolute",
-            top: "4px",
-            left: "80px",
-            bottom: 0,
-            width: "1px",
-            backgroundColor: "#1e1e22",
-          }}
-        />
-
-        {/* Grid watermark */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "repeating-linear-gradient(0deg, transparent, transparent 59px, #111113 59px, #111113 60px), repeating-linear-gradient(90deg, transparent, transparent 119px, #111113 119px, #111113 120px)",
-            opacity: 0.5,
-          }}
-        />
-
-        {/* Content */}
+        {/* Top row */}
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            padding: "56px 100px 48px 120px",
-            flex: 1,
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: "40px",
           }}
         >
-          {/* Top row */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <span
+              style={{
+                fontSize: "11px",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color: "#444448",
+                fontWeight: 600,
+              }}
+            >
+              AgentPostmortem
+            </span>
+            <span
+              style={{
+                fontSize: "20px",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                color: "#dc2626",
+                fontWeight: 700,
+              }}
+            >
+              {data.caseNumber}
+            </span>
+          </div>
+
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: "40px",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              gap: "3px",
+              backgroundColor: "#111113",
+              border: "1px solid #222226",
+              borderRadius: "6px",
+              padding: "12px 20px",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <span
-                style={{
-                  fontSize: "11px",
-                  letterSpacing: "0.25em",
-                  textTransform: "uppercase",
-                  color: "#444448",
-                  fontWeight: 600,
-                }}
-              >
-                AgentPostmortem
-              </span>
-              <span
-                style={{
-                  fontSize: "20px",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: "#dc2626",
-                  fontWeight: 700,
-                }}
-              >
-                {data.caseNumber}
-              </span>
-            </div>
+            <span
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "#444448",
+                fontWeight: 600,
+              }}
+            >
+              Subject Agent
+            </span>
+            <span
+              style={{ fontSize: "22px", color: "#f0f0f0", fontWeight: 600 }}
+            >
+              {data.agentName}
+            </span>
+            <span style={{ fontSize: "12px", color: "#666668" }}>
+              {data.company}
+            </span>
+          </div>
+        </div>
 
+        {/* Title */}
+        <div
+          style={{
+            fontSize: "36px",
+            lineHeight: 1.25,
+            color: "#f0f0f0",
+            fontWeight: 600,
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            maxWidth: "900px",
+          }}
+        >
+          {data.title.length > 90
+            ? data.title.substring(0, 90) + "…"
+            : data.title}
+        </div>
+
+        {/* Outcome */}
+        <div
+          style={{
+            fontSize: "14px",
+            lineHeight: 1.6,
+            color: "#888",
+            marginBottom: "36px",
+            maxWidth: "820px",
+          }}
+        >
+          {data.outcome.substring(0, 130)}
+          {data.outcome.length > 130 ? "…" : ""}
+        </div>
+
+        {/* Bottom row */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+          }}
+        >
+          {/* Severity */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <span
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "#444448",
+                fontWeight: 600,
+              }}
+            >
+              Severity — {severityLabel}
+            </span>
+            <div style={{ display: "flex", gap: "5px" }}>
+              {[1, 2, 3, 4, 5].map((pip) => (
+                <div
+                  key={pip}
+                  style={{
+                    width: "40px",
+                    height: "8px",
+                    borderRadius: "3px",
+                    backgroundColor: pip <= filledPips ? "#dc2626" : "#1a1a1e",
+                    border: `1px solid ${pip <= filledPips ? "#dc2626" : "#2a2a2e"}`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Cost */}
+          {costFormatted && (
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-end",
-                gap: "3px",
-                backgroundColor: "#111113",
-                border: "1px solid #222226",
-                borderRadius: "6px",
-                padding: "12px 20px",
+                gap: "4px",
               }}
             >
               <span
@@ -191,165 +301,83 @@ export async function GET(
                   fontWeight: 600,
                 }}
               >
-                Subject Agent
+                Est. Damage
               </span>
-              <span style={{ fontSize: "22px", color: "#f0f0f0", fontWeight: 600 }}>
-                {data.agentName}
-              </span>
-              <span style={{ fontSize: "12px", color: "#666668" }}>{data.company}</span>
-            </div>
-          </div>
-
-          {/* Title */}
-          <div
-            style={{
-              fontSize: "36px",
-              lineHeight: 1.25,
-              color: "#f0f0f0",
-              fontWeight: 600,
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              maxWidth: "900px",
-            }}
-          >
-            {data.title.length > 90 ? data.title.substring(0, 90) + "…" : data.title}
-          </div>
-
-          {/* Outcome */}
-          <div
-            style={{
-              fontSize: "14px",
-              lineHeight: 1.6,
-              color: "#888",
-              marginBottom: "36px",
-              maxWidth: "820px",
-            }}
-          >
-            {data.outcome.substring(0, 130)}
-            {data.outcome.length > 130 ? "…" : ""}
-          </div>
-
-          {/* Bottom row */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-            }}
-          >
-            {/* Severity */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <span
-                style={{
-                  fontSize: "10px",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "#444448",
-                  fontWeight: 600,
-                }}
+                style={{ fontSize: "32px", color: "#dc2626", fontWeight: 700 }}
               >
-                Severity — {severityLabel}
+                {costFormatted}
               </span>
-              <div style={{ display: "flex", gap: "5px" }}>
-                {[1, 2, 3, 4, 5].map((pip) => (
-                  <div
-                    key={pip}
-                    style={{
-                      width: "40px",
-                      height: "8px",
-                      borderRadius: "3px",
-                      backgroundColor: pip <= filledPips ? "#dc2626" : "#1a1a1e",
-                      border: `1px solid ${pip <= filledPips ? "#dc2626" : "#2a2a2e"}`,
-                    }}
-                  />
-                ))}
-              </div>
             </div>
+          )}
 
-            {/* Cost */}
-            {costFormatted && (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-end",
-                  gap: "4px",
-                }}
-              >
+          {/* Tags */}
+          {data.tags.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                gap: "6px",
+                flexWrap: "wrap",
+                maxWidth: "280px",
+                justifyContent: "flex-end",
+              }}
+            >
+              {data.tags.slice(0, 3).map((tag) => (
                 <span
+                  key={tag}
                   style={{
                     fontSize: "10px",
-                    letterSpacing: "0.2em",
+                    letterSpacing: "0.1em",
                     textTransform: "uppercase",
-                    color: "#444448",
-                    fontWeight: 600,
+                    color: "#888",
+                    border: "1px solid #2a2a2e",
+                    padding: "4px 10px",
+                    borderRadius: "4px",
+                    backgroundColor: "#111113",
                   }}
                 >
-                  Est. Damage
+                  {tag}
                 </span>
-                <span
-                  style={{ fontSize: "32px", color: "#dc2626", fontWeight: 700 }}
-                >
-                  {costFormatted}
-                </span>
-              </div>
-            )}
-
-            {/* Tags */}
-            {data.tags.length > 0 && (
-              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", maxWidth: "280px", justifyContent: "flex-end" }}>
-                {data.tags.slice(0, 3).map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      fontSize: "10px",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      color: "#888",
-                      border: "1px solid #2a2a2e",
-                      padding: "4px 10px",
-                      borderRadius: "4px",
-                      backgroundColor: "#111113",
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div style={{ height: "1px", backgroundColor: "#1e1e22", marginLeft: "80px" }} />
-        <div
-          style={{
-            padding: "14px 100px 14px 120px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: "#2a2a2e",
-              fontWeight: 600,
-            }}
-          >
-            agentpostmortem.com
-          </span>
-          <span
-            style={{ fontSize: "11px", letterSpacing: "0.1em", color: "#2a2a2e" }}
-          >
-            PUBLIC CASE FILE
-          </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-    ),
+
+      {/* Footer */}
+      <div
+        style={{
+          height: "1px",
+          backgroundColor: "#1e1e22",
+          marginLeft: "80px",
+        }}
+      />
+      <div
+        style={{
+          padding: "14px 100px 14px 120px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <span
+          style={{
+            fontSize: "11px",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            color: "#2a2a2e",
+            fontWeight: 600,
+          }}
+        >
+          agentpostmortem.com
+        </span>
+        <span
+          style={{ fontSize: "11px", letterSpacing: "0.1em", color: "#2a2a2e" }}
+        >
+          PUBLIC CASE FILE
+        </span>
+      </div>
+    </div>,
     { width: 1200, height: 630, fonts },
   );
 }
