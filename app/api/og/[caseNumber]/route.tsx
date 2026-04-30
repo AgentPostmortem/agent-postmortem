@@ -57,6 +57,7 @@ export async function GET(
     const caseNum = data?.caseNumber ?? params.caseNumber.toUpperCase();
     const agentName = data?.agentName ?? "Unknown";
     const company = data?.company ?? "";
+    const outcome = data?.outcome ?? "";
     const damageLevel = data?.damageLevel ?? 3;
     const severityLabel =
       SEVERITY_LABELS[damageLevel as 1 | 2 | 3 | 4 | 5] ?? "Moderate";
@@ -173,17 +174,33 @@ export async function GET(
         {/* Title */}
         <div
           style={{
-            fontSize: "40px",
+            fontSize: "38px",
             lineHeight: 1.2,
             color: "#f0f0f0",
             fontWeight: 600,
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
+            marginBottom: "20px",
           }}
         >
           {title.length > 85 ? title.substring(0, 85) + "…" : title}
         </div>
+
+        {/* Outcome */}
+        {outcome ? (
+          <div
+            style={{
+              fontSize: "16px",
+              lineHeight: 1.6,
+              color: "#777",
+              flex: 1,
+              display: "flex",
+              alignItems: "flex-start",
+            }}
+          >
+            {outcome.length > 140 ? outcome.substring(0, 140) + "…" : outcome}
+          </div>
+        ) : (
+          <div style={{ flex: 1 }} />
+        )}
 
         {/* Bottom row */}
         <div
