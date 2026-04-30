@@ -63,7 +63,7 @@ export default async function HomePage({ searchParams }: PageProps) {
 
         {/* Stats */}
         {(stats.totalPosts > 0 || formattedDamage) && (
-          <div className="mt-7 flex flex-wrap gap-px overflow-hidden rounded border border-border-default bg-border-default">
+          <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded border border-border-default bg-border-default">
             {[
               {
                 value: stats.totalPosts.toLocaleString(),
@@ -81,14 +81,14 @@ export default async function HomePage({ searchParams }: PageProps) {
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="flex-1 bg-bg-surface px-5 py-3.5 min-w-[100px]"
+                className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5"
               >
                 <div
-                  className={`font-mono text-2xl font-semibold tabular-nums ${stat.red ? "text-accent-red" : "text-text-primary"}`}
+                  className={`font-mono text-lg font-semibold tabular-nums sm:text-2xl ${stat.red ? "text-accent-red" : "text-text-primary"}`}
                 >
                   {stat.value}
                 </div>
-                <div className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+                <div className="mt-0.5 font-mono text-[8px] uppercase tracking-widest text-text-tertiary sm:text-[9px]">
                   {stat.label}
                 </div>
               </div>

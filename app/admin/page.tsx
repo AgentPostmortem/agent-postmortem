@@ -175,40 +175,44 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-bg-canvas">
       {/* Header */}
-      <div className="border-b border-border-default bg-bg-surface px-6 py-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-accent-red">
-              Admin
-            </p>
-            <h1 className="font-serif text-xl text-text-primary">
-              Moderation Dashboard
-            </h1>
-          </div>
-          <div className="flex gap-6 font-mono text-sm">
-            <span className="text-text-tertiary">
-              <span className="text-yellow-400">{counts.pending}</span> pending
-            </span>
-            <span className="text-text-tertiary">
-              <span className="text-green-400">{counts.approved}</span> approved
-            </span>
-            <span className="text-text-tertiary">
-              <span className="text-accent-red">{counts.rejected}</span>{" "}
-              rejected
-            </span>
+      <div className="border-b border-border-default bg-bg-surface px-4 py-4 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-widest text-accent-red">
+                Admin
+              </p>
+              <h1 className="font-serif text-xl text-text-primary">
+                Moderation Dashboard
+              </h1>
+            </div>
+            <div className="flex gap-3 font-mono text-xs sm:gap-6 sm:text-sm">
+              <span className="text-text-tertiary">
+                <span className="text-yellow-400">{counts.pending}</span>
+                <span className="ml-1 hidden sm:inline">pending</span>
+              </span>
+              <span className="text-text-tertiary">
+                <span className="text-green-400">{counts.approved}</span>
+                <span className="ml-1 hidden sm:inline">approved</span>
+              </span>
+              <span className="text-text-tertiary">
+                <span className="text-accent-red">{counts.rejected}</span>
+                <span className="ml-1 hidden sm:inline">rejected</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="border-b border-border-default bg-bg-surface">
-        <div className="mx-auto flex max-w-6xl gap-0">
+        <div className="mx-auto flex max-w-6xl overflow-x-auto scrollbar-none">
           {tabs.map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setTab(key)}
               className={[
-                "px-5 py-3 font-mono text-xs uppercase tracking-widest transition-colors border-b-2",
+                "shrink-0 border-b-2 px-4 py-3 font-mono text-xs uppercase tracking-widest transition-colors sm:px-5",
                 tab === key
                   ? "border-accent-red text-text-primary"
                   : "border-transparent text-text-tertiary hover:text-text-secondary",
@@ -221,7 +225,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl p-6">
+      <div className="mx-auto max-w-6xl p-4 sm:p-6">
         <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
           {/* Queue */}
           <div>

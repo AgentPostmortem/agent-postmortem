@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { LogoIcon } from "@/components/brand/Logo";
 
 const NAV = [
   { href: "/", label: "Registry" },
@@ -21,40 +22,16 @@ export function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="group flex items-center gap-3"
+            className="group flex items-center gap-2.5"
             aria-label="AgentPostmortem home"
             onClick={() => setOpen(false)}
           >
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-accent-red/30 bg-accent-red-soft">
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 13 13"
-                fill="none"
-                aria-hidden="true"
-              >
-                <rect
-                  x="1"
-                  y="1"
-                  width="11"
-                  height="11"
-                  rx="1.5"
-                  stroke="#dc2626"
-                  strokeWidth="1.2"
-                />
-                <path
-                  d="M3.5 4h6M3.5 6.5h6M3.5 9h3.5"
-                  stroke="#dc2626"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
+            <LogoIcon size={28} />
             <div>
               <div className="font-serif text-sm leading-none text-text-primary transition-colors group-hover:text-accent-red">
                 AgentPostmortem
               </div>
-              <div className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+              <div className="mt-0.5 hidden font-mono text-[9px] uppercase tracking-widest text-text-tertiary sm:block">
                 Public Case Registry
               </div>
             </div>
@@ -82,7 +59,16 @@ export function Header() {
               <span aria-hidden="true">+</span> File Report
             </Link>
 
-            {/* Mobile hamburger */}
+            {/* Mobile: compact file report button */}
+            <Link
+              href="/submit"
+              className="flex items-center gap-1 rounded border border-accent-red bg-accent-red-soft px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-accent-red md:hidden"
+              onClick={() => setOpen(false)}
+            >
+              + File
+            </Link>
+
+            {/* Hamburger */}
             <button
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "Close menu" : "Open menu"}

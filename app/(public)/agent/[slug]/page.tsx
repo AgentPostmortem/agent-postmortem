@@ -80,26 +80,26 @@ export default async function AgentPage({ params }: PageProps) {
             </div>
 
             {/* Stats */}
-            <div className="flex gap-px overflow-hidden rounded border border-border-default bg-border-default">
+            <div className="flex shrink-0 gap-px overflow-hidden rounded border border-border-default bg-border-default">
               {[
                 { value: posts.length.toString(), label: "Cases" },
                 ...(formattedDamage
                   ? [{ value: formattedDamage, label: "Damage", red: true }]
                   : []),
                 ...(avgSeverity
-                  ? [{ value: avgSeverity + "/5", label: "Avg Severity" }]
+                  ? [{ value: avgSeverity + "/5", label: "Severity" }]
                   : []),
               ].map((s) => (
                 <div
                   key={s.label}
-                  className="bg-bg-surface px-4 py-3 min-w-[80px]"
+                  className="bg-bg-surface px-3 py-2.5 sm:px-4 sm:py-3"
                 >
                   <div
-                    className={`font-mono text-xl font-semibold tabular-nums ${s.red ? "text-accent-red" : "text-text-primary"}`}
+                    className={`font-mono text-lg font-semibold tabular-nums sm:text-xl ${s.red ? "text-accent-red" : "text-text-primary"}`}
                   >
                     {s.value}
                   </div>
-                  <div className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+                  <div className="mt-0.5 font-mono text-[8px] uppercase tracking-widest text-text-tertiary sm:text-[9px]">
                     {s.label}
                   </div>
                 </div>
