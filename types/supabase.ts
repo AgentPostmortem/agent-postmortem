@@ -13,7 +13,6 @@ export type Database = {
           name: string;
           company: string;
           description: string | null;
-          total_failures: number;
           created_at: string;
         };
         Insert: {
@@ -22,7 +21,6 @@ export type Database = {
           name: string;
           company: string;
           description?: string | null;
-          total_failures?: number;
           created_at?: string;
         };
         Update: {
@@ -31,7 +29,6 @@ export type Database = {
           name?: string;
           company?: string;
           description?: string | null;
-          total_failures?: number;
           created_at?: string;
         };
         Relationships: [];

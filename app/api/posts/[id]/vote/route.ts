@@ -73,44 +73,40 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       .eq("ip_hash", ipHash)
       .maybeSingle();
 
-    let delta = 0;
-
     if (direction === null) {
-      // Remove vote
       if (existing) {
         await supabase.from("votes").delete().eq("id", existing.id);
-        delta = existing.direction === "up" ? -1 : 1;
       }
     } else if (existing) {
       if (existing.direction === direction) {
-        // Same direction — remove (toggle off)
         await supabase.from("votes").delete().eq("id", existing.id);
-        delta = direction === "up" ? -1 : 1;
       } else {
-        // Flip direction
         await supabase
           .from("votes")
           .update({ direction })
           .eq("id", existing.id);
-        delta = direction === "up" ? 2 : -2;
       }
     } else {
-      // New vote
       await supabase
         .from("votes")
         .insert({ post_id: postId, ip_hash: ipHash, direction });
-      delta = direction === "up" ? 1 : -1;
     }
 
-    // Update denormalized score
-    if (delta !== 0) {
-      await supabase
-        .from("posts")
-        .update({ vote_score: (post.vote_score ?? 0) + delta })
-        .eq("id", postId);
+    const { data: updatedPost, error: updatedPostErr } = await supabase
+      .from("posts")
+      .select("vote_score")
+      .eq("id", postId)
+      .single();
+
+    if (updatedPostErr || !updatedPost) {
+      console.error("[vote] score refresh error:", updatedPostErr);
+      return NextResponse.json(
+        { error: "Failed to refresh vote score." },
+        { status: 500 },
+      );
     }
 
-    return NextResponse.json({ score: (post.vote_score ?? 0) + delta });
+    return NextResponse.json({ score: updatedPost.vote_score });
   } catch (err) {
     console.error("[vote] unexpected error:", err);
     return NextResponse.json(

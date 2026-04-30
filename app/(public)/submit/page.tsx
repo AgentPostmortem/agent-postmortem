@@ -22,9 +22,10 @@ export default function SubmitPage() {
           File a Case Report
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-          Document what went wrong. Anonymous submissions accepted. PII in
-          screenshots is automatically redacted. If you provide an email,
-          you&apos;ll receive a private one-time edit token.
+          Document what went wrong. Anonymous submissions accepted. Please
+          redact sensitive information in screenshots before upload. If you
+          provide an email, you&apos;ll receive a private edit link for
+          follow-up changes.
         </p>
       </div>
 

@@ -1,11 +1,12 @@
 import { Resend } from "resend";
 import { EditTokenEmail } from "./templates/EditTokenEmail";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface SendEditTokenEmailParams {
   to: string;
-  caseNumber: string;
+  caseNumber: string | null;
   editToken: string;
   caseTitle: string;
 }
@@ -20,14 +21,14 @@ export async function sendEditTokenEmail({
   editToken,
   caseTitle,
 }: SendEditTokenEmailParams): Promise<void> {
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://agentpostmortem.com";
-  const editUrl = `${appUrl}/case/${caseNumber.toLowerCase()}/edit?token=${editToken}`;
+  const appUrl = getSiteUrl();
+  const editUrl = `${appUrl}/edit/${editToken}`;
+  const subjectRef = caseNumber ?? "Pending submission";
 
   const { error } = await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL ?? "noreply@agentpostmortem.com",
     to,
-    subject: `Your edit token for ${caseNumber}`,
+    subject: `Your edit link for ${subjectRef}`,
     react: EditTokenEmail({
       caseNumber,
       caseTitle,

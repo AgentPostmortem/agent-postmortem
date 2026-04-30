@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { SEVERITY_LABELS } from "@/lib/constants/severity";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 export const runtime = "edge";
 
@@ -69,8 +70,7 @@ export async function GET(
           : `$${data.estimatedCostUsd}`
       : null;
 
-    const siteUrl =
-      process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+    const siteUrl = getSiteUrl();
     const fontData = await fetch(`${siteUrl}/fonts/Inter-SemiBold.ttf`)
       .then((r) => r.arrayBuffer())
       .catch(() => null);

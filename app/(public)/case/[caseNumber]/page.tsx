@@ -13,16 +13,31 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const post = await fetchPostByCase(params.caseNumber);
-  const title = post ? post.title : `Case ${params.caseNumber.toUpperCase()}`;
+  const caseNum = params.caseNumber.toUpperCase();
+  const title = post ? post.title : `Case ${caseNum}`;
+  const description =
+    post?.outcome?.slice(0, 160) ??
+    `AI agent failure case file ${caseNum}`;
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const ogImageUrl = `${siteUrl}/api/og/${caseNum}`;
+
   return {
     title,
-    description:
-      post?.outcome?.slice(0, 160) ??
-      `AI agent failure case file ${params.caseNumber.toUpperCase()}`,
+    description,
     openGraph: {
-      images: [
-        { url: `/api/og/${params.caseNumber}`, width: 1200, height: 630 },
-      ],
+      title,
+      description,
+      url: `${siteUrl}/case/${caseNum}`,
+      siteName: "AgentPostmortem",
+      images: [{ url: ogImageUrl, width: 1200, height: 630 }],
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImageUrl],
     },
   };
 }

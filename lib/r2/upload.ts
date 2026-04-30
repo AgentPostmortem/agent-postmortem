@@ -5,6 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "crypto";
+import { getR2PublicBaseUrl } from "@/lib/utils/urls";
 
 const R2_ENDPOINT = `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
 
@@ -48,7 +49,14 @@ export async function getPresignedUploadUrl(
   });
 
   const uploadUrl = await getSignedUrl(client, command, { expiresIn: 300 });
-  const publicUrl = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${key}`;
+  const publicBaseUrl = getR2PublicBaseUrl();
+  if (!publicBaseUrl) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_R2_PUBLIC_URL or R2_PUBLIC_URL environment variable.",
+    );
+  }
+
+  const publicUrl = `${publicBaseUrl}/${key}`;
 
   return { uploadUrl, publicUrl, key };
 }

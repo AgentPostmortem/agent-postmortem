@@ -52,7 +52,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { filename, contentType } = parsed.data;
+    const { filename, contentType, size } = parsed.data;
+    if (size != null && size > MAX_SIZE_BYTES) {
+      return NextResponse.json(
+        { error: "File must be under 5 MB." },
+        { status: 400 },
+      );
+    }
+
     const result = await getPresignedUploadUrl(
       filename,
       contentType,

@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
 
     const data = parsed.data;
     const supabase = createSupabaseAdminClient();
+    let editLinkSent = false;
 
     // Resolve agent_id from slug
     const { data: agent, error: agentErr } = await supabase
@@ -75,6 +76,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "Failed to resolve tags." },
         { status: 500 },
+      );
+    }
+
+    if (!tags || tags.length !== new Set(data.tags).size) {
+      return NextResponse.json(
+        { error: "One or more selected tags are invalid." },
+        { status: 400 },
       );
     }
 
@@ -101,13 +109,13 @@ export async function POST(req: NextRequest) {
         screenshot_urls: data.screenshotUrls ?? [],
         is_anonymous: data.isAnonymous,
         submitter_handle: cleanHandle,
-        submitter_email: data.email ?? null,
+        submitter_email: null,
         edit_token_hash: tokenHash,
         ip_hash: ipHash,
         status: "pending",
         vote_score: 0,
       })
-      .select("id, case_number")
+      .select("id")
       .single();
 
     if (postErr || !post) {
@@ -134,10 +142,11 @@ export async function POST(req: NextRequest) {
       try {
         await sendEditTokenEmail({
           to: data.email,
-          caseNumber: post.case_number,
+          caseNumber: null,
           editToken: rawToken,
           caseTitle: cleanTitle,
         });
+        editLinkSent = true;
       } catch (emailErr) {
         // Non-fatal — post is saved, email just failed
         console.error("[posts] email error:", emailErr);
@@ -146,7 +155,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        caseNumber: post.case_number,
+        editLinkSent,
         message: "Submission received. It will appear after review.",
       },
       { status: 201 },

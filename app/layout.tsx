@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { getSiteUrl } from "@/lib/utils/urls";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,9 +11,7 @@ export const metadata: Metadata = {
   },
   description:
     "A public ledger of AI agent failures. Real cases, real damages. Submitted anonymously. Read so you don't repeat.",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://agentpostmortem.com",
-  ),
+  metadataBase: new URL(getSiteUrl()),
   openGraph: {
     siteName: "AgentPostmortem",
     type: "website",

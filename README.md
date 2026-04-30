@@ -82,6 +82,7 @@ npm run dev
 
 ```env
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
@@ -91,6 +92,7 @@ R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
 R2_BUCKET_NAME=
 R2_PUBLIC_URL=
+NEXT_PUBLIC_R2_PUBLIC_URL=
 
 RESEND_API_KEY=
 ADMIN_PASSWORD=
@@ -127,7 +129,7 @@ npm run db "SQL"     # Run a query against the remote DB
 
 ## Submitting a case
 
-Go to [agentpostmortem.com/submit](https://agentpostmortem.com/submit). Anonymous submissions are accepted. If you provide an email, you'll receive a one-time edit token to update your case after submission.
+Go to [agentpostmortem.com/submit](https://agentpostmortem.com/submit). Anonymous submissions are accepted. If you provide an email, you'll receive a private edit link to update your case after submission.
 
 All submissions go through moderation before appearing publicly.
 

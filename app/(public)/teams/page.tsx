@@ -59,6 +59,7 @@ export default function TeamsPage() {
   const [errors, setErrors] = useState<
     Partial<Record<keyof WaitlistForm, string>>
   >({});
+  const [submitError, setSubmitError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,6 +74,7 @@ export default function TeamsPage() {
       return;
     }
     setErrors({});
+    setSubmitError("");
     setStatus("submitting");
     try {
       const response = await fetch("/api/teams/waitlist", {
@@ -83,9 +85,14 @@ export default function TeamsPage() {
       if (response.ok) {
         setStatus("success");
       } else {
+        const body = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        setSubmitError(body?.error ?? "Submission failed. Please try again.");
         setStatus("error");
       }
     } catch {
+      setSubmitError("Submission failed. Please try again.");
       setStatus("error");
     }
   }
@@ -220,7 +227,7 @@ export default function TeamsPage() {
 
             {status === "error" && (
               <p className="text-sm text-accent-red">
-                Submission failed. Please try again.
+                {submitError}
               </p>
             )}
 

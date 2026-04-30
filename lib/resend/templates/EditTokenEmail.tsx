@@ -1,13 +1,13 @@
 import * as React from "react";
 
 interface EditTokenEmailProps {
-  caseNumber: string;
+  caseNumber: string | null;
   caseTitle: string;
   editUrl: string;
 }
 
 /**
- * React Email template for the one-time edit token email.
+ * React Email template for the private edit link email.
  * Styled to match the forensic case file aesthetic.
  */
 export function EditTokenEmail({
@@ -15,13 +15,15 @@ export function EditTokenEmail({
   caseTitle,
   editUrl,
 }: EditTokenEmailProps) {
+  const reference = caseNumber ?? "PENDING REVIEW";
+
   return (
     <html lang="en">
       {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Edit Token — {caseNumber}</title>
+        <title>Edit Link — {reference}</title>
       </head>
       <body
         style={{
@@ -92,7 +94,7 @@ export function EditTokenEmail({
                             fontWeight: "bold",
                           }}
                         >
-                          {caseNumber}
+                          {reference}
                         </p>
                       </td>
                     </tr>
@@ -123,7 +125,7 @@ export function EditTokenEmail({
                             margin: "0 0 8px",
                           }}
                         >
-                          Case Edit Token
+                          Submission Edit Link
                         </p>
                         <p
                           style={{
@@ -145,8 +147,8 @@ export function EditTokenEmail({
                           }}
                         >
                           You submitted this case to AgentPostmortem. Use the
-                          link below to edit or retract your submission. This
-                          link is single-use and expires in 72 hours.
+                          private link below to update your submission and send
+                          it back through moderation review.
                         </p>
 
                         {/* CTA */}
@@ -171,7 +173,7 @@ export function EditTokenEmail({
                                     padding: "12px 24px",
                                   }}
                                 >
-                                  Edit Case Report
+                                  Edit Submission
                                 </a>
                               </td>
                             </tr>
@@ -209,8 +211,9 @@ export function EditTokenEmail({
                             margin: "0",
                           }}
                         >
-                          AgentPostmortem — agentpostmortem.com — Your email
-                          will not be stored after this message is sent.
+                          AgentPostmortem — agentpostmortem.com — This email
+                          address is used only to deliver your private edit
+                          link.
                         </p>
                       </td>
                     </tr>

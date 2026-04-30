@@ -91,6 +91,7 @@ export function SubmitForm() {
   const [uploadPreviews, setUploadPreviews] = useState<string[]>([]);
   const [agents, setAgents] = useState<AgentOption[]>([]);
   const [tags, setTags] = useState<TagOption[]>([]);
+  const [editLinkSent, setEditLinkSent] = useState(false);
 
   useEffect(() => {
     fetch("/api/agents")
@@ -160,7 +161,11 @@ export function SubmitForm() {
         const r = await fetch("/api/upload/presign", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ filename: file.name, contentType: file.type }),
+          body: JSON.stringify({
+            filename: file.name,
+            contentType: file.type,
+            size: file.size,
+          }),
         });
         if (r.ok) {
           const { url, publicUrl } = (await r.json()) as {
@@ -181,6 +186,8 @@ export function SubmitForm() {
         body: JSON.stringify({ ...result.data, screenshotUrls }),
       });
       if (!res.ok) throw new Error("Server error");
+      const json = (await res.json()) as { editLinkSent?: boolean };
+      setEditLinkSent(Boolean(json.editLinkSent));
       setStatus("success");
     } catch {
       setStatus("error");
@@ -198,10 +205,16 @@ export function SubmitForm() {
           Your report is in the moderation queue. Once approved, it will be
           assigned a permanent case number.
         </p>
-        {form.email && (
+        {form.email && editLinkSent && (
           <p className="mt-2 text-sm text-text-secondary">
-            An edit token has been sent to{" "}
+            A private edit link has been sent to{" "}
             <span className="font-mono text-text-primary">{form.email}</span>.
+          </p>
+        )}
+        {form.email && !editLinkSent && (
+          <p className="mt-2 text-sm text-text-secondary">
+            We saved your report, but couldn&apos;t deliver the edit link email.
+            Contact hello@agentpostmortem.com if you need to update it.
           </p>
         )}
       </div>
@@ -436,6 +449,10 @@ export function SubmitForm() {
               <div className="mt-1 font-mono text-[10px] text-text-tertiary">
                 Max 5MB per file · {5 - screenshotFiles.length} remaining
               </div>
+              <div className="mt-2 text-xs text-text-tertiary">
+                Please redact sensitive information in screenshots before
+                uploading. Image files are stored as submitted.
+              </div>
             </label>
           </div>
         )}
@@ -486,6 +503,7 @@ export function SubmitForm() {
             Email{" "}
             <span className="normal-case tracking-normal text-text-tertiary">
               (optional — for edit token)
+              (optional — for private edit link)
             </span>
           </FieldLabel>
           <input
@@ -497,7 +515,8 @@ export function SubmitForm() {
           />
           <FieldError message={errors.email} />
           <p className="mt-1 font-mono text-[10px] text-text-tertiary">
-            Used only to send your edit token. Not stored after delivery.
+            Used only to send your private edit link. Not stored after
+            delivery.
           </p>
         </div>
       </FormSection>
