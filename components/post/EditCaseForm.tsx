@@ -148,7 +148,9 @@ export function EditCaseForm({
                 onChange={(event) =>
                   set(
                     "damageLevel",
-                    Number(event.target.value) as SubmitFormValues["damageLevel"],
+                    Number(
+                      event.target.value,
+                    ) as SubmitFormValues["damageLevel"],
                   )
                 }
                 className="mt-3 w-full accent-accent-red"
@@ -314,7 +316,9 @@ export function EditCaseForm({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-text-tertiary">No screenshots attached.</p>
+            <p className="text-sm text-text-tertiary">
+              No screenshots attached.
+            </p>
           )}
           <p className="font-mono text-[10px] text-text-tertiary">
             Screenshot replacement is not supported from this edit page yet. If

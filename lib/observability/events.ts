@@ -8,7 +8,11 @@ interface EventPayload {
 
 export function logEvent({ level = "info", ...payload }: EventPayload) {
   const logger =
-    level === "error" ? console.error : level === "warn" ? console.warn : console.info;
+    level === "error"
+      ? console.error
+      : level === "warn"
+        ? console.warn
+        : console.info;
 
   logger(JSON.stringify(payload));
 }

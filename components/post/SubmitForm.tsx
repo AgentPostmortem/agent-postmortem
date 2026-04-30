@@ -502,8 +502,7 @@ export function SubmitForm() {
           <FieldLabel>
             Email{" "}
             <span className="normal-case tracking-normal text-text-tertiary">
-              (optional — for edit token)
-              (optional — for private edit link)
+              (optional — for edit token) (optional — for private edit link)
             </span>
           </FieldLabel>
           <input
@@ -515,8 +514,7 @@ export function SubmitForm() {
           />
           <FieldError message={errors.email} />
           <p className="mt-1 font-mono text-[10px] text-text-tertiary">
-            Used only to send your private edit link. Not stored after
-            delivery.
+            Used only to send your private edit link. Not stored after delivery.
           </p>
         </div>
       </FormSection>

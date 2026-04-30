@@ -16,8 +16,7 @@ export async function generateMetadata({
   const caseNum = params.caseNumber.toUpperCase();
   const title = post ? post.title : `Case ${caseNum}`;
   const description =
-    post?.outcome?.slice(0, 160) ??
-    `AI agent failure case file ${caseNum}`;
+    post?.outcome?.slice(0, 160) ?? `AI agent failure case file ${caseNum}`;
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
   const ogImageUrl = `${siteUrl}/api/og/${caseNum}`;

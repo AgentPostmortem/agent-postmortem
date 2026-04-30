@@ -85,9 +85,9 @@ export default function TeamsPage() {
       if (response.ok) {
         setStatus("success");
       } else {
-        const body = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
+        const body = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
         setSubmitError(body?.error ?? "Submission failed. Please try again.");
         setStatus("error");
       }
@@ -226,9 +226,7 @@ export default function TeamsPage() {
             </div>
 
             {status === "error" && (
-              <p className="text-sm text-accent-red">
-                {submitError}
-              </p>
+              <p className="text-sm text-accent-red">{submitError}</p>
             )}
 
             <button

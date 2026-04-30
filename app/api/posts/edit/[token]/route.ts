@@ -71,7 +71,10 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
     const post = data as EditablePostRow | null;
 
     if (!post) {
-      return NextResponse.json({ error: "Edit link is invalid." }, { status: 404 });
+      return NextResponse.json(
+        { error: "Edit link is invalid." },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json({
@@ -131,7 +134,10 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     }
 
     if (!existing) {
-      return NextResponse.json({ error: "Edit link is invalid." }, { status: 404 });
+      return NextResponse.json(
+        { error: "Edit link is invalid." },
+        { status: 404 },
+      );
     }
 
     const { data } = parsed;
@@ -176,7 +182,9 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
         estimated_cost_usd: data.estimatedCostUsd ?? null,
         screenshot_urls: data.screenshotUrls ?? [],
         is_anonymous: data.isAnonymous,
-        submitter_handle: data.authorHandle ? redactPii(data.authorHandle) : null,
+        submitter_handle: data.authorHandle
+          ? redactPii(data.authorHandle)
+          : null,
         status: "pending",
       })
       .eq("id", existing.id);

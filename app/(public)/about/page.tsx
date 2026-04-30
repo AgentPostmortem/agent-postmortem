@@ -38,13 +38,13 @@ export default function AboutPage() {
         <h2>How We Handle Privacy</h2>
 
         <p>
-          All submissions can be anonymous. We redact emails, phone numbers,
-          and other obvious PII from submitted text before it reaches our
-          database. IP addresses are hashed with a secret pepper and never
-          stored in plaintext. If you provide an email, it&apos;s used only to
-          deliver your private edit link and is not retained after delivery.
-          Screenshot uploads are stored as provided, so submitters should
-          remove sensitive information before uploading evidence.
+          All submissions can be anonymous. We redact emails, phone numbers, and
+          other obvious PII from submitted text before it reaches our database.
+          IP addresses are hashed with a secret pepper and never stored in
+          plaintext. If you provide an email, it&apos;s used only to deliver
+          your private edit link and is not retained after delivery. Screenshot
+          uploads are stored as provided, so submitters should remove sensitive
+          information before uploading evidence.
         </p>
 
         <h2>What Makes a Good Case Report</h2>

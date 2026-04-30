@@ -94,9 +94,7 @@ export default async function EditSubmissionPage({ params }: PageProps) {
         </p>
         <div className="mt-4 flex flex-wrap gap-3 font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
           <span>Status: {editablePost.status}</span>
-          <span>
-            Case: {editablePost.case_number ?? "Pending approval"}
-          </span>
+          <span>Case: {editablePost.case_number ?? "Pending approval"}</span>
         </div>
       </div>
 

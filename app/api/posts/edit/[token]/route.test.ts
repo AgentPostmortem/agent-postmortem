@@ -37,15 +37,18 @@ describe("PATCH /api/posts/edit/[token]", () => {
     });
 
     const { PATCH } = await import("./route");
-    const response = await PATCH(createPatchRequest({
-      agentSlug: "claude",
-      title: "Agent deleted a customer record during a routine sync",
-      outcome:
-        "The assistant misunderstood the task, deleted a live customer record, and forced the team into a manual restore that took several hours to unwind safely.",
-      damageLevel: 3,
-      tags: ["hallucination"],
-      isAnonymous: true,
-    }), { params: { token: "token-123" } });
+    const response = await PATCH(
+      createPatchRequest({
+        agentSlug: "claude",
+        title: "Agent deleted a customer record during a routine sync",
+        outcome:
+          "The assistant misunderstood the task, deleted a live customer record, and forced the team into a manual restore that took several hours to unwind safely.",
+        damageLevel: 3,
+        tags: ["hallucination"],
+        isAnonymous: true,
+      }),
+      { params: { token: "token-123" } },
+    );
 
     expect(response.status).toBe(404);
   });
@@ -60,7 +63,10 @@ describe("PATCH /api/posts/edit/[token]", () => {
         return {
           select: () => ({
             eq: () => ({
-              maybeSingle: async () => ({ data: { id: "post-1" }, error: null }),
+              maybeSingle: async () => ({
+                data: { id: "post-1" },
+                error: null,
+              }),
               single: async () => ({ data: { id: "agent-1" }, error: null }),
             }),
           }),
@@ -104,16 +110,19 @@ describe("PATCH /api/posts/edit/[token]", () => {
     });
 
     const { PATCH } = await import("./route");
-    const response = await PATCH(createPatchRequest({
-      agentSlug: "claude",
-      title: "Agent deleted a customer record during a routine sync",
-      outcome:
-        "The assistant misunderstood the task, deleted a live customer record, and forced the team into a manual restore that took several hours to unwind safely.",
-      damageLevel: 3,
-      tags: ["hallucination"],
-      isAnonymous: false,
-      authorHandle: "ops-team",
-    }), { params: { token: "token-123" } });
+    const response = await PATCH(
+      createPatchRequest({
+        agentSlug: "claude",
+        title: "Agent deleted a customer record during a routine sync",
+        outcome:
+          "The assistant misunderstood the task, deleted a live customer record, and forced the team into a manual restore that took several hours to unwind safely.",
+        damageLevel: 3,
+        tags: ["hallucination"],
+        isAnonymous: false,
+        authorHandle: "ops-team",
+      }),
+      { params: { token: "token-123" } },
+    );
 
     expect(response.status).toBe(200);
     expect(updateEq).toHaveBeenCalledWith("id", "post-1");
