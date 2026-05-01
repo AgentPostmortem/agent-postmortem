@@ -196,6 +196,12 @@ export default async function HomePage({ searchParams }: PageProps) {
                   #{tag.label}
                 </Link>
               ))}
+              <Link
+                href="/tag"
+                className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
+              >
+                All tags →
+              </Link>
             </SidebarCard>
 
             <SidebarCard title="Submit">
