@@ -77,7 +77,7 @@ export function PostCard({ post, commentCount }: PostCardProps) {
               </Link>
               <span className="shrink-0 text-border-strong text-xs">·</span>
               <span
-                className={`inline-flex shrink-0 items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${post.damageLevel >= 4 ? "text-accent-red-muted" : "text-text-tertiary"}`}
+                className={`inline-flex shrink-0 items-center gap-1 font-mono text-[9px] leading-none uppercase tracking-widest ${post.damageLevel >= 4 ? "text-accent-red-muted" : "text-text-tertiary"}`}
               >
                 <span
                   className={`inline-block h-1.5 w-1.5 rounded-full ${SEVERITY_COLOR[post.damageLevel]}`}

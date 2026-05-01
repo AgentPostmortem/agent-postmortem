@@ -436,7 +436,7 @@ export default function HomePage({ searchParams }: PageProps) {
                 <Link
                   key={slug}
                   href={`/agent/${slug}`}
-                  className="flex items-center justify-between py-2 font-mono text-xs text-text-secondary transition-colors hover:text-text-primary"
+                  className="flex items-center justify-between py-3 font-mono text-xs text-text-secondary transition-colors hover:text-text-primary"
                 >
                   <span>{name}</span>
                   <span className="text-text-tertiary">→</span>
@@ -444,7 +444,7 @@ export default function HomePage({ searchParams }: PageProps) {
               ))}
               <Link
                 href="/agent"
-                className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
+                className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
               >
                 All agents →
               </Link>
@@ -461,14 +461,14 @@ export default function HomePage({ searchParams }: PageProps) {
                 <Link
                   key={slug}
                   href={`/tag/${slug}`}
-                  className="block py-2 font-mono text-xs text-text-secondary transition-colors hover:text-accent-red"
+                  className="block py-3 font-mono text-xs text-text-secondary transition-colors hover:text-accent-red"
                 >
                   #{slug}
                 </Link>
               ))}
               <Link
                 href="/tag"
-                className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
+                className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
               >
                 All tags →
               </Link>
