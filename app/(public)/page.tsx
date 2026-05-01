@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
+import { Pagination } from "@/components/ui/Pagination";
 import {
   fetchFeedPosts,
   fetchSiteStats,
@@ -297,13 +298,74 @@ export default async function HomePage({ searchParams }: PageProps) {
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
-                  tab={activeTab}
-                  agent={activeAgent}
-                  severity={activeSeverity}
+                  hrefForPage={(p) => {
+                    const params = new URLSearchParams();
+                    params.set("tab", activeTab);
+                    if (p > 1) params.set("page", String(p));
+                    if (activeAgent) params.set("agent", activeAgent);
+                    if (activeSeverity) params.set("severity", activeSeverity);
+                    return `/?${params.toString()}`;
+                  }}
                 />
               )}
             </>
           )}
+
+          {/* Mobile browse strip — hidden on desktop where sidebar handles this */}
+          <div className="mt-8 border-t border-border-default pt-6 lg:hidden">
+            <div className="mb-3 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+              Browse by Agent
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { name: "Claude", slug: "claude" },
+                { name: "OpenAI", slug: "openai" },
+                { name: "Devin", slug: "devin" },
+                { name: "Cursor", slug: "cursor" },
+                { name: "Gemini", slug: "gemini" },
+              ].map(({ name, slug }) => (
+                <Link
+                  key={slug}
+                  href={`/agent/${slug}`}
+                  className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+                >
+                  {name}
+                </Link>
+              ))}
+              <Link
+                href="/agent"
+                className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent-red"
+              >
+                All →
+              </Link>
+            </div>
+            <div className="mb-3 mt-5 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+              Browse by Tag
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                "hallucination",
+                "deleted-data",
+                "security-fail",
+                "wrong-recipient",
+                "expensive-mistake",
+              ].map((slug) => (
+                <Link
+                  key={slug}
+                  href={`/tag/${slug}`}
+                  className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-accent-red"
+                >
+                  #{slug}
+                </Link>
+              ))}
+              <Link
+                href="/tag"
+                className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent-red"
+              >
+                All →
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Sidebar */}
@@ -391,96 +453,6 @@ function SidebarCard({
         {title}
       </div>
       {children}
-    </div>
-  );
-}
-
-function Pagination({
-  currentPage,
-  totalPages,
-  tab,
-  agent,
-  severity,
-}: {
-  currentPage: number;
-  totalPages: number;
-  tab: string;
-  agent: string;
-  severity: string;
-}) {
-  function pageHref(p: number) {
-    const params = new URLSearchParams();
-    params.set("tab", tab);
-    if (p > 1) params.set("page", String(p));
-    if (agent) params.set("agent", agent);
-    if (severity) params.set("severity", severity);
-    return `/?${params.toString()}`;
-  }
-
-  const pages: (number | "…")[] = [];
-  if (totalPages <= 7) {
-    for (let i = 1; i <= totalPages; i++) pages.push(i);
-  } else {
-    pages.push(1);
-    if (currentPage > 3) pages.push("…");
-    for (
-      let i = Math.max(2, currentPage - 1);
-      i <= Math.min(totalPages - 1, currentPage + 1);
-      i++
-    )
-      pages.push(i);
-    if (currentPage < totalPages - 2) pages.push("…");
-    pages.push(totalPages);
-  }
-
-  return (
-    <div className="mt-6 flex items-center justify-center gap-1 font-mono text-[11px]">
-      {currentPage > 1 ? (
-        <Link
-          href={pageHref(currentPage - 1)}
-          className="rounded border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
-        >
-          ← Prev
-        </Link>
-      ) : (
-        <span className="rounded border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
-          ← Prev
-        </span>
-      )}
-
-      {pages.map((p, i) =>
-        p === "…" ? (
-          <span key={`ellipsis-${i}`} className="px-1 text-text-tertiary">
-            …
-          </span>
-        ) : (
-          <Link
-            key={p}
-            href={pageHref(p)}
-            className={[
-              "rounded border px-2.5 py-1.5 transition-colors",
-              p === currentPage
-                ? "border-accent-red bg-accent-red-soft text-accent-red"
-                : "border-border-default text-text-secondary hover:border-border-strong hover:text-text-primary",
-            ].join(" ")}
-          >
-            {p}
-          </Link>
-        ),
-      )}
-
-      {currentPage < totalPages ? (
-        <Link
-          href={pageHref(currentPage + 1)}
-          className="rounded border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
-        >
-          Next →
-        </Link>
-      ) : (
-        <span className="rounded border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
-          Next →
-        </span>
-      )}
     </div>
   );
 }

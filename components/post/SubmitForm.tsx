@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import Link from "next/link";
 import { z } from "zod";
 import { submitSchema } from "@/lib/schemas/submit";
 import { cn } from "@/lib/utils/cn";
@@ -206,17 +207,46 @@ export function SubmitForm() {
           assigned a permanent case number.
         </p>
         {form.email && editLinkSent && (
-          <p className="mt-2 text-sm text-text-secondary">
+          <p className="mt-3 text-sm text-text-secondary">
             A private edit link has been sent to{" "}
             <span className="font-mono text-text-primary">{form.email}</span>.
+            Use it to check status or amend your report.
           </p>
         )}
         {form.email && !editLinkSent && (
-          <p className="mt-2 text-sm text-text-secondary">
+          <p className="mt-3 text-sm text-text-secondary">
             We saved your report, but couldn&apos;t deliver the edit link email.
-            Contact hello@agentpostmortem.com if you need to update it.
+            Contact{" "}
+            <a
+              href="mailto:hello@agentpostmortem.com"
+              className="text-accent-red hover:underline"
+            >
+              hello@agentpostmortem.com
+            </a>{" "}
+            if you need to update it.
           </p>
         )}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            href="/"
+            className="rounded border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+          >
+            ← Browse Cases
+          </Link>
+          <Link
+            href="/hall-of-fame"
+            className="rounded border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+          >
+            Hall of Fame
+          </Link>
+          <Link
+            href="/submit"
+            onClick={() => setStatus("idle")}
+            className="rounded border border-accent-red bg-accent-red/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-red transition-colors hover:bg-accent-red/20"
+          >
+            File Another
+          </Link>
+        </div>
       </div>
     );
   }

@@ -8,6 +8,7 @@ import { LogoIcon } from "@/components/brand/Logo";
 const NAV = [
   { href: "/", label: "Registry" },
   { href: "/hall-of-fame", label: "Hall of Fame" },
+  { href: "/stats", label: "Stats" },
   { href: "/about", label: "About" },
   { href: "/search", label: "Search" },
   { href: "/teams", label: "Teams" },

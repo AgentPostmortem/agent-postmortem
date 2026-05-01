@@ -48,7 +48,7 @@ export function Footer() {
           </div>
 
           {/* Link groups */}
-          <div className="flex flex-wrap gap-x-10 gap-y-6">
+          <div className="flex flex-wrap gap-x-8 gap-y-6 sm:gap-x-10">
             {LINK_GROUPS.map((group, i) => (
               <nav key={i} className="flex flex-col gap-2.5">
                 {group.links.map((link) => (

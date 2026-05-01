@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { TAGS } from "@/lib/constants/tags";
 import { fetchPostsByTag } from "@/lib/db/posts";
 
@@ -104,17 +105,11 @@ export default async function TagPage({ params }: PageProps) {
 
       {/* Posts */}
       {posts.length === 0 ? (
-        <div className="rounded border border-dashed border-border-default py-16 text-center">
-          <p className="font-serif text-lg text-text-secondary">
-            No cases filed yet.
-          </p>
-          <p className="mt-2 text-sm text-text-tertiary">
-            Witnessed a failure?{" "}
-            <Link href="/submit" className="text-accent-red hover:underline">
-              File the first report →
-            </Link>
-          </p>
-        </div>
+        <EmptyState
+          title="No cases filed yet."
+          description="Witnessed a failure?"
+          action={{ label: "File the first report →", href: "/submit" }}
+        />
       ) : (
         <div className="space-y-2">
           {posts.map((post) => (

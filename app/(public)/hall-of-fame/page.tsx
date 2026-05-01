@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchFeedPosts } from "@/lib/db/posts";
 import { VoteButtons } from "@/components/post/VoteButtons";
+import { Pagination } from "@/components/ui/Pagination";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export const revalidate = 60;
 
@@ -57,16 +59,10 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
       </div>
 
       {posts.length === 0 ? (
-        <div className="rounded border border-dashed border-border-default py-16 text-center">
-          <p className="font-serif text-lg text-text-secondary">
-            No cases on file yet.
-          </p>
-          <p className="mt-2 text-sm text-text-tertiary">
-            <Link href="/submit" className="text-accent-red hover:underline">
-              File the first report
-            </Link>
-          </p>
-        </div>
+        <EmptyState
+          title="No cases on file yet."
+          action={{ label: "File the first report", href: "/submit" }}
+        />
       ) : (
         <>
           <div className="overflow-x-auto rounded border border-border-default bg-bg-surface">
@@ -181,46 +177,11 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-center gap-1 font-mono text-[11px]">
-              {currentPage > 1 ? (
-                <Link
-                  href={pageHref(currentPage - 1)}
-                  className="rounded border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
-                >
-                  ← Prev
-                </Link>
-              ) : (
-                <span className="rounded border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
-                  ← Prev
-                </span>
-              )}
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Link
-                  key={p}
-                  href={pageHref(p)}
-                  className={[
-                    "rounded border px-2.5 py-1.5 transition-colors",
-                    p === currentPage
-                      ? "border-accent-red bg-accent-red-soft text-accent-red"
-                      : "border-border-default text-text-secondary hover:border-border-strong hover:text-text-primary",
-                  ].join(" ")}
-                >
-                  {p}
-                </Link>
-              ))}
-              {currentPage < totalPages ? (
-                <Link
-                  href={pageHref(currentPage + 1)}
-                  className="rounded border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
-                >
-                  Next →
-                </Link>
-              ) : (
-                <span className="rounded border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
-                  Next →
-                </span>
-              )}
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              hrefForPage={pageHref}
+            />
           )}
         </>
       )}
