@@ -62,7 +62,7 @@ export default function AboutPage() {
         <p>
           Every submission is reviewed before publication. We reject cases that
           are vague, unverifiable, or appear to be targeted harassment. Approved
-          cases are assigned a permanent case number (APM-XXXX) and indexed
+          cases are assigned a permanent case number (APM-0001) and indexed
           immediately.
         </p>
 

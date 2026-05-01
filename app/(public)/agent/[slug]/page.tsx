@@ -5,6 +5,8 @@ import { PostCard } from "@/components/post/PostCard";
 import { AGENTS } from "@/lib/constants/agents";
 import { fetchPostsByAgent } from "@/lib/db/posts";
 
+export const revalidate = 60;
+
 interface PageProps {
   params: { slug: string };
 }

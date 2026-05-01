@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { AGENTS } from "@/lib/constants/agents";
+import { TAGS } from "@/lib/constants/tags";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl =
@@ -63,5 +65,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.4,
     },
     ...postUrls,
+    ...AGENTS.map((a) => ({
+      url: `${siteUrl}/agent/${a.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    ...TAGS.map((t) => ({
+      url: `${siteUrl}/tag/${t.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.5,
+    })),
   ];
 }

@@ -5,6 +5,8 @@ import { PostCard } from "@/components/post/PostCard";
 import { TAGS } from "@/lib/constants/tags";
 import { fetchPostsByTag } from "@/lib/db/posts";
 
+export const revalidate = 60;
+
 interface PageProps {
   params: { slug: string };
 }

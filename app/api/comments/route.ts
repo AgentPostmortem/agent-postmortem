@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { consumeSharedRateLimit } from "@/lib/rate-limit/shared";
 
 function hashIp(ip: string): string {
   const pepper = process.env.IP_HASH_PEPPER ?? "default-pepper";
@@ -47,7 +48,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const ip_hash = hashIp(getIp(req));
+    const ip = getIp(req);
+    const ip_hash = hashIp(ip);
+
+    const rateLimit = await consumeSharedRateLimit(
+      `comment:${ip_hash}`,
+      3600,
+      5,
+    );
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Too many comments. Try again later." },
+        { status: 429 },
+      );
+    }
+
     const supabase = createSupabaseAdminClient();
 
     const { data, error } = await supabase
