@@ -159,3 +159,60 @@ export async function fetchSiteStats(): Promise<{
     return { totalPosts: 0, totalAgents: 0, totalDamage: 0 };
   }
 }
+
+export async function fetchRelatedPosts(
+  caseNumber: string,
+  agentSlug: string,
+  tags: string[],
+  limit = 3,
+): Promise<Post[]> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
+      .eq("status", "approved")
+      .neq("case_number", caseNumber)
+      .eq("agents.slug", agentSlug)
+      .order("vote_score", { ascending: false })
+      .limit(limit);
+
+    if (error || !data || data.length === 0) {
+      // fallback: get any recent posts
+      const { data: fallback } = await supabase
+        .from("posts")
+        .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
+        .eq("status", "approved")
+        .neq("case_number", caseNumber)
+        .order("vote_score", { ascending: false })
+        .limit(limit);
+      return (fallback ?? []).map((row) =>
+        rowToPost(row as Record<string, unknown>),
+      );
+    }
+    return data.map((row) => rowToPost(row as Record<string, unknown>));
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchSearchPosts(
+  query: string,
+  limit = 20,
+): Promise<Post[]> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
+      .eq("status", "approved")
+      .or(`title.ilike.%${query}%,outcome.ilike.%${query}%`)
+      .order("vote_score", { ascending: false })
+      .limit(limit);
+
+    if (error || !data) return [];
+    return data.map((row) => rowToPost(row as Record<string, unknown>));
+  } catch {
+    return [];
+  }
+}

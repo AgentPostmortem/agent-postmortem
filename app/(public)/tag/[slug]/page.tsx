@@ -88,11 +88,12 @@ export default async function TagPage({ params }: PageProps) {
       {posts.length === 0 ? (
         <div className="rounded border border-dashed border-border-default py-16 text-center">
           <p className="font-serif text-lg text-text-secondary">
-            No cases with this tag yet.
+            No cases filed yet.
           </p>
           <p className="mt-2 text-sm text-text-tertiary">
+            Witnessed a failure?{" "}
             <Link href="/submit" className="text-accent-red hover:underline">
-              File a report →
+              File the first report →
             </Link>
           </p>
         </div>

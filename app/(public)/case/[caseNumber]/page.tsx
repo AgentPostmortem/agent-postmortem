@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { TagBadge } from "@/components/post/TagBadge";
 import { VoteButtons } from "@/components/post/VoteButtons";
-import { fetchPostByCase } from "@/lib/db/posts";
+import { PostCard } from "@/components/post/PostCard";
+import { fetchPostByCase, fetchRelatedPosts } from "@/lib/db/posts";
 
 interface PageProps {
   params: { caseNumber: string };
@@ -80,6 +81,12 @@ const SEVERITY_META: Record<
 export default async function CasePage({ params }: PageProps) {
   const post = await fetchPostByCase(params.caseNumber);
   if (!post) notFound();
+
+  const related = await fetchRelatedPosts(
+    post.caseNumber,
+    post.agentSlug,
+    post.tags,
+  );
 
   const s = SEVERITY_META[post.damageLevel];
 
@@ -247,6 +254,20 @@ export default async function CasePage({ params }: PageProps) {
             ))}
           </div>
         </section>
+      )}
+
+      {/* Related cases */}
+      {related.length > 0 && (
+        <div className="mt-10 border-t border-border-default pt-8">
+          <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+            More Cases
+          </div>
+          <div className="space-y-2">
+            {related.map((r) => (
+              <PostCard key={r.id} post={r} />
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Footer */}

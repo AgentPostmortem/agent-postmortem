@@ -17,13 +17,14 @@ const TABS: { label: string; value: FeedTab }[] = [
 ];
 
 interface PageProps {
-  searchParams: { tab?: string };
+  searchParams: { tab?: string; page?: string };
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
   const activeTab = (searchParams.tab as FeedTab) ?? "hot";
+  const limit = Math.min(parseInt(searchParams.page ?? "1") * 20, 100);
   const [posts, stats] = await Promise.all([
-    fetchFeedPosts(activeTab),
+    fetchFeedPosts(activeTab, limit),
     fetchSiteStats(),
   ]);
 
@@ -147,11 +148,23 @@ export default async function HomePage({ searchParams }: PageProps) {
           {posts.length === 0 ? (
             <EmptyFeed />
           ) : (
-            <div className="space-y-2">
-              {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </div>
+            <>
+              <div className="space-y-2">
+                {posts.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+              {posts.length === limit && limit < 100 && (
+                <div className="mt-6 text-center">
+                  <Link
+                    href={`/?tab=${activeTab}&page=${Math.floor(limit / 20) + 1}`}
+                    className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+                  >
+                    Load more →
+                  </Link>
+                </div>
+              )}
+            </>
           )}
         </div>
 

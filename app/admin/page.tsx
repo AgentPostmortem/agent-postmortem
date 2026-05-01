@@ -116,6 +116,20 @@ export default function AdminPage() {
     }
   }
 
+  async function handleResendToken(postId: string) {
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/admin/posts/${postId}/resend-token`, {
+        method: "POST",
+        headers: { "x-admin-password": authedPassword },
+      });
+      if (res.ok) alert("Edit link resent.");
+      else alert("Failed to resend.");
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
   async function handleAction(id: string, status: "approved" | "rejected") {
     setActionLoading(true);
     try {
@@ -335,7 +349,13 @@ export default function AdminPage() {
                         : (selected.submitter_handle ?? "Named (no handle)")}
                       {selected.submitter_email && (
                         <span className="ml-2 text-text-tertiary">
-                          · {selected.submitter_email}
+                          ·{" "}
+                          <a
+                            href={`mailto:${selected.submitter_email}`}
+                            className="hover:text-accent-red hover:underline"
+                          >
+                            {selected.submitter_email}
+                          </a>
                         </span>
                       )}
                     </dd>
@@ -395,6 +415,18 @@ export default function AdminPage() {
                       className="flex-1 rounded border border-border-default px-4 py-2 text-sm text-accent-red transition-colors hover:bg-accent-red/5 disabled:opacity-50"
                     >
                       {actionLoading ? "…" : "Reject"}
+                    </button>
+                  </div>
+                )}
+
+                {selected.submitter_email && (
+                  <div className="mt-3">
+                    <button
+                      onClick={() => handleResendToken(selected.id)}
+                      disabled={actionLoading}
+                      className="rounded border border-border-default px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red disabled:opacity-50"
+                    >
+                      Resend Edit Link
                     </button>
                   </div>
                 )}
