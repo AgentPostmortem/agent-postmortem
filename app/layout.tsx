@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import localFont from "next/font/local";
 import { getSiteUrl } from "@/lib/utils/urls";
 import "./globals.css";
+
+const GeistSans = localFont({
+  src: "../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2",
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const GeistMono = localFont({
+  src: "../node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2",
+  variable: "--font-mono",
+  display: "swap",
+});
 
 const siteUrl = getSiteUrl();
 
