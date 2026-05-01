@@ -216,13 +216,30 @@ export async function fetchSearchPosts(
 ): Promise<Post[]> {
   try {
     const supabase = createSupabaseServerClient();
-    const { data, error } = await supabase
+
+    // Find agent IDs whose name matches the query
+    const { data: agentRows } = await supabase
+      .from("agents")
+      .select("id")
+      .ilike("name", `%${query}%`);
+    const agentIds = (agentRows ?? []).map((a) => (a as { id: string }).id);
+
+    let q = supabase
       .from("posts")
       .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
-      .eq("status", "approved")
-      .or(
+      .eq("status", "approved");
+
+    if (agentIds.length > 0) {
+      q = q.or(
+        `title.ilike.%${query}%,outcome.ilike.%${query}%,case_number.ilike.%${query}%,agent_id.in.(${agentIds.join(",")})`,
+      );
+    } else {
+      q = q.or(
         `title.ilike.%${query}%,outcome.ilike.%${query}%,case_number.ilike.%${query}%`,
-      )
+      );
+    }
+
+    const { data, error } = await q
       .order("vote_score", { ascending: false })
       .limit(limit);
 
@@ -268,6 +285,28 @@ export async function fetchTagCaseCounts(): Promise<Record<string, number>> {
     }>) {
       const slug = row.tags?.slug;
       if (slug) counts[slug] = (counts[slug] ?? 0) + 1;
+    }
+    return counts;
+  } catch {
+    return {};
+  }
+}
+
+export async function fetchCommentCountsByPostIds(
+  postIds: string[],
+): Promise<Record<string, number>> {
+  if (postIds.length === 0) return {};
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data } = await supabase
+      .from("comments")
+      .select("post_id")
+      .in("post_id", postIds)
+      .eq("status", "visible");
+
+    const counts: Record<string, number> = {};
+    for (const row of (data ?? []) as Array<{ post_id: string }>) {
+      counts[row.post_id] = (counts[row.post_id] ?? 0) + 1;
     }
     return counts;
   } catch {

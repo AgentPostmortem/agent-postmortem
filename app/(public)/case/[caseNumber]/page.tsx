@@ -190,7 +190,7 @@ export default async function CasePage({ params }: PageProps) {
                 Severity
               </div>
               <div className={`mt-0.5 font-mono text-sm font-bold ${s.color}`}>
-                {post.damageLevel} / 5 — {s.label}
+                {post.damageLevel} / 5 · {s.label}
               </div>
             </div>
           </div>

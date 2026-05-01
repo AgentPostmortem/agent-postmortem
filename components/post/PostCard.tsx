@@ -5,7 +5,7 @@ import { VoteButtons } from "./VoteButtons";
 import { TagBadge } from "./TagBadge";
 import type { Post } from "@/types";
 
-type PostCardProps = { post: Post };
+type PostCardProps = { post: Post; commentCount?: number };
 
 const SEVERITY_COLOR: Record<number, string> = {
   1: "bg-text-tertiary/40",
@@ -31,7 +31,7 @@ const SEVERITY_BORDER: Record<number, string> = {
   5: "border-l-accent-red",
 };
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post, commentCount }: PostCardProps) {
   const date = new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
@@ -111,24 +111,29 @@ export function PostCard({ post }: PostCardProps) {
             {post.outcome}
           </p>
 
-          {/* Tags */}
-          {post.tags.length > 0 && (
-            <div className="mt-3 flex flex-wrap items-center gap-1.5">
-              {post.tags.slice(0, 4).map((tag) => (
-                <TagBadge key={tag} tag={tag} />
-              ))}
-              {post.tags.length > 4 && (
-                <span className="font-mono text-[10px] text-text-tertiary">
-                  +{post.tags.length - 4} more
-                </span>
-              )}
+          {/* Tags + comment count */}
+          <div className="mt-3 flex flex-wrap items-center gap-1.5">
+            {post.tags.slice(0, 4).map((tag) => (
+              <TagBadge key={tag} tag={tag} />
+            ))}
+            {post.tags.length > 4 && (
+              <span className="font-mono text-[10px] text-text-tertiary">
+                +{post.tags.length - 4} more
+              </span>
+            )}
+            <span className="ml-auto flex items-center gap-3">
               {!post.isAnonymous && post.authorHandle && (
-                <span className="ml-auto font-mono text-[10px] text-text-tertiary">
+                <span className="font-mono text-[10px] text-text-tertiary">
                   via @{post.authorHandle}
                 </span>
               )}
-            </div>
-          )}
+              {commentCount != null && commentCount > 0 && (
+                <span className="font-mono text-[10px] text-text-tertiary">
+                  {commentCount} comment{commentCount !== 1 ? "s" : ""}
+                </span>
+              )}
+            </span>
+          </div>
         </div>
       </div>
 

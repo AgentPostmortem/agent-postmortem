@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
-import { fetchFeedPosts, fetchSiteStats, type FeedTab } from "@/lib/db/posts";
+import {
+  fetchFeedPosts,
+  fetchSiteStats,
+  fetchCommentCountsByPostIds,
+  type FeedTab,
+} from "@/lib/db/posts";
 
 export const revalidate = 30;
 
@@ -58,6 +63,10 @@ export default async function HomePage({ searchParams }: PageProps) {
     ),
     fetchSiteStats(),
   ]);
+
+  const commentCounts = await fetchCommentCountsByPostIds(
+    posts.map((p) => p.id),
+  );
 
   const totalPages = Math.ceil(total / 20);
 
@@ -277,7 +286,11 @@ export default async function HomePage({ searchParams }: PageProps) {
             <>
               <div className="space-y-2">
                 {posts.map((post) => (
-                  <PostCard key={post.id} post={post} />
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    commentCount={commentCounts[post.id]}
+                  />
                 ))}
               </div>
               {totalPages > 1 && (

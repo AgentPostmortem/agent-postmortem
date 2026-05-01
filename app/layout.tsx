@@ -4,6 +4,8 @@ import { GeistMono } from "geist/font/mono";
 import { getSiteUrl } from "@/lib/utils/urls";
 import "./globals.css";
 
+const siteUrl = getSiteUrl();
+
 export const metadata: Metadata = {
   title: {
     default: "AgentPostmortem — AI Failure Case Files",
@@ -11,19 +13,31 @@ export const metadata: Metadata = {
   },
   description:
     "A public ledger of AI agent failures. Real cases, real damages. Submitted anonymously. Read so you don't repeat.",
-  metadataBase: new URL(getSiteUrl()),
+  metadataBase: new URL(siteUrl),
   openGraph: {
     siteName: "AgentPostmortem",
     type: "website",
     locale: "en_US",
+    title: "AgentPostmortem — AI Failure Case Files",
+    description:
+      "A public ledger of AI agent failures. Real cases, real damages. Submitted anonymously. Read so you don't repeat.",
+    url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
     site: "@agentpostmortem",
+    title: "AgentPostmortem — AI Failure Case Files",
+    description:
+      "A public ledger of AI agent failures. Real cases, real damages. Submitted anonymously.",
   },
   robots: {
     index: true,
     follow: true,
+  },
+  alternates: {
+    types: {
+      "application/rss+xml": `${siteUrl}/feed.xml`,
+    },
   },
 };
 
