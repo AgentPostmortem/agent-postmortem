@@ -11,7 +11,7 @@ interface TagBadgeProps {
 
 export function TagBadge({ tag, className, linked = true }: TagBadgeProps) {
   const tagData = TAGS.find((t) => t.slug === tag);
-  const label = (tagData?.label ?? tag).replace(/\s+/g, "-");
+  const label = tagData?.label ?? tag;
 
   const classes = cn(
     "inline-flex items-center rounded border border-border-default bg-bg-elevated px-2 py-0.5 font-mono text-xs text-text-tertiary transition-colors",

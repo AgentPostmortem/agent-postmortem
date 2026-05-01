@@ -7,73 +7,73 @@ export interface Tag {
 export const TAGS: Tag[] = [
   {
     slug: "hallucination",
-    label: "Hallucination",
+    label: "hallucination",
     description:
       "The agent confidently generated false information, fabricated APIs, URLs, or facts.",
   },
   {
     slug: "expensive-mistake",
-    label: "Expensive Mistake",
+    label: "expensive-mistake",
     description:
       "The agent's actions resulted in significant unexpected financial costs.",
   },
   {
     slug: "wrong-recipient",
-    label: "Wrong Recipient",
+    label: "wrong-recipient",
     description:
       "Messages, emails, or data were sent to unintended recipients.",
   },
   {
     slug: "deleted-data",
-    label: "Deleted Data",
+    label: "deleted-data",
     description:
       "The agent permanently deleted files, database records, or storage objects.",
   },
   {
     slug: "security-fail",
-    label: "Security Fail",
+    label: "security-fail",
     description:
       "Credentials, secrets, or sensitive data were exposed or mishandled.",
   },
   {
     slug: "social-blunder",
-    label: "Social Blunder",
+    label: "social-blunder",
     description:
       "The agent caused embarrassment, reputation damage, or interpersonal harm.",
   },
   {
     slug: "code-disaster",
-    label: "Code Disaster",
+    label: "code-disaster",
     description:
       "The agent produced, committed, or deployed broken, destructive, or insecure code.",
   },
   {
     slug: "infinite-loop",
-    label: "Infinite Loop",
+    label: "infinite-loop",
     description:
       "The agent entered an unrecoverable loop, causing resource exhaustion or runaway costs.",
   },
   {
     slug: "scope-creep",
-    label: "Scope Creep",
+    label: "scope-creep",
     description:
       "The agent took actions far beyond the intended scope of the task.",
   },
   {
     slug: "compliance-violation",
-    label: "Compliance Violation",
+    label: "compliance-violation",
     description:
       "The agent's actions violated legal, regulatory, or policy requirements.",
   },
   {
     slug: "data-exfiltration",
-    label: "Data Exfiltration",
+    label: "data-exfiltration",
     description:
       "The agent transmitted sensitive data to external or unintended destinations.",
   },
   {
     slug: "misunderstood-instruction",
-    label: "Misunderstood Instruction",
+    label: "misunderstood-instruction",
     description:
       "The agent fundamentally misinterpreted a clear instruction and acted on the wrong assumption.",
   },

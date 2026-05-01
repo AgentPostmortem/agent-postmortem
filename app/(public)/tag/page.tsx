@@ -40,7 +40,7 @@ export default function TagsIndexPage() {
             <div className="flex items-start justify-between gap-2">
               <div>
                 <div className="font-mono text-sm font-semibold text-accent-red">
-                  #{tag.label}
+                  #{tag.slug}
                 </div>
                 <p className="mt-1 text-xs leading-relaxed text-text-tertiary">
                   {tag.description}

@@ -319,18 +319,18 @@ export default async function HomePage({ searchParams }: PageProps) {
 
             <SidebarCard title="Browse Tags">
               {[
-                { slug: "hallucination", label: "Hallucination" },
-                { slug: "deleted-data", label: "Deleted Data" },
-                { slug: "security-fail", label: "Security Fail" },
-                { slug: "wrong-recipient", label: "Wrong Recipient" },
-                { slug: "expensive-mistake", label: "Expensive Mistake" },
-              ].map((tag) => (
+                "hallucination",
+                "deleted-data",
+                "security-fail",
+                "wrong-recipient",
+                "expensive-mistake",
+              ].map((slug) => (
                 <Link
-                  key={tag.slug}
-                  href={`/tag/${tag.slug}`}
+                  key={slug}
+                  href={`/tag/${slug}`}
                   className="block py-1 font-mono text-xs text-text-secondary transition-colors hover:text-accent-red"
                 >
-                  #{tag.label}
+                  #{slug}
                 </Link>
               ))}
               <Link
