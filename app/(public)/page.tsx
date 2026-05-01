@@ -128,7 +128,25 @@ export default async function HomePage({ searchParams }: PageProps) {
           </div>
         )}
 
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        {/* Search bar */}
+        <form method="GET" action="/search" className="mt-6">
+          <div className="flex max-w-lg gap-2">
+            <input
+              type="text"
+              name="q"
+              placeholder="Search cases… deleted database, hallucination, GPT-4o"
+              className="flex-1 rounded border border-border-default bg-bg-surface px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent-red focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="rounded border border-border-default bg-bg-elevated px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red"
+            >
+              Search
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <Link
             href="/submit"
             className="inline-flex items-center gap-2 rounded border border-accent-red bg-accent-red-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-red transition-all hover:bg-accent-red hover:text-white"
