@@ -60,40 +60,41 @@ export function PostCard({ post }: PostCardProps) {
         {/* Body */}
         <div className="min-w-0 flex-1 px-4 py-3.5">
           {/* Case number row */}
-          <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className="font-mono text-[10px] tracking-widest text-text-tertiary">
-              {post.caseNumber}
-            </span>
-            <span className="text-border-strong text-xs">·</span>
-            <Link
-              href={`/agent/${post.agentSlug}`}
-              onClick={(e) => e.stopPropagation()}
-              className="font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:text-text-primary"
-            >
-              {post.agentName}
-            </Link>
-            <span className="text-border-strong text-xs">·</span>
+          <div className="mb-2 flex items-center gap-x-2 overflow-hidden">
+            {/* Left: metadata pills */}
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="shrink-0 font-mono text-[10px] tracking-widest text-text-tertiary">
+                {post.caseNumber}
+              </span>
+              <span className="text-border-strong text-xs">·</span>
+              <Link
+                href={`/agent/${post.agentSlug}`}
+                onClick={(e) => e.stopPropagation()}
+                className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:text-text-primary"
+              >
+                {post.agentName}
+              </Link>
+              <span className="text-border-strong text-xs">·</span>
 
-            {/* Severity pill */}
-            <span
-              className={`inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${post.damageLevel >= 4 ? "text-accent-red" : "text-text-tertiary"}`}
-            >
+              {/* Severity pill */}
               <span
-                className={`inline-block h-1.5 w-1.5 rounded-full ${SEVERITY_COLOR[post.damageLevel]}`}
-              />
-              {SEVERITY_LABEL[post.damageLevel]}
-            </span>
+                className={`inline-flex shrink-0 items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${post.damageLevel >= 4 ? "text-accent-red" : "text-text-tertiary"}`}
+              >
+                <span
+                  className={`inline-block h-1.5 w-1.5 rounded-full ${SEVERITY_COLOR[post.damageLevel]}`}
+                />
+                {SEVERITY_LABEL[post.damageLevel]}
+              </span>
 
-            {cost && (
-              <>
-                <span className="text-border-strong text-xs">·</span>
-                <span className="font-mono text-[10px] font-semibold text-accent-red">
+              {cost && (
+                <span className="shrink-0 font-mono text-[10px] font-semibold text-accent-red">
                   ~{cost}
                 </span>
-              </>
-            )}
+              )}
+            </div>
 
-            <span className="ml-auto font-mono text-[10px] text-text-tertiary">
+            {/* Right: date — never wraps */}
+            <span className="shrink-0 font-mono text-[10px] text-text-tertiary">
               {date}
             </span>
           </div>
