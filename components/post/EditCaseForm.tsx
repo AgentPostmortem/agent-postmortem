@@ -245,7 +245,7 @@ export function EditCaseForm({
                   className={cn(
                     "rounded border px-2.5 py-1 font-mono text-xs transition-all",
                     active
-                      ? "border-accent-red bg-accent-red-soft text-accent-red"
+                      ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
                       : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                   )}
                 >

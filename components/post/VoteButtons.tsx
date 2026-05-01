@@ -108,7 +108,7 @@ export function VoteButtons({
         className={cn(
           "flex items-center gap-1.5 rounded border px-2.5 py-1.5 font-mono text-xs transition-all disabled:opacity-40",
           vote === "up"
-            ? "border-accent-red bg-accent-red-soft text-accent-red"
+            ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
             : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
         )}
       >

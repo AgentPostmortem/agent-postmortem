@@ -242,7 +242,7 @@ export function SubmitForm() {
           <Link
             href="/submit"
             onClick={() => setStatus("idle")}
-            className="rounded border border-accent-red bg-accent-red/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-red transition-colors hover:bg-accent-red/20"
+            className="rounded border border-accent-red bg-accent-red/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-colors hover:bg-accent-red/20"
           >
             File Another
           </Link>
@@ -425,7 +425,7 @@ export function SubmitForm() {
                 className={cn(
                   "rounded border px-2.5 py-1 font-mono text-xs transition-all",
                   active
-                    ? "border-accent-red bg-accent-red-soft text-accent-red"
+                    ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
                     : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                 )}
               >
@@ -502,7 +502,7 @@ export function SubmitForm() {
               className={cn(
                 "rounded border py-2.5 font-mono text-[11px] uppercase tracking-wider transition-all",
                 attribution === opt
-                  ? "border-accent-red bg-accent-red-soft text-accent-red"
+                  ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
                   : "border-border-default text-text-tertiary hover:border-border-strong",
               )}
             >

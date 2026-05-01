@@ -68,7 +68,7 @@ export default async function AgentsIndexPage() {
                             {agent.name}
                           </span>
                           {count > 0 && (
-                            <span className="rounded bg-accent-red/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-red">
+                            <span className="rounded bg-accent-red/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-red-muted">
                               {count}
                             </span>
                           )}

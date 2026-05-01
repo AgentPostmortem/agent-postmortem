@@ -128,7 +128,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                 className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5"
               >
                 <div
-                  className={`font-mono text-lg font-semibold tabular-nums sm:text-2xl ${stat.red ? "text-accent-red" : "text-text-primary"}`}
+                  className={`font-mono text-lg font-semibold tabular-nums sm:text-2xl ${stat.red ? "text-accent-red-muted" : "text-text-primary"}`}
                 >
                   {stat.value}
                 </div>
@@ -161,7 +161,7 @@ export default async function HomePage({ searchParams }: PageProps) {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Link
             href="/submit"
-            className="inline-flex items-center gap-2 rounded border border-accent-red bg-accent-red-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-red transition-all hover:bg-accent-red hover:text-white"
+            className="inline-flex items-center gap-2 rounded border border-accent-red bg-accent-red-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:bg-accent-red hover:text-white"
           >
             <span>+</span> File a Case Report
           </Link>
@@ -223,7 +223,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                       className={[
                         "rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors",
                         isActive
-                          ? "border-accent-red bg-accent-red-soft text-accent-red"
+                          ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
                           : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                       ].join(" ")}
                     >
@@ -259,7 +259,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                       className={[
                         "rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors",
                         isActive
-                          ? "border-accent-red bg-accent-red-soft text-accent-red"
+                          ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
                           : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                       ].join(" ")}
                     >

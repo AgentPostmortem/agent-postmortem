@@ -11,7 +11,7 @@ interface BadgeProps {
 const variantClasses: Record<BadgeVariant, string> = {
   default: "border-border-default bg-bg-elevated text-text-tertiary",
   success: "border-green-800 bg-green-950 text-green-400",
-  danger: "border-accent-red bg-accent-red-soft text-accent-red",
+  danger: "border-accent-red bg-accent-red-soft text-accent-red-muted",
   warning: "border-yellow-800 bg-yellow-950 text-yellow-400",
 };
 

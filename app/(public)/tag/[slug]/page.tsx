@@ -94,7 +94,7 @@ export default async function TagPage({ params }: PageProps) {
             className={[
               "rounded border px-2.5 py-1 font-mono text-xs transition-colors",
               t.slug === params.slug
-                ? "border-accent-red bg-accent-red-soft text-accent-red"
+                ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
                 : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
             ].join(" ")}
           >

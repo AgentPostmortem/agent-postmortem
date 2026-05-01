@@ -56,7 +56,7 @@ export function Pagination({
             className={[
               "rounded border px-2.5 py-1.5 transition-colors",
               p === currentPage
-                ? "border-accent-red bg-accent-red-soft text-accent-red"
+                ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
                 : "border-border-default text-text-secondary hover:border-border-strong hover:text-text-primary",
             ].join(" ")}
           >

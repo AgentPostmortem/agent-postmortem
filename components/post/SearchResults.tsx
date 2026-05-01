@@ -214,7 +214,7 @@ export function SearchResults({
                         className={[
                           "flex h-8 w-8 items-center justify-center rounded border font-mono text-xs transition-colors",
                           inRange
-                            ? "border-accent-red bg-accent-red/10 text-accent-red"
+                            ? "border-accent-red bg-accent-red/10 text-accent-red-muted"
                             : "border-border-default bg-bg-elevated text-text-tertiary hover:border-border-strong",
                         ].join(" ")}
                       >

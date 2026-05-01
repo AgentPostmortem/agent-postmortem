@@ -164,7 +164,7 @@ export function StatusClient() {
         {data.status === "approved" && data.caseNumber && (
           <Link
             href={`/case/${data.caseNumber.toLowerCase()}`}
-            className="rounded border border-accent-red bg-accent-red/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-red hover:bg-accent-red/20"
+            className="rounded border border-accent-red bg-accent-red/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted hover:bg-accent-red/20"
           >
             View Case →
           </Link>

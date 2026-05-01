@@ -28,7 +28,7 @@ const config: Config = {
         "bg-elevated": "#1a1a1e",
         "text-primary": "#f0f0f0",
         "text-secondary": "#9a9a9a",
-        "text-tertiary": "#767676",
+        "text-tertiary": "#888888",
         "border-default": "#222226",
         "border-strong": "#333338",
         "accent-red": "#dc2626",

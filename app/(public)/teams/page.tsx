@@ -232,7 +232,7 @@ export default function TeamsPage() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="w-full rounded border border-accent-red bg-accent-red-soft py-2.5 font-mono text-sm uppercase tracking-widest text-accent-red transition-colors hover:bg-accent-red hover:text-white disabled:opacity-50"
+              className="w-full rounded border border-accent-red bg-accent-red-soft py-2.5 font-mono text-sm uppercase tracking-widest text-accent-red-muted transition-colors hover:bg-accent-red hover:text-white disabled:opacity-50"
             >
               {status === "submitting" ? "Submitting…" : "Request Access"}
             </button>
