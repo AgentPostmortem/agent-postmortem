@@ -106,6 +106,7 @@ export default async function CasePage({ params }: PageProps) {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   }).format(new Date(post.createdAt));
 
   const cost =

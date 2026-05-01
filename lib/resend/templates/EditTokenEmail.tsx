@@ -4,6 +4,7 @@ interface EditTokenEmailProps {
   caseNumber: string | null;
   caseTitle: string;
   editUrl: string;
+  statusUrl?: string;
 }
 
 /**
@@ -14,6 +15,7 @@ export function EditTokenEmail({
   caseNumber,
   caseTitle,
   editUrl,
+  statusUrl,
 }: EditTokenEmailProps) {
   const reference = caseNumber ?? "PENDING REVIEW";
 
@@ -191,6 +193,27 @@ export function EditTokenEmail({
                         >
                           Or copy this URL: {editUrl}
                         </p>
+                        {statusUrl && (
+                          <p
+                            style={{
+                              color: "#5a5a5a",
+                              fontSize: "11px",
+                              fontFamily: "monospace",
+                              marginTop: "12px",
+                            }}
+                          >
+                            Check submission status:{" "}
+                            <a
+                              href={statusUrl}
+                              style={{
+                                color: "#888",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              {statusUrl}
+                            </a>
+                          </p>
+                        )}
                       </td>
                     </tr>
 

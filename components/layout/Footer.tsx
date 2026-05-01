@@ -11,6 +11,7 @@ const LINK_GROUPS = [
   {
     links: [
       { href: "/hall-of-fame", label: "Hall of Fame" },
+      { href: "/stats", label: "Stats" },
       { href: "/submit", label: "File a Report" },
       {
         href: "https://github.com/AgentPostmortem/agent-postmortem",
@@ -69,7 +70,8 @@ export function Footer() {
 
         <div className="mt-8 border-t border-border-default pt-6">
           <p className="font-mono text-[10px] text-text-tertiary">
-            © {new Date().getFullYear()} AgentPostmortem. Open source.
+            © <span suppressHydrationWarning>{new Date().getFullYear()}</span>{" "}
+            AgentPostmortem. Open source.
           </p>
         </div>
       </div>

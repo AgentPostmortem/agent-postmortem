@@ -23,6 +23,7 @@ export async function sendEditTokenEmail({
 }: SendEditTokenEmailParams): Promise<void> {
   const appUrl = getSiteUrl();
   const editUrl = `${appUrl}/edit/${editToken}`;
+  const statusUrl = `${appUrl}/status/${editToken}`;
   const subjectRef = caseNumber ?? "Pending submission";
 
   const { error } = await resend.emails.send({
@@ -33,6 +34,7 @@ export async function sendEditTokenEmail({
       caseNumber,
       caseTitle,
       editUrl,
+      statusUrl,
     }),
   });
 

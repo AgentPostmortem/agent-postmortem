@@ -36,6 +36,7 @@ export function PostCard({ post, commentCount }: PostCardProps) {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "UTC",
   }).format(new Date(post.createdAt));
 
   const cost =

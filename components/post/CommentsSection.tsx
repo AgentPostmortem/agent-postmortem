@@ -158,6 +158,7 @@ export function CommentsSection({ postId }: { postId: string }) {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
+                      timeZone: "UTC",
                     }).format(new Date(c.created_at))}
                   </span>
                   <CommentAnchorLink commentId={c.id} />

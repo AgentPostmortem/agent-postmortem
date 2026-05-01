@@ -182,47 +182,84 @@ export async function fetchRelatedPosts(
 ): Promise<Post[]> {
   try {
     const supabase = createSupabaseServerClient();
-    const { data, error } = await supabase
+
+    // Prefer tag-based related posts
+    if (tags.length > 0) {
+      const { data: tagRows } = await supabase
+        .from("tags")
+        .select("id")
+        .in("slug", tags);
+      const tagIds = (tagRows ?? []).map((t) => (t as { id: string }).id);
+
+      if (tagIds.length > 0) {
+        const { data: postTagRows } = await supabase
+          .from("post_tags")
+          .select("post_id")
+          .in("tag_id", tagIds);
+
+        const candidateIds = Array.from(
+          new Set(
+            (postTagRows ?? []).map((r) => (r as { post_id: string }).post_id),
+          ),
+        );
+
+        if (candidateIds.length > 0) {
+          const { data } = await supabase
+            .from("posts")
+            .select(
+              `*, agents(slug, name, company), post_tags(tags(slug, label))`,
+            )
+            .eq("status", "approved")
+            .neq("case_number", caseNumber)
+            .in("id", candidateIds)
+            .order("vote_score", { ascending: false })
+            .limit(limit);
+
+          if (data && data.length > 0) {
+            return data.map((row) => rowToPost(row as Record<string, unknown>));
+          }
+        }
+      }
+    }
+
+    // Fallback: same agent
+    const { data } = await supabase
       .from("posts")
       .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
       .eq("status", "approved")
       .neq("case_number", caseNumber)
-      .eq("agents.slug", agentSlug)
       .order("vote_score", { ascending: false })
       .limit(limit);
 
-    if (error || !data || data.length === 0) {
-      // fallback: get any recent posts
-      const { data: fallback } = await supabase
-        .from("posts")
-        .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
-        .eq("status", "approved")
-        .neq("case_number", caseNumber)
-        .order("vote_score", { ascending: false })
-        .limit(limit);
-      return (fallback ?? []).map((row) =>
-        rowToPost(row as Record<string, unknown>),
-      );
-    }
-    return data.map((row) => rowToPost(row as Record<string, unknown>));
+    return (data ?? []).map((row) => rowToPost(row as Record<string, unknown>));
   } catch {
     return [];
   }
 }
 
+export interface SearchFilters {
+  agentSlug?: string;
+  minSeverity?: number;
+  maxSeverity?: number;
+}
+
 export async function fetchSearchPosts(
   query: string,
+  filters: SearchFilters = {},
   limit = 20,
 ): Promise<Post[]> {
   try {
     const supabase = createSupabaseServerClient();
 
-    // Find agent IDs whose name matches the query
-    const { data: agentRows } = await supabase
-      .from("agents")
-      .select("id")
-      .ilike("name", `%${query}%`);
-    const agentIds = (agentRows ?? []).map((a) => (a as { id: string }).id);
+    // Find agent IDs whose name matches the query (only when no explicit agent filter)
+    let agentIds: string[] = [];
+    if (!filters.agentSlug) {
+      const { data: agentRows } = await supabase
+        .from("agents")
+        .select("id")
+        .ilike("name", `%${query}%`);
+      agentIds = (agentRows ?? []).map((a) => (a as { id: string }).id);
+    }
 
     const textFilter = `title.ilike.%${query}%,outcome.ilike.%${query}%,case_number.ilike.%${query}%`;
     const orFilter =
@@ -230,11 +267,30 @@ export async function fetchSearchPosts(
         ? `${textFilter},agent_id.in.(${agentIds.join(",")})`
         : textFilter;
 
-    const q = supabase
+    let q = supabase
       .from("posts")
       .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
       .eq("status", "approved")
       .or(orFilter);
+
+    if (filters.agentSlug) {
+      // Join via agents slug — need a subquery approach: filter by agents(slug)
+      const { data: agentRow } = await supabase
+        .from("agents")
+        .select("id")
+        .eq("slug", filters.agentSlug)
+        .single();
+      if (agentRow) {
+        q = q.eq("agent_id", (agentRow as { id: string }).id);
+      }
+    }
+
+    if (filters.minSeverity != null) {
+      q = q.gte("damage_level", filters.minSeverity);
+    }
+    if (filters.maxSeverity != null) {
+      q = q.lte("damage_level", filters.maxSeverity);
+    }
 
     const { data, error } = await q
       .order("vote_score", { ascending: false })
@@ -308,5 +364,104 @@ export async function fetchCommentCountsByPostIds(
     return counts;
   } catch {
     return {};
+  }
+}
+
+export interface StatsData {
+  totalCases: number;
+  totalDamageUsd: number;
+  bySeverity: Record<number, number>;
+  byAgent: Array<{ name: string; slug: string; count: number }>;
+  byTag: Array<{ slug: string; label: string; count: number }>;
+  recentByMonth: Array<{ month: string; count: number }>;
+}
+
+export async function fetchStatsData(): Promise<StatsData> {
+  try {
+    const supabase = createSupabaseServerClient();
+
+    const { data: posts } = await supabase
+      .from("posts")
+      .select(
+        "damage_level, estimated_cost_usd, created_at, agents(slug, name), post_tags(tags(slug, label))",
+      )
+      .eq("status", "approved")
+      .order("created_at", { ascending: false });
+
+    const rows = (posts ?? []) as Array<{
+      damage_level: number;
+      estimated_cost_usd: number | null;
+      created_at: string;
+      agents: { slug: string; name: string } | null;
+      post_tags: Array<{ tags: { slug: string; label: string } | null }>;
+    }>;
+
+    const totalDamageUsd = rows.reduce(
+      (sum, r) => sum + (r.estimated_cost_usd ?? 0),
+      0,
+    );
+
+    const bySeverity: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    const agentMap = new Map<string, { name: string; count: number }>();
+    const tagMap = new Map<string, { label: string; count: number }>();
+    const monthMap = new Map<string, number>();
+
+    for (const row of rows) {
+      bySeverity[row.damage_level] = (bySeverity[row.damage_level] ?? 0) + 1;
+
+      if (row.agents) {
+        const existing = agentMap.get(row.agents.slug);
+        agentMap.set(row.agents.slug, {
+          name: row.agents.name,
+          count: (existing?.count ?? 0) + 1,
+        });
+      }
+
+      for (const pt of row.post_tags ?? []) {
+        if (pt.tags) {
+          const existing = tagMap.get(pt.tags.slug);
+          tagMap.set(pt.tags.slug, {
+            label: pt.tags.label,
+            count: (existing?.count ?? 0) + 1,
+          });
+        }
+      }
+
+      const month = row.created_at.slice(0, 7); // "YYYY-MM"
+      monthMap.set(month, (monthMap.get(month) ?? 0) + 1);
+    }
+
+    const byAgent = Array.from(agentMap.entries())
+      .map(([slug, { name, count }]) => ({ slug, name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    const byTag = Array.from(tagMap.entries())
+      .map(([slug, { label, count }]) => ({ slug, label, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 12);
+
+    const recentByMonth = Array.from(monthMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-12)
+      .map(([month, count]) => ({ month, count }));
+
+    return {
+      totalCases: rows.length,
+      totalDamageUsd,
+      bySeverity,
+      byAgent,
+      byTag,
+      recentByMonth,
+    };
+  } catch {
+    return {
+      totalCases: 0,
+      totalDamageUsd: 0,
+      bySeverity: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+      byAgent: [],
+      byTag: [],
+      recentByMonth: [],
+    };
   }
 }
