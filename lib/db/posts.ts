@@ -220,7 +220,9 @@ export async function fetchSearchPosts(
       .from("posts")
       .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
       .eq("status", "approved")
-      .or(`title.ilike.%${query}%,outcome.ilike.%${query}%`)
+      .or(
+        `title.ilike.%${query}%,outcome.ilike.%${query}%,case_number.ilike.%${query}%`,
+      )
       .order("vote_score", { ascending: false })
       .limit(limit);
 
@@ -228,5 +230,47 @@ export async function fetchSearchPosts(
     return data.map((row) => rowToPost(row as Record<string, unknown>));
   } catch {
     return [];
+  }
+}
+
+export async function fetchAgentCaseCounts(): Promise<Record<string, number>> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data } = await supabase
+      .from("posts")
+      .select("agents!inner(slug)")
+      .eq("status", "approved");
+
+    const counts: Record<string, number> = {};
+    for (const row of (data ?? []) as Array<{
+      agents: { slug: string } | null;
+    }>) {
+      const slug = row.agents?.slug;
+      if (slug) counts[slug] = (counts[slug] ?? 0) + 1;
+    }
+    return counts;
+  } catch {
+    return {};
+  }
+}
+
+export async function fetchTagCaseCounts(): Promise<Record<string, number>> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data } = await supabase
+      .from("post_tags")
+      .select("tags!inner(slug), posts!inner(status)")
+      .eq("posts.status", "approved");
+
+    const counts: Record<string, number> = {};
+    for (const row of (data ?? []) as Array<{
+      tags: { slug: string } | null;
+    }>) {
+      const slug = row.tags?.slug;
+      if (slug) counts[slug] = (counts[slug] ?? 0) + 1;
+    }
+    return counts;
+  } catch {
+    return {};
   }
 }

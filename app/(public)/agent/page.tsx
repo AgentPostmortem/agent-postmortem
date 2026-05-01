@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AGENTS } from "@/lib/constants/agents";
+import { fetchAgentCaseCounts } from "@/lib/db/posts";
 
 export const revalidate = 60;
 
@@ -10,7 +11,9 @@ export const metadata: Metadata = {
     "Browse all AI agents with documented failure cases in the AgentPostmortem registry.",
 };
 
-export default function AgentsIndexPage() {
+export default async function AgentsIndexPage() {
+  const counts = await fetchAgentCaseCounts();
+
   const byCompany = AGENTS.reduce<Record<string, typeof AGENTS>>(
     (acc, agent) => {
       const key = agent.company;
@@ -50,27 +53,37 @@ export default function AgentsIndexPage() {
               {company}
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
-              {byCompany[company].map((agent) => (
-                <Link
-                  key={agent.slug}
-                  href={`/agent/${agent.slug}`}
-                  className="group rounded border border-border-default bg-bg-surface p-4 transition-colors hover:border-accent-red/40 hover:bg-bg-elevated"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <div className="font-mono text-sm font-semibold text-text-primary group-hover:text-accent-red">
-                        {agent.name}
+              {byCompany[company].map((agent) => {
+                const count = counts[agent.slug] ?? 0;
+                return (
+                  <Link
+                    key={agent.slug}
+                    href={`/agent/${agent.slug}`}
+                    className="group rounded border border-border-default bg-bg-surface p-4 transition-colors hover:border-accent-red/40 hover:bg-bg-elevated"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-sm font-semibold text-text-primary group-hover:text-accent-red">
+                            {agent.name}
+                          </span>
+                          {count > 0 && (
+                            <span className="rounded bg-accent-red/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-red">
+                              {count}
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-1 text-xs leading-relaxed text-text-tertiary">
+                          {agent.description}
+                        </p>
                       </div>
-                      <p className="mt-1 text-xs leading-relaxed text-text-tertiary">
-                        {agent.description}
-                      </p>
+                      <span className="shrink-0 font-mono text-xs text-text-tertiary group-hover:text-accent-red">
+                        →
+                      </span>
                     </div>
-                    <span className="shrink-0 font-mono text-xs text-text-tertiary group-hover:text-accent-red">
-                      →
-                    </span>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         ))}

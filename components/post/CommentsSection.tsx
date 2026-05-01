@@ -103,6 +103,26 @@ export function CommentsSection({ postId }: { postId: string }) {
         </div>
       )}
 
+      {!loaded && (
+        <div className="mb-8 space-y-3">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="rounded border border-border-default bg-bg-surface px-4 py-3"
+            >
+              <div className="mb-2 flex gap-2">
+                <div className="h-3 w-20 animate-pulse rounded bg-bg-elevated" />
+                <div className="h-3 w-16 animate-pulse rounded bg-bg-elevated" />
+              </div>
+              <div className="space-y-1.5">
+                <div className="h-3 w-full animate-pulse rounded bg-bg-elevated" />
+                <div className="h-3 w-3/4 animate-pulse rounded bg-bg-elevated" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {loaded && comments.length === 0 && (
         <p className="mb-6 font-mono text-xs text-text-tertiary">
           No comments yet. Be the first to add context.
