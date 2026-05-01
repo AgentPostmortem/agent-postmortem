@@ -60,23 +60,21 @@ export function PostCard({ post, commentCount }: PostCardProps) {
         {/* Body */}
         <div className="min-w-0 flex-1 px-4 py-3.5">
           {/* Case number row */}
-          <div className="mb-2 flex items-center gap-x-2 overflow-hidden">
-            {/* Left: metadata pills */}
-            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            {/* Left: metadata — truncates if too long */}
+            <div className="flex min-w-0 items-center gap-x-2 overflow-hidden">
               <span className="shrink-0 font-mono text-[10px] tracking-widest text-text-tertiary">
                 {post.caseNumber}
               </span>
-              <span className="text-border-strong text-xs">·</span>
+              <span className="shrink-0 text-border-strong text-xs">·</span>
               <Link
                 href={`/agent/${post.agentSlug}`}
                 onClick={(e) => e.stopPropagation()}
-                className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:text-text-primary"
+                className="truncate font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:text-text-primary"
               >
                 {post.agentName}
               </Link>
-              <span className="text-border-strong text-xs">·</span>
-
-              {/* Severity pill */}
+              <span className="shrink-0 text-border-strong text-xs">·</span>
               <span
                 className={`inline-flex shrink-0 items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${post.damageLevel >= 4 ? "text-accent-red" : "text-text-tertiary"}`}
               >
@@ -85,11 +83,13 @@ export function PostCard({ post, commentCount }: PostCardProps) {
                 />
                 {SEVERITY_LABEL[post.damageLevel]}
               </span>
-
               {cost && (
-                <span className="shrink-0 font-mono text-[10px] font-semibold text-accent-red">
-                  ~{cost}
-                </span>
+                <>
+                  <span className="shrink-0 text-border-strong text-xs">·</span>
+                  <span className="shrink-0 font-mono text-[10px] font-semibold text-accent-red">
+                    ~{cost}
+                  </span>
+                </>
               )}
             </div>
 
