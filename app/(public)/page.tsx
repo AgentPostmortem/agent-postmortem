@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
@@ -49,28 +50,9 @@ interface PageProps {
   };
 }
 
-export default async function HomePage({ searchParams }: PageProps) {
-  const activeTab = (searchParams.tab as FeedTab) ?? "hot";
-  const currentPage = Math.max(1, parseInt(searchParams.page ?? "1") || 1);
-  const activeAgent = searchParams.agent ?? "";
-  const activeSeverity = searchParams.severity ?? "";
-
-  const [{ posts, total }, stats] = await Promise.all([
-    fetchFeedPosts(
-      activeTab,
-      currentPage,
-      activeAgent || undefined,
-      activeSeverity ? parseInt(activeSeverity) : undefined,
-    ),
-    fetchSiteStats(),
-  ]);
-
-  const commentCounts = await fetchCommentCountsByPostIds(
-    posts.map((p) => p.id),
-  );
-
-  const totalPages = Math.ceil(total / 20);
-
+// Async component: fetches site-wide stats and renders the counter strip.
+async function HomepageStats() {
+  const stats = await fetchSiteStats();
   const formattedDamage =
     stats.totalDamage >= 1_000_000
       ? `$${(stats.totalDamage / 1_000_000).toFixed(1)}M`
@@ -80,9 +62,132 @@ export default async function HomePage({ searchParams }: PageProps) {
           ? `$${stats.totalDamage}`
           : null;
 
+  if (!stats.totalPosts && !formattedDamage) return null;
+
+  return (
+    <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded border border-border-default bg-border-default">
+      {[
+        { value: stats.totalPosts.toLocaleString(), label: "Cases Filed" },
+        {
+          value: formattedDamage ?? "—",
+          label: "Estimated Damage",
+          red: true,
+        },
+        { value: stats.totalAgents.toString(), label: "Agents Implicated" },
+      ].map((stat) => (
+        <div
+          key={stat.label}
+          className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5"
+        >
+          <div
+            className={`font-mono text-lg font-semibold tabular-nums sm:text-2xl ${stat.red ? "text-accent-red-muted" : "text-text-primary"}`}
+          >
+            {stat.value}
+          </div>
+          <div className="mt-0.5 font-mono text-[8px] uppercase tracking-widest text-text-tertiary sm:text-[9px]">
+            {stat.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function StatsSkeleton() {
+  return (
+    <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded border border-border-default bg-border-default">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5">
+          <div className="h-6 w-16 animate-pulse rounded bg-border-strong sm:h-8" />
+          <div className="mt-1.5 h-2 w-20 animate-pulse rounded bg-border-default" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Async component: fetches posts + comment counts for the current filters.
+async function PostsFeed({
+  activeTab,
+  currentPage,
+  activeAgent,
+  activeSeverity,
+}: {
+  activeTab: FeedTab;
+  currentPage: number;
+  activeAgent: string;
+  activeSeverity: string;
+}) {
+  const [{ posts, total }] = await Promise.all([
+    fetchFeedPosts(
+      activeTab,
+      currentPage,
+      activeAgent || undefined,
+      activeSeverity ? parseInt(activeSeverity) : undefined,
+    ),
+  ]);
+
+  const commentCounts = await fetchCommentCountsByPostIds(
+    posts.map((p) => p.id),
+  );
+
+  const totalPages = Math.ceil(total / 20);
+
+  if (posts.length === 0) return <EmptyFeed />;
+
+  return (
+    <>
+      <div className="space-y-2">
+        {posts.map((post) => (
+          <PostCard
+            key={post.id}
+            post={post}
+            commentCount={commentCounts[post.id]}
+          />
+        ))}
+      </div>
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          hrefForPage={(p) => {
+            const params = new URLSearchParams();
+            params.set("tab", activeTab);
+            if (p > 1) params.set("page", String(p));
+            if (activeAgent) params.set("agent", activeAgent);
+            if (activeSeverity) params.set("severity", activeSeverity);
+            return `/?${params.toString()}`;
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+function PostsSkeleton() {
+  return (
+    <div className="space-y-2">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <div
+          key={i}
+          className="h-28 animate-pulse rounded border border-border-default bg-bg-surface"
+        />
+      ))}
+    </div>
+  );
+}
+
+// Page shell is synchronous — h1, filters, and sidebar render immediately.
+// DB-dependent sections (stats, posts) are Suspense boundaries that stream in.
+export default function HomePage({ searchParams }: PageProps) {
+  const activeTab = (searchParams.tab as FeedTab) ?? "hot";
+  const currentPage = Math.max(1, parseInt(searchParams.page ?? "1") || 1);
+  const activeAgent = searchParams.agent ?? "";
+  const activeSeverity = searchParams.severity ?? "";
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-      {/* Hero */}
+      {/* Hero — streams immediately, no DB dependency */}
       <div className="mb-10 border-b border-border-default pb-10">
         <div className="mb-4 flex items-center gap-2">
           <span className="stamp stamp-red">Unrestricted</span>
@@ -105,40 +210,10 @@ export default async function HomePage({ searchParams }: PageProps) {
           doesn&apos;t make the same mistake.
         </p>
 
-        {/* Stats */}
-        {(stats.totalPosts > 0 || formattedDamage) && (
-          <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded border border-border-default bg-border-default">
-            {[
-              {
-                value: stats.totalPosts.toLocaleString(),
-                label: "Cases Filed",
-              },
-              {
-                value: formattedDamage ?? "—",
-                label: "Estimated Damage",
-                red: true,
-              },
-              {
-                value: stats.totalAgents.toString(),
-                label: "Agents Implicated",
-              },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5"
-              >
-                <div
-                  className={`font-mono text-lg font-semibold tabular-nums sm:text-2xl ${stat.red ? "text-accent-red-muted" : "text-text-primary"}`}
-                >
-                  {stat.value}
-                </div>
-                <div className="mt-0.5 font-mono text-[8px] uppercase tracking-widest text-text-tertiary sm:text-[9px]">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Stats counter strip — streams in after fetchSiteStats */}
+        <Suspense fallback={<StatsSkeleton />}>
+          <HomepageStats />
+        </Suspense>
 
         {/* Search bar */}
         <form method="GET" action="/search" className="mt-6">
@@ -280,36 +355,15 @@ export default async function HomePage({ searchParams }: PageProps) {
             </div>
           </div>
 
-          {/* Cards */}
-          {posts.length === 0 ? (
-            <EmptyFeed />
-          ) : (
-            <>
-              <div className="space-y-2">
-                {posts.map((post) => (
-                  <PostCard
-                    key={post.id}
-                    post={post}
-                    commentCount={commentCounts[post.id]}
-                  />
-                ))}
-              </div>
-              {totalPages > 1 && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  hrefForPage={(p) => {
-                    const params = new URLSearchParams();
-                    params.set("tab", activeTab);
-                    if (p > 1) params.set("page", String(p));
-                    if (activeAgent) params.set("agent", activeAgent);
-                    if (activeSeverity) params.set("severity", activeSeverity);
-                    return `/?${params.toString()}`;
-                  }}
-                />
-              )}
-            </>
-          )}
+          {/* Posts — streams in after fetchFeedPosts resolves */}
+          <Suspense fallback={<PostsSkeleton />}>
+            <PostsFeed
+              activeTab={activeTab}
+              currentPage={currentPage}
+              activeAgent={activeAgent}
+              activeSeverity={activeSeverity}
+            />
+          </Suspense>
 
           {/* Mobile browse strip — hidden on desktop where sidebar handles this */}
           <div className="mt-8 border-t border-border-default pt-6 lg:hidden">
@@ -378,18 +432,16 @@ export default async function HomePage({ searchParams }: PageProps) {
                 { name: "Devin", slug: "devin" },
                 { name: "Cursor", slug: "cursor" },
                 { name: "Gemini", slug: "gemini" },
-              ].map(({ name, slug }) => {
-                return (
-                  <Link
-                    key={slug}
-                    href={`/agent/${slug}`}
-                    className="flex items-center justify-between py-2 font-mono text-xs text-text-secondary transition-colors hover:text-text-primary"
-                  >
-                    <span>{name}</span>
-                    <span className="text-text-tertiary">→</span>
-                  </Link>
-                );
-              })}
+              ].map(({ name, slug }) => (
+                <Link
+                  key={slug}
+                  href={`/agent/${slug}`}
+                  className="flex items-center justify-between py-2 font-mono text-xs text-text-secondary transition-colors hover:text-text-primary"
+                >
+                  <span>{name}</span>
+                  <span className="text-text-tertiary">→</span>
+                </Link>
+              ))}
               <Link
                 href="/agent"
                 className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
