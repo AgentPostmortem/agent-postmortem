@@ -27,7 +27,7 @@ const SEVERITY_LABEL: Record<number, string> = {
 };
 
 export default async function HallOfFamePage() {
-  const posts = await fetchFeedPosts("hof", 100);
+  const posts = await fetchFeedPosts("hof", 25);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
