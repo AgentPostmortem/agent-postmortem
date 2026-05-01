@@ -11,7 +11,9 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {},
+  experimental: {
+    browsersListForSwc: true,
+  },
 };
 
 export default nextConfig;

@@ -41,6 +41,11 @@ export const metadata: Metadata = {
   },
 };
 
+const supabaseOrigin = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(
+  /\/$/,
+  "",
+);
+
 export default function RootLayout({
   children,
 }: {
@@ -52,6 +57,15 @@ export default function RootLayout({
       className={`${GeistSans.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        {supabaseOrigin && (
+          <link
+            rel="preconnect"
+            href={supabaseOrigin}
+            crossOrigin="anonymous"
+          />
+        )}
+      </head>
       <body className="min-h-screen bg-bg-canvas text-text-primary font-sans antialiased">
         {children}
       </body>

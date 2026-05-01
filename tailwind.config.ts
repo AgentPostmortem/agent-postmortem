@@ -28,11 +28,12 @@ const config: Config = {
         "bg-elevated": "#1a1a1e",
         "text-primary": "#f0f0f0",
         "text-secondary": "#9a9a9a",
-        "text-tertiary": "#5a5a5a",
+        "text-tertiary": "#767676",
         "border-default": "#222226",
         "border-strong": "#333338",
         "accent-red": "#dc2626",
         "accent-red-soft": "#1f0a0a",
+        "accent-red-muted": "#f87171",
       },
       typography: {
         DEFAULT: {

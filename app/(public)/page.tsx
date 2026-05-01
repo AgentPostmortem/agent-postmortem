@@ -383,7 +383,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                   <Link
                     key={slug}
                     href={`/agent/${slug}`}
-                    className="flex items-center justify-between py-1 font-mono text-xs text-text-secondary transition-colors hover:text-text-primary"
+                    className="flex items-center justify-between py-2 font-mono text-xs text-text-secondary transition-colors hover:text-text-primary"
                   >
                     <span>{name}</span>
                     <span className="text-text-tertiary">→</span>
@@ -409,7 +409,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                 <Link
                   key={slug}
                   href={`/tag/${slug}`}
-                  className="block py-1 font-mono text-xs text-text-secondary transition-colors hover:text-accent-red"
+                  className="block py-2 font-mono text-xs text-text-secondary transition-colors hover:text-accent-red"
                 >
                   #{slug}
                 </Link>
@@ -428,7 +428,7 @@ export default async function HomePage({ searchParams }: PageProps) {
               </p>
               <Link
                 href="/submit"
-                className="block rounded border border-accent-red bg-accent-red-soft px-3 py-2 text-center font-mono text-[10px] uppercase tracking-wider text-accent-red transition-all hover:bg-accent-red hover:text-white"
+                className="block rounded border border-accent-red bg-accent-red-soft px-3 py-2 text-center font-mono text-[10px] uppercase tracking-wider text-accent-red-muted transition-all hover:bg-accent-red hover:text-white"
               >
                 + File Report
               </Link>
