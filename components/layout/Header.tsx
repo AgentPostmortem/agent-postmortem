@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { LogoIcon } from "@/components/brand/Logo";
 
 const NAV = [
@@ -15,6 +16,10 @@ const NAV = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const visibleNav = NAV.filter(
+    (link) => !(link.href === "/" && pathname === "/"),
+  );
 
   return (
     <>
@@ -40,7 +45,7 @@ export function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-6 md:flex">
-            {NAV.slice(0, 4).map((link) => (
+            {visibleNav.slice(0, 4).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -93,7 +98,7 @@ export function Header() {
         {open && (
           <div className="border-t border-border-default bg-bg-canvas md:hidden">
             <nav className="mx-auto max-w-5xl divide-y divide-border-default px-4">
-              {NAV.map((link) => (
+              {visibleNav.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
