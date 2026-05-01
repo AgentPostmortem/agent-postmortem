@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import { createHash } from "crypto";
 import { notFound } from "next/navigation";
 import { EditCaseForm } from "@/components/post/EditCaseForm";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { SubmitFormValues } from "@/lib/schemas/submit";
+
+export const metadata: Metadata = {
+  title: "Edit Case — AgentPostmortem",
+  description: "Amend your AI agent failure case report.",
+  robots: { index: false },
+};
 
 interface PageProps {
   params: { token: string };
