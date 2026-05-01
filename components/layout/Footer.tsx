@@ -5,7 +5,9 @@ const LINKS = [
   { href: "/teams", label: "Teams" },
   { href: "/hall-of-fame", label: "Hall of Fame" },
   { href: "/submit", label: "File a Report" },
-  { href: "/about#contact", label: "Contact" },
+  { href: "/contact", label: "Contact" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
   {
     href: "https://github.com/AgentPostmortem/agent-postmortem",
     label: "GitHub",
