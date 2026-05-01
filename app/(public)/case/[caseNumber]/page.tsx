@@ -7,6 +7,7 @@ import { VoteButtons } from "@/components/post/VoteButtons";
 import { PostCard } from "@/components/post/PostCard";
 import { fetchPostByCase, fetchRelatedPosts } from "@/lib/db/posts";
 import { CopyLinkButton } from "@/components/post/CopyLinkButton";
+import { CommentsSection } from "@/components/post/CommentsSection";
 
 export const revalidate = 60;
 
@@ -266,6 +267,9 @@ export default async function CasePage({ params }: PageProps) {
           </div>
         </section>
       )}
+
+      {/* Comments */}
+      <CommentsSection postId={post.id} />
 
       {/* Related cases */}
       {related.length > 0 && (
