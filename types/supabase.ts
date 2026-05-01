@@ -47,6 +47,7 @@ export type Database = {
           submitter_handle: string | null;
           submitter_email: string | null;
           edit_token_hash: string;
+          edit_token_expires_at: string | null;
           ip_hash: string;
           is_anonymous: boolean;
           vote_score: number;
@@ -66,7 +67,8 @@ export type Database = {
           screenshot_urls?: string[];
           submitter_handle?: string | null;
           submitter_email?: string | null;
-          edit_token_hash: string;
+          edit_token_hash?: string;
+          edit_token_expires_at?: string | null;
           ip_hash: string;
           is_anonymous?: boolean;
           vote_score?: number;
@@ -87,6 +89,7 @@ export type Database = {
           submitter_handle?: string | null;
           submitter_email?: string | null;
           edit_token_hash?: string;
+          edit_token_expires_at?: string | null;
           ip_hash?: string;
           is_anonymous?: boolean;
           vote_score?: number;

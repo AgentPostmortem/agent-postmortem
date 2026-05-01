@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchFeedPosts } from "@/lib/db/posts";
+import { VoteButtons } from "@/components/post/VoteButtons";
 
 export const revalidate = 60;
 
@@ -68,7 +69,7 @@ export default async function HallOfFamePage() {
             <span className="hidden w-24 text-right font-mono text-[9px] uppercase tracking-widest text-text-tertiary sm:inline">
               Severity
             </span>
-            <span className="w-16 text-right font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+            <span className="w-28 text-right font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
               Score
             </span>
           </div>
@@ -152,11 +153,12 @@ export default async function HallOfFamePage() {
                     {SEVERITY_LABEL[post.damageLevel]}
                   </div>
 
-                  {/* Score */}
-                  <div className="w-16 text-right font-mono text-xs tabular-nums text-text-secondary">
-                    {post.voteScore >= 1000
-                      ? `${(post.voteScore / 1000).toFixed(1)}k`
-                      : post.voteScore}
+                  {/* Vote buttons */}
+                  <div className="w-28 flex justify-end">
+                    <VoteButtons
+                      postId={post.id}
+                      initialScore={post.voteScore}
+                    />
                   </div>
                 </li>
               );
