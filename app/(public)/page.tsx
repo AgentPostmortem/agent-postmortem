@@ -21,7 +21,7 @@ const TABS: { label: string; value: FeedTab }[] = [
 const AGENT_FILTERS = [
   { label: "All", value: "" },
   { label: "Claude", value: "claude" },
-  { label: "GPT-4o", value: "gpt-4o" },
+  { label: "OpenAI", value: "gpt-4o" },
   { label: "Devin", value: "devin" },
   { label: "Cursor", value: "cursor" },
   { label: "Gemini", value: "gemini" },
@@ -136,7 +136,7 @@ export default async function HomePage({ searchParams }: PageProps) {
             <input
               type="text"
               name="q"
-              placeholder="Search cases… deleted database, hallucination, GPT-4o"
+              placeholder="Search cases… deleted database, hallucination, OpenAI"
               className="flex-1 rounded border border-border-default bg-bg-surface px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent-red focus:outline-none"
             />
             <button
@@ -297,8 +297,13 @@ export default async function HomePage({ searchParams }: PageProps) {
         <aside className="hidden w-56 shrink-0 lg:block">
           <div className="sticky top-20 space-y-5">
             <SidebarCard title="By Agent">
-              {["Claude", "GPT-4o", "Devin", "Cursor", "Gemini"].map((name) => {
-                const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-");
+              {[
+                { name: "Claude", slug: "claude" },
+                { name: "OpenAI", slug: "gpt-4o" },
+                { name: "Devin", slug: "devin" },
+                { name: "Cursor", slug: "cursor" },
+                { name: "Gemini", slug: "gemini" },
+              ].map(({ name, slug }) => {
                 return (
                   <Link
                     key={slug}
