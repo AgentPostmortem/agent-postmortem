@@ -21,7 +21,7 @@ const TABS: { label: string; value: FeedTab }[] = [
 const AGENT_FILTERS = [
   { label: "All", value: "" },
   { label: "Claude", value: "claude" },
-  { label: "OpenAI", value: "gpt-4o" },
+  { label: "OpenAI", value: "openai" },
   { label: "Devin", value: "devin" },
   { label: "Cursor", value: "cursor" },
   { label: "Gemini", value: "gemini" },
@@ -299,7 +299,7 @@ export default async function HomePage({ searchParams }: PageProps) {
             <SidebarCard title="By Agent">
               {[
                 { name: "Claude", slug: "claude" },
-                { name: "OpenAI", slug: "gpt-4o" },
+                { name: "OpenAI", slug: "openai" },
                 { name: "Devin", slug: "devin" },
                 { name: "Cursor", slug: "cursor" },
                 { name: "Gemini", slug: "gemini" },

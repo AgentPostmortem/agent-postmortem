@@ -20,8 +20,8 @@ export const AGENTS: AgentMeta[] = [
     description: "OpenAI's flagship model, used via ChatGPT, API, and plugins.",
   },
   {
-    slug: "gpt-4o",
-    name: "GPT-4o",
+    slug: "openai",
+    name: "OpenAI",
     company: "OpenAI",
     description:
       "OpenAI's omni model with vision, audio, and agentic capabilities.",
