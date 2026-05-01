@@ -11,6 +11,7 @@ const LINKS = [
   {
     href: "https://github.com/AgentPostmortem/agent-postmortem",
     label: "GitHub",
+    external: true,
   },
 ];
 
@@ -32,6 +33,9 @@ export function Footer() {
                 key={link.href}
                 href={link.href}
                 className="font-mono text-xs text-text-tertiary transition-colors hover:text-text-secondary"
+                {...(link.external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
               >
                 {link.label}
               </Link>
