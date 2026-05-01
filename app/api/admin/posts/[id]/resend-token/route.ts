@@ -31,11 +31,7 @@ export async function POST(
 
   await supabase
     .from("posts")
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .update({
-      edit_token_hash: tokenHash,
-      edit_token_expires_at: expiresAt,
-    } as any)
+    .update({ edit_token_hash: tokenHash, edit_token_expires_at: expiresAt })
     .eq("id", params.id);
 
   await sendEditTokenEmail({
