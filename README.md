@@ -68,7 +68,7 @@ supabase/
 
 ## Local development
 
-**Prerequisites:** Node 20+, a Supabase project, Cloudflare R2 bucket, Resend account.
+**Prerequisites:** Node 22+, a Supabase project, Cloudflare R2 bucket, Resend account.
 
 ```bash
 git clone https://github.com/AgentPostmortem/agent-postmortem

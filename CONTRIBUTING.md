@@ -8,7 +8,7 @@ Thanks for your interest in contributing. This document covers how to set up the
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - A Supabase project (free tier works)
 - Git
 
@@ -80,7 +80,7 @@ Tags follow the same pattern — add to `lib/constants/tags.ts` and include the 
 ### UI / bug fixes
 
 - Keep changes focused — one fix or feature per PR
-- Match the existing design tokens (`bg-canvas`, `accent-red`, `text-tertiary`, etc.) defined in `tailwind.config.ts`
+- Match the existing design tokens (`bg-canvas`, `accent-red`, `accent-red-muted`, `text-tertiary`, etc.) defined in `tailwind.config.ts`. Use `text-accent-red-muted` (not `text-accent-red`) when placing red text on `bg-accent-red-soft` backgrounds to pass WCAG AA contrast.
 - Test on both mobile and desktop before submitting
 
 ### New features
