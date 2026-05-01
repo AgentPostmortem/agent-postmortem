@@ -1,49 +1,75 @@
 import Link from "next/link";
 
-const LINKS = [
-  { href: "/about", label: "About" },
-  { href: "/teams", label: "Teams" },
-  { href: "/hall-of-fame", label: "Hall of Fame" },
-  { href: "/submit", label: "File a Report" },
-  { href: "/contact", label: "Contact" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
+const LINK_GROUPS = [
   {
-    href: "https://github.com/AgentPostmortem/agent-postmortem",
-    label: "GitHub",
-    external: true,
+    links: [
+      { href: "/about", label: "About" },
+      { href: "/contact", label: "Contact" },
+      { href: "/teams", label: "Teams" },
+    ],
+  },
+  {
+    links: [
+      { href: "/hall-of-fame", label: "Hall of Fame" },
+      { href: "/submit", label: "File a Report" },
+      {
+        href: "https://github.com/AgentPostmortem/agent-postmortem",
+        label: "GitHub",
+        external: true,
+      },
+    ],
+  },
+  {
+    links: [
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
+    ],
   },
 ];
 
 export function Footer() {
   return (
     <footer className="mt-20 border-t border-border-default">
-      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-1.5 rounded-sm bg-accent-red" />
-            <span className="font-serif text-sm text-text-tertiary">
-              AgentPostmortem
-            </span>
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
+          {/* Brand */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <div className="h-1.5 w-1.5 rounded-sm bg-accent-red" />
+              <span className="font-serif text-sm text-text-primary">
+                AgentPostmortem
+              </span>
+            </div>
+            <p className="max-w-[16rem] font-mono text-[11px] leading-relaxed text-text-tertiary">
+              A public ledger for AI agent failures. Not affiliated with any AI
+              vendor.
+            </p>
           </div>
 
-          <nav className="flex flex-wrap gap-x-5 gap-y-1.5">
-            {LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="font-mono text-xs text-text-tertiary transition-colors hover:text-text-secondary"
-                {...(link.external
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-              >
-                {link.label}
-              </Link>
+          {/* Link groups */}
+          <div className="flex flex-wrap gap-x-10 gap-y-6">
+            {LINK_GROUPS.map((group, i) => (
+              <nav key={i} className="flex flex-col gap-2.5">
+                {group.links.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="font-mono text-xs text-text-tertiary transition-colors hover:text-text-secondary"
+                    {...("external" in link && link.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
             ))}
-          </nav>
+          </div>
+        </div>
 
-          <p className="font-mono text-xs text-text-tertiary">
-            Not affiliated with any AI vendor.
+        <div className="mt-8 border-t border-border-default pt-6">
+          <p className="font-mono text-[10px] text-text-tertiary">
+            © {new Date().getFullYear()} AgentPostmortem. Open source.
           </p>
         </div>
       </div>
