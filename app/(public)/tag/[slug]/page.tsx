@@ -48,9 +48,11 @@ export default async function TagPage({ params }: PageProps) {
           Registry
         </Link>
         <span>/</span>
-        <span>Tags</span>
+        <Link href="/tag" className="hover:text-text-secondary">
+          Tags
+        </Link>
         <span>/</span>
-        <span>#{tag.label}</span>
+        <span>#{tag.slug}</span>
       </div>
 
       {/* Header */}

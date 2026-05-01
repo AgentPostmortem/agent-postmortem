@@ -67,7 +67,9 @@ export default async function AgentPage({ params }: PageProps) {
           Registry
         </Link>
         <span>/</span>
-        <span>Agents</span>
+        <Link href="/agent" className="hover:text-text-secondary">
+          Agents
+        </Link>
         <span>/</span>
         <span>{agent.name}</span>
       </div>
