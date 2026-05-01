@@ -224,20 +224,17 @@ export async function fetchSearchPosts(
       .ilike("name", `%${query}%`);
     const agentIds = (agentRows ?? []).map((a) => (a as { id: string }).id);
 
-    let q = supabase
+    const textFilter = `title.ilike.%${query}%,outcome.ilike.%${query}%,case_number.ilike.%${query}%`;
+    const orFilter =
+      agentIds.length > 0
+        ? `${textFilter},agent_id.in.(${agentIds.join(",")})`
+        : textFilter;
+
+    const q = supabase
       .from("posts")
       .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
-      .eq("status", "approved");
-
-    if (agentIds.length > 0) {
-      q = q.or(
-        `title.ilike.%${query}%,outcome.ilike.%${query}%,case_number.ilike.%${query}%,agent_id.in.(${agentIds.join(",")})`,
-      );
-    } else {
-      q = q.or(
-        `title.ilike.%${query}%,outcome.ilike.%${query}%,case_number.ilike.%${query}%`,
-      );
-    }
+      .eq("status", "approved")
+      .or(orFilter);
 
     const { data, error } = await q
       .order("vote_score", { ascending: false })

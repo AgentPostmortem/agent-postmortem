@@ -31,9 +31,33 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
   const supabase = createSupabaseAdminClient();
 
+  // Assign case number on approval if not already set
+  let caseNumber: string | null = null;
+  if (parsed.data.status === "approved") {
+    const { data: existing } = await supabase
+      .from("posts")
+      .select("case_number")
+      .eq("id", params.id)
+      .single();
+
+    if (!existing?.case_number) {
+      const { count } = await supabase
+        .from("posts")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "approved");
+      const seq = ((count ?? 0) + 1).toString().padStart(4, "0");
+      caseNumber = `APM-${seq}`;
+    }
+  }
+
+  const updatePayload =
+    caseNumber !== null
+      ? { status: parsed.data.status, case_number: caseNumber }
+      : { status: parsed.data.status };
+
   const { data, error } = await supabase
     .from("posts")
-    .update({ status: parsed.data.status })
+    .update(updatePayload)
     .eq("id", params.id)
     .select("id, status, case_number, submitter_email, title")
     .single();
@@ -48,14 +72,20 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
   if (parsed.data.status === "approved" && data.submitter_email) {
     const caseUrl = `https://agentpostmortem.com/case/${data.case_number}`;
-    sendApprovalEmail({
-      to: data.submitter_email,
-      caseNumber: data.case_number,
-      caseTitle: data.title,
-      caseUrl,
-    }).catch((err) => {
+    try {
+      await sendApprovalEmail({
+        to: data.submitter_email,
+        caseNumber: data.case_number,
+        caseTitle: data.title,
+        caseUrl,
+      });
+    } catch (err) {
       console.error("[admin/posts/id] approval email failed:", err);
-    });
+      return NextResponse.json(
+        { error: "Post approved but approval email failed to send.", data },
+        { status: 207 },
+      );
+    }
   }
 
   return NextResponse.json(data);

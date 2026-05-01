@@ -48,6 +48,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const isAnon = is_anonymous ?? true;
+    const handle =
+      typeof author_handle === "string" ? author_handle.trim() : null;
+    if (!isAnon && !handle) {
+      return NextResponse.json(
+        { error: "A handle is required when posting non-anonymously." },
+        { status: 400 },
+      );
+    }
+
     const ip = getIp(req);
     const ip_hash = hashIp(ip);
 
@@ -70,8 +80,8 @@ export async function POST(req: NextRequest) {
       .insert({
         post_id,
         body: trimmed,
-        is_anonymous: is_anonymous ?? true,
-        author_handle: is_anonymous ? null : (author_handle ?? null),
+        is_anonymous: isAnon,
+        author_handle: isAnon ? null : handle,
         ip_hash,
         status: "visible",
       })

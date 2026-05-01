@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 
@@ -64,6 +64,7 @@ function DamagePip({ level }: { level: number }) {
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [authedPassword, setAuthedPassword] = useState("");
+  const authedPasswordRef = useRef("");
   const [authError, setAuthError] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
 
@@ -116,9 +117,9 @@ export default function AdminPage() {
   const [initialAuthDone, setInitialAuthDone] = useState(false);
   useEffect(() => {
     if (authenticated && initialAuthDone) {
-      fetchPosts(tab, authedPassword);
+      fetchPosts(tab, authedPasswordRef.current);
     }
-  }, [tab]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [tab, authenticated, initialAuthDone, fetchPosts]);
 
   async function handleAuth(e: React.FormEvent) {
     e.preventDefault();
@@ -129,6 +130,7 @@ export default function AdminPage() {
     if (res.ok) {
       const json = await res.json();
       setAuthedPassword(password);
+      authedPasswordRef.current = password;
       setPosts(json.posts ?? []);
       setCounts(json.counts ?? { pending: 0, approved: 0, rejected: 0 });
       setInitialAuthDone(true);
