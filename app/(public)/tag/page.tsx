@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { TAGS } from "@/lib/constants/tags";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Tags — AgentPostmortem",
   description: "Browse all failure categories in the AgentPostmortem registry.",

@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
 import { TagBadge } from "@/components/post/TagBadge";
 import { VoteButtons } from "@/components/post/VoteButtons";
 import { PostCard } from "@/components/post/PostCard";
 import { fetchPostByCase, fetchRelatedPosts } from "@/lib/db/posts";
 import { CopyLinkButton } from "@/components/post/CopyLinkButton";
+
+export const revalidate = 60;
+
+// Cache the case fetch so generateMetadata and the page share the same result
+const getCachedCase = unstable_cache(
+  (caseNumber: string) => fetchPostByCase(caseNumber),
+  ["case"],
+  { revalidate: 60 },
+);
 
 interface PageProps {
   params: { caseNumber: string };
@@ -14,7 +24,7 @@ interface PageProps {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const post = await fetchPostByCase(params.caseNumber);
+  const post = await getCachedCase(params.caseNumber);
   const caseNum = params.caseNumber.toUpperCase();
   const title = post ? post.title : `Case ${caseNum}`;
   const description =
@@ -80,7 +90,7 @@ const SEVERITY_META: Record<
 };
 
 export default async function CasePage({ params }: PageProps) {
-  const post = await fetchPostByCase(params.caseNumber);
+  const post = await getCachedCase(params.caseNumber);
   if (!post) notFound();
 
   const related = await fetchRelatedPosts(

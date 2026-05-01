@@ -3,6 +3,8 @@ import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
 import { fetchSearchPosts } from "@/lib/db/posts";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Search — AgentPostmortem",
   description: "Search AI agent failure cases by keyword.",

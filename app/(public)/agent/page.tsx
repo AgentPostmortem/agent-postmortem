@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AGENTS } from "@/lib/constants/agents";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "AI Agents — AgentPostmortem",
   description:
