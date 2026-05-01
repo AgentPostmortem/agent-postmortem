@@ -5,13 +5,28 @@ import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
 import type { Post } from "@/types";
 
-export function SearchResults({ initialQuery }: { initialQuery: string }) {
+export function SearchResults({
+  initialQuery,
+  initialResults,
+}: {
+  initialQuery: string;
+  initialResults: Post[];
+}) {
   const [query, setQuery] = useState(initialQuery);
-  const [results, setResults] = useState<Post[]>([]);
-  const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [results, setResults] = useState<Post[]>(initialResults);
+  const [status, setStatus] = useState<"idle" | "loading" | "done">(
+    initialQuery.length >= 2 ? "done" : "idle",
+  );
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
+    // Skip the first render — we already have server-rendered results
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     if (query.length < 2) {
       setResults([]);
       setStatus("idle");
@@ -35,6 +50,14 @@ export function SearchResults({ initialQuery }: { initialQuery: string }) {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
+  }, [query]);
+
+  // Update URL without navigation when query changes
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    const url =
+      query.length >= 2 ? `/search?q=${encodeURIComponent(query)}` : "/search";
+    window.history.replaceState(null, "", url);
   }, [query]);
 
   return (

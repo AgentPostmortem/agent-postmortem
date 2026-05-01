@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SearchResults } from "@/components/post/SearchResults";
+import { fetchSearchPosts } from "@/lib/db/posts";
 
 export const metadata: Metadata = {
   title: "Search — AgentPostmortem",
@@ -10,7 +11,15 @@ interface PageProps {
   searchParams: { q?: string };
 }
 
-export default function SearchPage({ searchParams }: PageProps) {
+export default async function SearchPage({ searchParams }: PageProps) {
   const initialQuery = (searchParams.q ?? "").trim();
-  return <SearchResults initialQuery={initialQuery} />;
+  const initialResults =
+    initialQuery.length >= 2 ? await fetchSearchPosts(initialQuery) : [];
+
+  return (
+    <SearchResults
+      initialQuery={initialQuery}
+      initialResults={initialResults}
+    />
+  );
 }

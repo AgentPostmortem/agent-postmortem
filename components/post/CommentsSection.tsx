@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface Comment {
   id: string;
@@ -8,6 +8,28 @@ interface Comment {
   is_anonymous: boolean;
   author_handle: string | null;
   created_at: string;
+}
+
+function CommentAnchorLink({ commentId }: { commentId: string }) {
+  const [copied, setCopied] = useState(false);
+
+  function copy() {
+    const url = `${window.location.origin}${window.location.pathname}#c-${commentId}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
+  return (
+    <button
+      onClick={copy}
+      className="font-mono text-[10px] text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100 hover:text-text-secondary"
+      title="Copy link to comment"
+    >
+      {copied ? "Copied" : "#"}
+    </button>
+  );
 }
 
 export function CommentsSection({ postId }: { postId: string }) {
@@ -19,8 +41,15 @@ export function CommentsSection({ postId }: { postId: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const highlightRef = useRef<string | null>(null);
 
   useEffect(() => {
+    // Pick up anchor from URL hash
+    const hash = window.location.hash;
+    if (hash.startsWith("#c-")) {
+      highlightRef.current = hash.slice(3);
+    }
+
     fetch(`/api/comments?post_id=${postId}`)
       .then((r) => r.json())
       .then((json) => {
@@ -29,6 +58,14 @@ export function CommentsSection({ postId }: { postId: string }) {
       })
       .catch(() => setLoaded(true));
   }, [postId]);
+
+  // Scroll to anchored comment after load
+  useEffect(() => {
+    if (loaded && highlightRef.current) {
+      const el = document.getElementById(`c-${highlightRef.current}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [loaded]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,42 +104,12 @@ export function CommentsSection({ postId }: { postId: string }) {
   }
 
   return (
-    <div className="mt-10 border-t border-border-default pt-8">
+    <div className="mt-10 border-t border-border-default pt-8" id="discussion">
       <div className="mb-5 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
         Discussion{comments.length > 0 ? ` · ${comments.length}` : ""}
       </div>
 
-      {/* Comment list */}
-      {loaded && comments.length > 0 && (
-        <div className="mb-8 space-y-4">
-          {comments.map((c) => (
-            <div
-              key={c.id}
-              className="rounded border border-border-default bg-bg-surface px-4 py-3"
-            >
-              <div className="mb-1.5 flex items-center gap-2">
-                <span className="font-mono text-[10px] text-text-secondary">
-                  {c.is_anonymous || !c.author_handle
-                    ? "Anonymous"
-                    : `@${c.author_handle}`}
-                </span>
-                <span className="text-border-strong">·</span>
-                <span className="font-mono text-[10px] text-text-tertiary">
-                  {new Intl.DateTimeFormat("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  }).format(new Date(c.created_at))}
-                </span>
-              </div>
-              <p className="text-sm leading-relaxed text-text-primary whitespace-pre-wrap">
-                {c.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-
+      {/* Skeleton */}
       {!loaded && (
         <div className="mb-8 space-y-3">
           {[1, 2].map((i) => (
@@ -123,6 +130,47 @@ export function CommentsSection({ postId }: { postId: string }) {
         </div>
       )}
 
+      {/* Comment list */}
+      {loaded && comments.length > 0 && (
+        <div className="mb-8 space-y-4">
+          {comments.map((c) => {
+            const isHighlighted = highlightRef.current === c.id;
+            return (
+              <div
+                key={c.id}
+                id={`c-${c.id}`}
+                className={[
+                  "group rounded border bg-bg-surface px-4 py-3 transition-colors",
+                  isHighlighted
+                    ? "border-accent-red/40 bg-accent-red/5"
+                    : "border-border-default",
+                ].join(" ")}
+              >
+                <div className="mb-1.5 flex items-center gap-2">
+                  <span className="font-mono text-[10px] text-text-secondary">
+                    {c.is_anonymous || !c.author_handle
+                      ? "Anonymous"
+                      : `@${c.author_handle}`}
+                  </span>
+                  <span className="text-border-strong">·</span>
+                  <span className="font-mono text-[10px] text-text-tertiary">
+                    {new Intl.DateTimeFormat("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }).format(new Date(c.created_at))}
+                  </span>
+                  <CommentAnchorLink commentId={c.id} />
+                </div>
+                <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-primary">
+                  {c.body}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {loaded && comments.length === 0 && (
         <p className="mb-6 font-mono text-xs text-text-tertiary">
           No comments yet. Be the first to add context.
@@ -136,11 +184,11 @@ export function CommentsSection({ postId }: { postId: string }) {
           onChange={(e) => setBody(e.target.value)}
           placeholder="Add context, a related incident, or a correction…"
           rows={4}
-          className="w-full rounded border border-border-default bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent-red focus:outline-none resize-none"
+          className="w-full resize-none rounded border border-border-default bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent-red focus:outline-none"
         />
 
         <div className="flex flex-wrap items-center gap-4">
-          <label className="flex items-center gap-2 cursor-pointer select-none">
+          <label className="flex cursor-pointer select-none items-center gap-2">
             <input
               type="checkbox"
               checked={isAnonymous}
@@ -171,7 +219,7 @@ export function CommentsSection({ postId }: { postId: string }) {
         <button
           type="submit"
           disabled={submitting || body.trim().length < 3}
-          className="rounded border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red disabled:opacity-40 disabled:cursor-not-allowed"
+          className="rounded border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red disabled:cursor-not-allowed disabled:opacity-40"
         >
           {submitting ? "Posting…" : "Post Comment"}
         </button>
