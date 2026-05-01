@@ -14,9 +14,23 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const tag = TAGS.find((t) => t.slug === params.slug);
   if (!tag) return { title: "Tag Not Found" };
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const ogImageUrl = `${siteUrl}/api/og/tag/${params.slug}`;
   return {
     title: `#${tag.label} — AI Agent Failures`,
     description: tag.description,
+    openGraph: {
+      title: `#${tag.label} — AI Agent Failures`,
+      description: tag.description,
+      images: [{ url: ogImageUrl, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `#${tag.label} — AI Agent Failures`,
+      description: tag.description,
+      images: [ogImageUrl],
+    },
   };
 }
 

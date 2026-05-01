@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { sendApprovalEmail } from "@/lib/resend/send";
 
 function checkAdminAuth(req: NextRequest): boolean {
   const auth = req.headers.get("x-admin-password");
@@ -34,7 +35,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
     .from("posts")
     .update({ status: parsed.data.status })
     .eq("id", params.id)
-    .select("id, status, case_number")
+    .select("id, status, case_number, submitter_email, title")
     .single();
 
   if (error || !data) {
@@ -43,6 +44,18 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       { error: "Failed to update post." },
       { status: 500 },
     );
+  }
+
+  if (parsed.data.status === "approved" && data.submitter_email) {
+    const caseUrl = `https://agentpostmortem.com/case/${data.case_number}`;
+    sendApprovalEmail({
+      to: data.submitter_email,
+      caseNumber: data.case_number,
+      caseTitle: data.title,
+      caseUrl,
+    }).catch((err) => {
+      console.error("[admin/posts/id] approval email failed:", err);
+    });
   }
 
   return NextResponse.json(data);

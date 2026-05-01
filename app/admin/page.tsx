@@ -65,6 +65,12 @@ export default function AdminPage() {
   const [selected, setSelected] = useState<AdminPost | null>(null);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    outcome: "",
+    damage_level: 3,
+  });
 
   const fetchPosts = useCallback(async (status: PostStatus, pwd: string) => {
     setLoading(true);
@@ -142,6 +148,27 @@ export default function AdminPage() {
         body: JSON.stringify({ status }),
       });
       if (res.ok) {
+        await fetchPosts(tab, authedPassword);
+      }
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
+  async function handleEdit() {
+    if (!selected) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/admin/posts/${selected.id}/edit`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": authedPassword,
+        },
+        body: JSON.stringify(editForm),
+      });
+      if (res.ok) {
+        setEditing(false);
         await fetchPosts(tab, authedPassword);
       }
     } finally {
@@ -256,7 +283,15 @@ export default function AdminPage() {
                 {posts.map((post) => (
                   <button
                     key={post.id}
-                    onClick={() => setSelected(post)}
+                    onClick={() => {
+                      setSelected(post);
+                      setEditForm({
+                        title: post.title,
+                        outcome: post.outcome,
+                        damage_level: post.damage_level,
+                      });
+                      setEditing(false);
+                    }}
                     className={[
                       "w-full rounded border p-4 text-left transition-colors",
                       selected?.id === post.id
@@ -297,15 +332,37 @@ export default function AdminPage() {
             {selected ? (
               <div className="rounded border border-border-default bg-bg-surface p-6">
                 <div className="mb-4 flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-mono text-xs text-text-tertiary">
-                      {selected.case_number ?? "Unassigned"}
-                    </p>
-                    <h3 className="mt-1 font-serif text-lg leading-snug text-text-primary">
-                      {selected.title}
-                    </h3>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-mono text-xs text-text-tertiary">
+                        {selected.case_number ?? "Unassigned"}
+                      </p>
+                      <button
+                        onClick={() => setEditing((e) => !e)}
+                        className="shrink-0 rounded border border-border-default px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red"
+                      >
+                        {editing ? "Cancel" : "Edit fields"}
+                      </button>
+                    </div>
+                    {editing ? (
+                      <input
+                        className="mt-1 w-full rounded border border-border-default bg-bg-elevated px-3 py-1.5 text-sm text-text-primary focus:border-accent-red focus:outline-none"
+                        value={editForm.title}
+                        onChange={(e) =>
+                          setEditForm((f) => ({ ...f, title: e.target.value }))
+                        }
+                      />
+                    ) : (
+                      <h3 className="mt-1 font-serif text-lg leading-snug text-text-primary">
+                        {selected.title}
+                      </h3>
+                    )}
                   </div>
-                  <DamagePip level={selected.damage_level} />
+                  <DamagePip
+                    level={
+                      editing ? editForm.damage_level : selected.damage_level
+                    }
+                  />
                 </div>
 
                 <dl className="space-y-4 text-sm">
@@ -378,13 +435,63 @@ export default function AdminPage() {
                     </div>
                   )}
 
+                  {editing && (
+                    <div>
+                      <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                        Damage Level
+                      </dt>
+                      <dd className="mt-1">
+                        <select
+                          className="rounded border border-border-default bg-bg-elevated px-2 py-1 text-sm text-text-primary focus:border-accent-red focus:outline-none"
+                          value={editForm.damage_level}
+                          onChange={(e) =>
+                            setEditForm((f) => ({
+                              ...f,
+                              damage_level: Number(e.target.value),
+                            }))
+                          }
+                        >
+                          {[1, 2, 3, 4, 5].map((n) => (
+                            <option key={n} value={n}>
+                              {n}
+                            </option>
+                          ))}
+                        </select>
+                      </dd>
+                    </div>
+                  )}
+
                   <div>
                     <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
                       Outcome
                     </dt>
-                    <dd className="mt-1 text-text-secondary leading-relaxed max-h-40 overflow-y-auto scrollbar-none">
-                      {selected.outcome}
-                    </dd>
+                    {editing ? (
+                      <dd className="mt-1">
+                        <textarea
+                          className="w-full rounded border border-border-default bg-bg-elevated px-3 py-2 text-sm text-text-primary leading-relaxed focus:border-accent-red focus:outline-none scrollbar-none"
+                          rows={6}
+                          value={editForm.outcome}
+                          onChange={(e) =>
+                            setEditForm((f) => ({
+                              ...f,
+                              outcome: e.target.value,
+                            }))
+                          }
+                        />
+                        <Button
+                          variant="primary"
+                          onClick={handleEdit}
+                          disabled={actionLoading}
+                          className="mt-2"
+                        >
+                          {actionLoading ? "Saving…" : "Save changes"}
+                        </Button>
+                      </dd>
+                    ) : (
+                      <dd className="mt-1 text-text-secondary leading-relaxed max-h-40 overflow-y-auto scrollbar-none">
+                        {selected.outcome}
+                      </dd>
+                    )}
                   </div>
 
                   {selected.prompt && (

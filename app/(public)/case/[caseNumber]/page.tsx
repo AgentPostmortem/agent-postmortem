@@ -5,6 +5,7 @@ import { TagBadge } from "@/components/post/TagBadge";
 import { VoteButtons } from "@/components/post/VoteButtons";
 import { PostCard } from "@/components/post/PostCard";
 import { fetchPostByCase, fetchRelatedPosts } from "@/lib/db/posts";
+import { CopyLinkButton } from "@/components/post/CopyLinkButton";
 
 interface PageProps {
   params: { caseNumber: string };
@@ -286,13 +287,18 @@ export default async function CasePage({ params }: PageProps) {
             More {post.agentName} →
           </Link>
         </div>
-        <a
-          href={`/api/og/${post.caseNumber}`}
-          target="_blank"
-          className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
-        >
-          Share card ↗
-        </a>
+        {/* Share */}
+        <div className="flex items-center gap-3">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${post.title}" — AI agent failure case ${post.caseNumber}`)}&url=${encodeURIComponent(`https://agentpostmortem.com/case/${post.caseNumber}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+          >
+            Share on X →
+          </a>
+          <CopyLinkButton caseNumber={post.caseNumber} />
+        </div>
       </div>
     </div>
   );
