@@ -314,6 +314,14 @@ const CASES = [
   },
 ];
 
+// Get current approved count so we can assign sequential case numbers
+const { count: existingCount } = await supabase
+  .from("posts")
+  .select("*", { count: "exact", head: true })
+  .eq("status", "approved");
+
+let caseSeq = (existingCount ?? 0) + 1;
+
 async function seed() {
   console.log(`Seeding ${CASES.length} cases...`);
 
@@ -324,6 +332,8 @@ async function seed() {
       console.warn(`  ⚠ Unknown agent slug: ${c.agent} — skipping`);
       continue;
     }
+
+    const caseNumber = `APM-${caseSeq.toString().padStart(4, "0")}`;
 
     // Insert post as approved so it shows up immediately
     const createdAt = new Date(
@@ -346,6 +356,7 @@ async function seed() {
         edit_token_hash: fakeTokenHash(i + 10),
         vote_score: Math.floor(Math.random() * 80) + 5,
         status: "approved",
+        case_number: caseNumber,
         created_at: createdAt,
       })
       .select("id, case_number")
@@ -365,6 +376,7 @@ async function seed() {
         .insert(tagIds.map((tag_id) => ({ post_id: post.id, tag_id })));
     }
 
+    caseSeq++;
     console.log(`  ✓ ${post.case_number} — ${c.title.slice(0, 60)}…`);
   }
 
