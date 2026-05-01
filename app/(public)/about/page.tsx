@@ -22,8 +22,8 @@ export default function AboutPage() {
       <div className="prose prose-invert max-w-none space-y-8 text-text-secondary [&_h2]:font-serif [&_h2]:font-normal [&_h2]:text-text-primary [&_a]:text-accent-red [&_a:hover]:underline">
         <p>
           Aviation has the NTSB. Medicine has morbidity and mortality
-          conferences. Software has postmortems. But AI agents — systems making
-          autonomous decisions with real-world consequences — have nothing.
+          conferences. Software has postmortems. But AI agents (systems making
+          autonomous decisions with real-world consequences) have nothing.
           Failures happen quietly, root causes are never shared, and the
           industry learns nothing.
         </p>
@@ -31,7 +31,7 @@ export default function AboutPage() {
         <p>
           AgentPostmortem is a structured public ledger for AI agent failures.
           Every case is numbered, tagged, and searchable. The goal is not to
-          shame vendors or teams — it&apos;s to give practitioners a shared base
+          shame vendors or teams. The goal is to give practitioners a shared base
           of evidence so we don&apos;t keep making the same mistakes.
         </p>
 
@@ -50,7 +50,7 @@ export default function AboutPage() {
         <h2>What Makes a Good Case Report</h2>
 
         <ul>
-          <li>A specific, reproducible incident — not a general complaint</li>
+          <li>A specific, reproducible incident, not a general complaint</li>
           <li>The instruction or prompt that triggered the failure</li>
           <li>What the agent actually did versus what was intended</li>
           <li>Concrete damages: financial, reputational, operational</li>
@@ -70,7 +70,7 @@ export default function AboutPage() {
 
         <p>
           AgentPostmortem is open source. The registry code is publicly
-          available — contributions, bug reports, and new agent/tag additions
+          available, and contributions, bug reports, and new agent/tag additions
           are welcome on{" "}
           <a
             href="https://github.com/AgentPostmortem/agent-postmortem"

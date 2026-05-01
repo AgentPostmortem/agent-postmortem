@@ -44,7 +44,7 @@ export default function ContactPage() {
 
         <p>
           Questions about our editorial process, why a submission was rejected,
-          or how we assign severity and tags — send them our way. We are also
+          or how we assign severity and tags, send them our way. We are also
           open to feedback on the case format itself.
         </p>
 
@@ -60,8 +60,8 @@ export default function ContactPage() {
         <h2>Abuse Reports</h2>
 
         <p>
-          If you believe a case has been submitted maliciously — to harass a
-          person or defame an organization without factual basis — please email
+          If you believe a case has been submitted maliciously (to harass a
+          person or defame an organization without factual basis), please email
           us with the case number and a clear explanation. Include any evidence
           you have. We investigate all abuse reports and will remove cases that
           do not meet our standards.

@@ -32,7 +32,7 @@ export default function PrivacyPage() {
           hashed IP address (see below), the page requested, timestamp, and
           user-agent string. We do not require an account to browse or to submit
           a case. If you choose to provide an email address during submission,
-          we collect that too — for the sole purpose described below.
+          we collect that too, for the sole purpose described below.
         </p>
 
         <h2>How We Use It</h2>
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
           We also run basic automated redaction on submitted text before it
           reaches our database: email addresses, phone numbers, and common PII
           patterns are stripped. Screenshot and file uploads are stored as
-          provided — please remove sensitive information from evidence before
+          provided. Please remove sensitive information from evidence before
           uploading.
         </p>
 
@@ -93,21 +93,21 @@ export default function PrivacyPage() {
 
         <ul>
           <li>
-            <strong>Supabase</strong> — our database and storage provider. Case
+            <strong>Supabase</strong>: our database and storage provider. Case
             data and hashed IPs are stored here. Supabase infrastructure is
             hosted on AWS.
           </li>
           <li>
-            <strong>Vercel</strong> — hosts the Next.js application. Vercel sees
+            <strong>Vercel</strong>: hosts the Next.js application. Vercel sees
             request logs in the normal course of serving the site.
           </li>
           <li>
-            <strong>Cloudflare</strong> — provides DNS, DDoS protection, and
+            <strong>Cloudflare</strong>: provides DNS, DDoS protection, and
             CDN. Cloudflare sees raw IP addresses as part of proxying requests
             before they reach our application.
           </li>
           <li>
-            <strong>Resend</strong> — transactional email provider. Used only to
+            <strong>Resend</strong>: transactional email provider. Used only to
             send edit-link emails to submitters who provide an address. Resend
             receives the recipient address and the email body for that single
             send.
@@ -122,7 +122,7 @@ export default function PrivacyPage() {
         <h2>Data Retention</h2>
 
         <p>
-          Published case records are retained indefinitely — that is the point
+          Published case records are retained indefinitely, as that is the point
           of a public ledger. Server logs are retained for up to 90 days and
           then deleted. Hashed IPs in rate-limit records are purged after 30
           days. Submitter emails, as noted above, are not retained after the
