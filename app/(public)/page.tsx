@@ -45,19 +45,21 @@ interface PageProps {
 
 export default async function HomePage({ searchParams }: PageProps) {
   const activeTab = (searchParams.tab as FeedTab) ?? "hot";
-  const limit = Math.min(parseInt(searchParams.page ?? "1") * 20, 100);
+  const currentPage = Math.max(1, parseInt(searchParams.page ?? "1") || 1);
   const activeAgent = searchParams.agent ?? "";
   const activeSeverity = searchParams.severity ?? "";
 
-  const [posts, stats] = await Promise.all([
+  const [{ posts, total }, stats] = await Promise.all([
     fetchFeedPosts(
       activeTab,
-      limit,
+      currentPage,
       activeAgent || undefined,
       activeSeverity ? parseInt(activeSeverity) : undefined,
     ),
     fetchSiteStats(),
   ]);
+
+  const totalPages = Math.ceil(total / 20);
 
   const formattedDamage =
     stats.totalDamage >= 1_000_000
@@ -278,15 +280,14 @@ export default async function HomePage({ searchParams }: PageProps) {
                   <PostCard key={post.id} post={post} />
                 ))}
               </div>
-              {posts.length === limit && limit < 100 && (
-                <div className="mt-6 text-center">
-                  <Link
-                    href={`/?tab=${activeTab}&page=${Math.floor(limit / 20) + 1}`}
-                    className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
-                  >
-                    Load more →
-                  </Link>
-                </div>
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  tab={activeTab}
+                  agent={activeAgent}
+                  severity={activeSeverity}
+                />
               )}
             </>
           )}
@@ -372,6 +373,96 @@ function SidebarCard({
         {title}
       </div>
       {children}
+    </div>
+  );
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  tab,
+  agent,
+  severity,
+}: {
+  currentPage: number;
+  totalPages: number;
+  tab: string;
+  agent: string;
+  severity: string;
+}) {
+  function pageHref(p: number) {
+    const params = new URLSearchParams();
+    params.set("tab", tab);
+    if (p > 1) params.set("page", String(p));
+    if (agent) params.set("agent", agent);
+    if (severity) params.set("severity", severity);
+    return `/?${params.toString()}`;
+  }
+
+  const pages: (number | "…")[] = [];
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (currentPage > 3) pages.push("…");
+    for (
+      let i = Math.max(2, currentPage - 1);
+      i <= Math.min(totalPages - 1, currentPage + 1);
+      i++
+    )
+      pages.push(i);
+    if (currentPage < totalPages - 2) pages.push("…");
+    pages.push(totalPages);
+  }
+
+  return (
+    <div className="mt-6 flex items-center justify-center gap-1 font-mono text-[11px]">
+      {currentPage > 1 ? (
+        <Link
+          href={pageHref(currentPage - 1)}
+          className="rounded border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+        >
+          ← Prev
+        </Link>
+      ) : (
+        <span className="rounded border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
+          ← Prev
+        </span>
+      )}
+
+      {pages.map((p, i) =>
+        p === "…" ? (
+          <span key={`ellipsis-${i}`} className="px-1 text-text-tertiary">
+            …
+          </span>
+        ) : (
+          <Link
+            key={p}
+            href={pageHref(p)}
+            className={[
+              "rounded border px-2.5 py-1.5 transition-colors",
+              p === currentPage
+                ? "border-accent-red bg-accent-red-soft text-accent-red"
+                : "border-border-default text-text-secondary hover:border-border-strong hover:text-text-primary",
+            ].join(" ")}
+          >
+            {p}
+          </Link>
+        ),
+      )}
+
+      {currentPage < totalPages ? (
+        <Link
+          href={pageHref(currentPage + 1)}
+          className="rounded border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+        >
+          Next →
+        </Link>
+      ) : (
+        <span className="rounded border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
+          Next →
+        </span>
+      )}
     </div>
   );
 }

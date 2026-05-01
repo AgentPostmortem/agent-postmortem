@@ -26,54 +26,47 @@ function rowToPost(row: Record<string, unknown>): Post {
   };
 }
 
+const PAGE_SIZE = 20;
+
 export async function fetchFeedPosts(
   tab: FeedTab,
-  limit = 20,
+  page = 1,
   agentSlug?: string,
   severity?: number,
-): Promise<Post[]> {
+): Promise<{ posts: Post[]; total: number }> {
   try {
     const supabase = createSupabaseServerClient();
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
     let query = supabase
       .from("posts")
-      .select(
-        `*, agents!inner(slug, name, company), post_tags(tags(slug, label))`,
-      )
+      .select(`*, agents!inner(slug, name, company), post_tags(tags(slug, label))`, { count: "exact" })
       .eq("status", "approved")
-      .limit(limit);
+      .range(from, to);
 
-    if (agentSlug) {
-      query = query.eq("agents.slug", agentSlug);
-    }
-
-    if (severity != null) {
-      query = query.eq("damage_level", severity);
-    }
+    if (agentSlug) query = query.eq("agents.slug", agentSlug);
+    if (severity != null) query = query.eq("damage_level", severity);
 
     if (tab === "new") {
       query = query.order("created_at", { ascending: false });
     } else if (tab === "week") {
-      const weekAgo = new Date(
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
-      ).toISOString();
-      query = query
-        .gte("created_at", weekAgo)
-        .order("vote_score", { ascending: false });
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      query = query.gte("created_at", weekAgo).order("vote_score", { ascending: false });
     } else if (tab === "hof") {
       query = query.order("vote_score", { ascending: false });
     } else {
-      // hot — sort by recency-weighted score
-      query = query
-        .order("vote_score", { ascending: false })
-        .order("created_at", { ascending: false });
+      query = query.order("vote_score", { ascending: false }).order("created_at", { ascending: false });
     }
 
-    const { data, error } = await query;
-    if (error || !data) return [];
-    return data.map((row) => rowToPost(row as Record<string, unknown>));
+    const { data, error, count } = await query;
+    if (error || !data) return { posts: [], total: 0 };
+    return {
+      posts: data.map((row) => rowToPost(row as Record<string, unknown>)),
+      total: count ?? 0,
+    };
   } catch {
-    return [];
+    return { posts: [], total: 0 };
   }
 }
 
