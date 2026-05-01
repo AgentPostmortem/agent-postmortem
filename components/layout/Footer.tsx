@@ -6,6 +6,10 @@ const LINKS = [
   { href: "/hall-of-fame", label: "Hall of Fame" },
   { href: "/submit", label: "File a Report" },
   { href: "/about#contact", label: "Contact" },
+  {
+    href: "https://github.com/AgentPostmortem/agent-postmortem",
+    label: "GitHub",
+  },
 ];
 
 export function Footer() {

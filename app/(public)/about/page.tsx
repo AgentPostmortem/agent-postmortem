@@ -66,6 +66,22 @@ export default function AboutPage() {
           immediately.
         </p>
 
+        <h2>Open Source</h2>
+
+        <p>
+          AgentPostmortem is open source. The registry code is publicly
+          available — contributions, bug reports, and new agent/tag additions
+          are welcome on{" "}
+          <a
+            href="https://github.com/AgentPostmortem/agent-postmortem"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+          .
+        </p>
+
         <h2>For Teams</h2>
 
         <p>
