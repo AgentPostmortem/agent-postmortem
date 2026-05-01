@@ -41,7 +41,10 @@ export async function fetchFeedPosts(
 
     let query = supabase
       .from("posts")
-      .select(`*, agents!inner(slug, name, company), post_tags(tags(slug, label))`, { count: "exact" })
+      .select(
+        `*, agents!inner(slug, name, company), post_tags(tags(slug, label))`,
+        { count: "exact" },
+      )
       .eq("status", "approved")
       .range(from, to);
 
@@ -51,12 +54,18 @@ export async function fetchFeedPosts(
     if (tab === "new") {
       query = query.order("created_at", { ascending: false });
     } else if (tab === "week") {
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      query = query.gte("created_at", weekAgo).order("vote_score", { ascending: false });
+      const weekAgo = new Date(
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+      ).toISOString();
+      query = query
+        .gte("created_at", weekAgo)
+        .order("vote_score", { ascending: false });
     } else if (tab === "hof") {
       query = query.order("vote_score", { ascending: false });
     } else {
-      query = query.order("vote_score", { ascending: false }).order("created_at", { ascending: false });
+      query = query
+        .order("vote_score", { ascending: false })
+        .order("created_at", { ascending: false });
     }
 
     const { data, error, count } = await query;

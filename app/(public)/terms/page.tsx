@@ -28,10 +28,10 @@ export default function TermsPage() {
         <h2>Acceptance of Terms</h2>
 
         <p>
-          Using AgentPostmortem (whether to browse cases, submit an incident,
-          or access the API) constitutes acceptance of these terms. We may
-          update them from time to time; continued use after changes are posted
-          means you accept the revised terms.
+          Using AgentPostmortem (whether to browse cases, submit an incident, or
+          access the API) constitutes acceptance of these terms. We may update
+          them from time to time; continued use after changes are posted means
+          you accept the revised terms.
         </p>
 
         <h2>Use of the Registry</h2>

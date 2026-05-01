@@ -5,13 +5,13 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 function hashIp(ip: string): string {
   const pepper = process.env.IP_HASH_PEPPER ?? "default-pepper";
-  return createHash("sha256").update(ip + pepper).digest("hex");
+  return createHash("sha256")
+    .update(ip + pepper)
+    .digest("hex");
 }
 
 function getIp(req: NextRequest): string {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
-  );
+  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 }
 
 export async function GET(req: NextRequest) {
@@ -66,6 +66,9 @@ export async function POST(req: NextRequest) {
     if (error) throw error;
     return NextResponse.json({ comment: data }, { status: 201 });
   } catch {
-    return NextResponse.json({ error: "Failed to post comment" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to post comment" },
+      { status: 500 },
+    );
   }
 }

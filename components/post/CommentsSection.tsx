@@ -143,9 +143,7 @@ export function CommentsSection({ postId }: { postId: string }) {
           )}
         </div>
 
-        {error && (
-          <p className="font-mono text-xs text-accent-red">{error}</p>
-        )}
+        {error && <p className="font-mono text-xs text-accent-red">{error}</p>}
         {success && (
           <p className="font-mono text-xs text-green-400">Comment posted.</p>
         )}

@@ -31,8 +31,8 @@ export default function AboutPage() {
         <p>
           AgentPostmortem is a structured public ledger for AI agent failures.
           Every case is numbered, tagged, and searchable. The goal is not to
-          shame vendors or teams. The goal is to give practitioners a shared base
-          of evidence so we don&apos;t keep making the same mistakes.
+          shame vendors or teams. The goal is to give practitioners a shared
+          base of evidence so we don&apos;t keep making the same mistakes.
         </p>
 
         <h2>How We Handle Privacy</h2>

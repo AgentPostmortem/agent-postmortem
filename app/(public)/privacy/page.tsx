@@ -102,9 +102,9 @@ export default function PrivacyPage() {
             request logs in the normal course of serving the site.
           </li>
           <li>
-            <strong>Cloudflare</strong>: provides DNS, DDoS protection, and
-            CDN. Cloudflare sees raw IP addresses as part of proxying requests
-            before they reach our application.
+            <strong>Cloudflare</strong>: provides DNS, DDoS protection, and CDN.
+            Cloudflare sees raw IP addresses as part of proxying requests before
+            they reach our application.
           </li>
           <li>
             <strong>Resend</strong>: transactional email provider. Used only to
