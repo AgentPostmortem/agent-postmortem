@@ -3,6 +3,8 @@ import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
 import { fetchFeedPosts, fetchSiteStats, type FeedTab } from "@/lib/db/posts";
 
+export const revalidate = 30;
+
 export const metadata: Metadata = {
   title: "AgentPostmortem — AI Failure Case Files",
   description:
@@ -16,15 +18,44 @@ const TABS: { label: string; value: FeedTab }[] = [
   { label: "All-Time", value: "hof" },
 ];
 
+const AGENT_FILTERS = [
+  { label: "All", value: "" },
+  { label: "Claude", value: "claude" },
+  { label: "GPT-4o", value: "gpt-4o" },
+  { label: "Devin", value: "devin" },
+  { label: "Cursor", value: "cursor" },
+  { label: "Gemini", value: "gemini" },
+];
+
+const SEVERITY_FILTERS = [
+  { label: "All", value: "" },
+  { label: "Critical (5)", value: "5" },
+  { label: "Severe (4)", value: "4" },
+  { label: "Moderate (3)", value: "3" },
+];
+
 interface PageProps {
-  searchParams: { tab?: string; page?: string };
+  searchParams: {
+    tab?: string;
+    page?: string;
+    agent?: string;
+    severity?: string;
+  };
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
   const activeTab = (searchParams.tab as FeedTab) ?? "hot";
   const limit = Math.min(parseInt(searchParams.page ?? "1") * 20, 100);
+  const activeAgent = searchParams.agent ?? "";
+  const activeSeverity = searchParams.severity ?? "";
+
   const [posts, stats] = await Promise.all([
-    fetchFeedPosts(activeTab, limit),
+    fetchFeedPosts(
+      activeTab,
+      limit,
+      activeAgent || undefined,
+      activeSeverity ? parseInt(activeSeverity) : undefined,
+    ),
     fetchSiteStats(),
   ]);
 
@@ -118,7 +149,7 @@ export default async function HomePage({ searchParams }: PageProps) {
         {/* Main feed */}
         <div className="min-w-0 flex-1">
           {/* Tabs */}
-          <div className="mb-5 border-b border-border-default">
+          <div className="mb-3 border-b border-border-default">
             <nav className="flex overflow-x-auto scrollbar-none">
               {TABS.map((tab) => {
                 const isActive = activeTab === tab.value;
@@ -128,7 +159,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                     href={
                       tab.value === "hof"
                         ? "/hall-of-fame"
-                        : `/?tab=${tab.value}`
+                        : `/?tab=${tab.value}${activeAgent ? `&agent=${activeAgent}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`
                     }
                     className={[
                       "relative pb-3 pr-5 font-mono text-[11px] uppercase tracking-wider transition-colors",
@@ -142,6 +173,81 @@ export default async function HomePage({ searchParams }: PageProps) {
                 );
               })}
             </nav>
+          </div>
+
+          {/* Filter bar */}
+          <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+            {/* Agent filter */}
+            <div className="flex items-center gap-1.5">
+              <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+                Agent
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {AGENT_FILTERS.map((f) => {
+                  const isActive = activeAgent === f.value;
+                  const href = `/?tab=${activeTab}${f.value ? `&agent=${f.value}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`;
+                  return (
+                    <Link
+                      key={f.value || "all-agent"}
+                      href={href}
+                      className={[
+                        "rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors",
+                        isActive
+                          ? "border-accent-red bg-accent-red-soft text-accent-red"
+                          : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
+                      ].join(" ")}
+                    >
+                      {f.label}
+                    </Link>
+                  );
+                })}
+                {activeAgent && (
+                  <Link
+                    href={`/?tab=${activeTab}${activeSeverity ? `&severity=${activeSeverity}` : ""}`}
+                    className="rounded border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent-red hover:text-accent-red"
+                    title="Clear agent filter"
+                  >
+                    ×
+                  </Link>
+                )}
+              </div>
+            </div>
+
+            {/* Severity filter */}
+            <div className="flex items-center gap-1.5">
+              <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+                Severity
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {SEVERITY_FILTERS.map((f) => {
+                  const isActive = activeSeverity === f.value;
+                  const href = `/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}${f.value ? `&severity=${f.value}` : ""}`;
+                  return (
+                    <Link
+                      key={f.value || "all-severity"}
+                      href={href}
+                      className={[
+                        "rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors",
+                        isActive
+                          ? "border-accent-red bg-accent-red-soft text-accent-red"
+                          : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
+                      ].join(" ")}
+                    >
+                      {f.label}
+                    </Link>
+                  );
+                })}
+                {activeSeverity && (
+                  <Link
+                    href={`/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}`}
+                    className="rounded border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent-red hover:text-accent-red"
+                    title="Clear severity filter"
+                  >
+                    ×
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Cards */}

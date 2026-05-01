@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchFeedPosts } from "@/lib/db/posts";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Hall of Fame — Most Catastrophic AI Agent Failures",
   description:

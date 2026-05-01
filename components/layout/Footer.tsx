@@ -5,7 +5,7 @@ const LINKS = [
   { href: "/teams", label: "Teams" },
   { href: "/hall-of-fame", label: "Hall of Fame" },
   { href: "/submit", label: "File a Report" },
-  { href: "/about", label: "Contact" },
+  { href: "/about#contact", label: "Contact" },
 ];
 
 export function Footer() {

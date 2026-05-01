@@ -74,14 +74,16 @@ export default function AboutPage() {
           <Link href="/teams">Teams offering</Link>.
         </p>
 
-        <h2>Contact</h2>
+        <div id="contact">
+          <h2>Contact</h2>
 
-        <p>
-          For editorial questions, case disputes, or partnership inquiries:{" "}
-          <a href="mailto:hello@agentpostmortem.com">
-            hello@agentpostmortem.com
-          </a>
-        </p>
+          <p>
+            For editorial questions, case disputes, or partnership inquiries:{" "}
+            <a href="mailto:hello@agentpostmortem.com">
+              hello@agentpostmortem.com
+            </a>
+          </p>
+        </div>
 
         <div className="mt-10 border-t border-border-default pt-6">
           <p className="font-mono text-xs text-text-tertiary">

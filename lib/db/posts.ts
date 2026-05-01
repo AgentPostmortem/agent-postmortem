@@ -29,15 +29,27 @@ function rowToPost(row: Record<string, unknown>): Post {
 export async function fetchFeedPosts(
   tab: FeedTab,
   limit = 20,
+  agentSlug?: string,
+  severity?: number,
 ): Promise<Post[]> {
   try {
     const supabase = createSupabaseServerClient();
 
     let query = supabase
       .from("posts")
-      .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
+      .select(
+        `*, agents!inner(slug, name, company), post_tags(tags(slug, label))`,
+      )
       .eq("status", "approved")
       .limit(limit);
+
+    if (agentSlug) {
+      query = query.eq("agents.slug", agentSlug);
+    }
+
+    if (severity != null) {
+      query = query.eq("damage_level", severity);
+    }
 
     if (tab === "new") {
       query = query.order("created_at", { ascending: false });
