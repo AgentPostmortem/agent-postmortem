@@ -1,7 +1,6 @@
 {
-	// Build/local config. The production Durable Object queue binding lives in
-	// wrangler.production.jsonc so Wrangler's build-time platform proxy does not
-	// warn before OpenNext has generated the DO exports.
+	// Production deploy config. Keep the OpenNext Durable Object queue here so
+	// deployed ISR revalidation remains durable.
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
 	"name": "agent-postmortem",
@@ -42,6 +41,22 @@
 		{
 			"binding": "WORKER_SELF_REFERENCE",
 			"service": "agent-postmortem"
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "NEXT_CACHE_DO_QUEUE",
+				"class_name": "DOQueueHandler"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": [
+				"DOQueueHandler"
+			]
 		}
 	],
 	"r2_buckets": [
