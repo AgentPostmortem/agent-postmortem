@@ -11,12 +11,15 @@ import { CommentsSection } from "@/components/post/CommentsSection";
 
 export const revalidate = 60;
 
-// Cache the case fetch so generateMetadata and the page share the same result
-const getCachedCase = unstable_cache(
-  (caseNumber: string) => fetchPostByCase(caseNumber),
-  ["case"],
-  { revalidate: 60 },
-);
+// Cache the case fetch so generateMetadata and the page share the same result.
+// The cache key MUST include the case number, otherwise every case page shares
+// one cache entry and they all return whatever was cached first (e.g. a null -> 404).
+const getCachedCase = (caseNumber: string) =>
+  unstable_cache(
+    () => fetchPostByCase(caseNumber),
+    ["case", caseNumber],
+    { revalidate: 60 },
+  )();
 
 interface PageProps {
   params: { caseNumber: string };
