@@ -291,6 +291,13 @@ export default async function CasePage({ params }: PageProps) {
           </div>
         </div>
 
+        {/* Source / accuracy disclaimer */}
+        <p className="mb-6 font-mono text-[10px] leading-relaxed text-text-tertiary">
+          Independent project · aggregated from public reports and may be
+          unverified — see the primary source below · not affiliated with or
+          endorsed by any company or product named.
+        </p>
+
         {/* Instruction */}
         {post.prompt && (
           <section className="mb-6">

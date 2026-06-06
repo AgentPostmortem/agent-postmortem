@@ -532,7 +532,7 @@ export function SubmitForm() {
           <FieldLabel>
             Email{" "}
             <span className="normal-case tracking-normal text-text-tertiary">
-              (optional — for edit token) (optional — for private edit link)
+              (optional — only to send you a private edit link)
             </span>
           </FieldLabel>
           <input

@@ -41,9 +41,11 @@ export function Footer() {
                 AgentPostmortem
               </span>
             </div>
-            <p className="max-w-[16rem] font-mono text-[11px] leading-relaxed text-text-tertiary">
-              A public ledger for AI agent failures. Not affiliated with any AI
-              vendor.
+            <p className="max-w-[18rem] font-mono text-[11px] leading-relaxed text-text-tertiary">
+              An independent public ledger of AI agent failures, aggregated from
+              public reports. Not affiliated with or endorsed by any company or
+              product named. Reports may be unverified — always check the linked
+              source.
             </p>
           </div>
 
