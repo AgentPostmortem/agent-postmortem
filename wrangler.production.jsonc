@@ -1,74 +1,69 @@
 {
-	// Production deploy config. Keep the OpenNext Durable Object queue here so
-	// deployed ISR revalidation remains durable.
-	"$schema": "./node_modules/wrangler/config-schema.json",
-	"main": ".open-next/worker.js",
-	"name": "agent-postmortem",
-	"compatibility_date": "2026-06-06",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "global_fetch_strictly_public"
-  ],
+  // Production deploy config. Keep the OpenNext Durable Object queue here so
+  // deployed ISR revalidation remains durable.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "agent-postmortem",
+  "compatibility_date": "2026-06-06",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "workers_dev": true,
   "routes": [
     {
       "pattern": "agentpostmortem.com",
-      "custom_domain": true
+      "custom_domain": true,
     },
     {
       "pattern": "www.agentpostmortem.com",
-      "custom_domain": true
-    }
+      "custom_domain": true,
+    },
   ],
   "assets": {
-		"directory": ".open-next/assets",
-		"binding": "ASSETS"
-	},
-	"observability": {
-		"enabled": true,
-		"head_sampling_rate": 1
-	},
-	"vars": {
-		"NEXT_PUBLIC_SITE_URL": "https://agentpostmortem.com",
-		"NEXT_PUBLIC_SUPABASE_URL": "https://uqkveghvmrzjvdpxlhty.supabase.co",
-		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxa3ZlZ2h2bXJ6anZkcHhsaHR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjg3ODAsImV4cCI6MjA5Mjk0NDc4MH0.t4zH46dOezcZTJpC0TtgpGXQPZbMLqsdqDRe7-e9yyE",
-		"R2_ACCOUNT_ID": "e271625b8afba8d76b4920ff58e7cebc",
-		"R2_BUCKET_NAME": "agent-postmortem",
-		"R2_PUBLIC_URL": "https://cdn.agentpostmortem.com",
-		"NEXT_PUBLIC_R2_PUBLIC_URL": "https://cdn.agentpostmortem.com"
-	},
-	"services": [
-		{
-			"binding": "WORKER_SELF_REFERENCE",
-			"service": "agent-postmortem"
-		}
-	],
-	"durable_objects": {
-		"bindings": [
-			{
-				"name": "NEXT_CACHE_DO_QUEUE",
-				"class_name": "DOQueueHandler"
-			}
-		]
-	},
-	"migrations": [
-		{
-			"tag": "v1",
-			"new_sqlite_classes": [
-				"DOQueueHandler"
-			]
-		}
-	],
-	"r2_buckets": [
-		{
-			"binding": "R2_BUCKET",
-			"bucket_name": "agent-postmortem"
-		}
-	],
-	"kv_namespaces": [
-		{
-			"binding": "NEXT_INC_CACHE_KV",
-			"id": "f284bf3f093e45aeab37deac73df9f9f"
-		}
-	]
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "https://agentpostmortem.com",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://uqkveghvmrzjvdpxlhty.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxa3ZlZ2h2bXJ6anZkcHhsaHR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjg3ODAsImV4cCI6MjA5Mjk0NDc4MH0.t4zH46dOezcZTJpC0TtgpGXQPZbMLqsdqDRe7-e9yyE",
+    "R2_ACCOUNT_ID": "e271625b8afba8d76b4920ff58e7cebc",
+    "R2_BUCKET_NAME": "agent-postmortem",
+    "R2_PUBLIC_URL": "https://cdn.agentpostmortem.com",
+    "NEXT_PUBLIC_R2_PUBLIC_URL": "https://cdn.agentpostmortem.com",
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "agent-postmortem",
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler"],
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "agent-postmortem",
+    },
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "NEXT_INC_CACHE_KV",
+      "id": "f284bf3f093e45aeab37deac73df9f9f",
+    },
+  ],
 }

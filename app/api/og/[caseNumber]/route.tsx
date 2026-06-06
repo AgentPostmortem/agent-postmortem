@@ -283,8 +283,8 @@ export async function GET(
           </span>
         </div>
       </div>,
-    { width: 1200, height: 630 },
-  );
+      { width: 1200, height: 630 },
+    );
   } catch (err) {
     // Return a plain error image so we can see what's failing
     return new ImageResponse(
