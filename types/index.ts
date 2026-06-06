@@ -19,6 +19,12 @@ export interface Post {
   isAnonymous: boolean;
   authorHandle?: string;
   screenshots?: string[];
+  sourceUrl?: string;
+  sourceTitle?: string;
+  sourcePublishedAt?: string;
+  verifiedFacts: string[];
+  unknowns: string[];
+  lessons: string[];
 }
 
 /** A pending (unreviewed) submission */

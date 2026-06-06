@@ -12,7 +12,7 @@
     /* Subtle dot-grid texture */
     background-image: radial-gradient(circle, #1e1e22 1px, transparent 1px);
     background-size: 28px 28px;
-    background-attachment: fixed;
+    background-attachment: scroll;
   }
 
   /* Thin scrollbar */
@@ -40,6 +40,12 @@
   /* Tabular numbers everywhere monospace is used */
   .font-mono {
     font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (min-width: 768px) {
+  body {
+    background-attachment: fixed;
   }
 }
 

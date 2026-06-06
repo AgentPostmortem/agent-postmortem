@@ -23,6 +23,12 @@ function rowToPost(row: Record<string, unknown>): Post {
     isAnonymous: (row.is_anonymous as boolean) ?? true,
     authorHandle: (row.submitter_handle as string | null) ?? undefined,
     screenshots: (row.screenshot_urls as string[] | null) ?? [],
+    sourceUrl: (row.source_url as string | null) ?? undefined,
+    sourceTitle: (row.source_title as string | null) ?? undefined,
+    sourcePublishedAt: (row.source_published_at as string | null) ?? undefined,
+    verifiedFacts: (row.verified_facts as string[] | null) ?? [],
+    unknowns: (row.unknowns as string[] | null) ?? [],
+    lessons: (row.lessons as string[] | null) ?? [],
   };
 }
 

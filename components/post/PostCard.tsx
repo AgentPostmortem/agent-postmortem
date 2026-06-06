@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { VoteButtons } from "./VoteButtons";
 import { TagBadge } from "./TagBadge";
@@ -70,7 +68,6 @@ export function PostCard({ post, commentCount }: PostCardProps) {
               <span className="shrink-0 text-border-strong text-xs">·</span>
               <Link
                 href={`/agent/${post.agentSlug}`}
-                onClick={(e) => e.stopPropagation()}
                 className="truncate font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:text-text-primary"
               >
                 {post.agentName}

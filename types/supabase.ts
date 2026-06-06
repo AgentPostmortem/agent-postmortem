@@ -44,6 +44,12 @@ export type Database = {
           damage_level: 1 | 2 | 3 | 4 | 5;
           estimated_cost_usd: number | null;
           screenshot_urls: string[];
+          source_url: string | null;
+          source_title: string | null;
+          source_published_at: string | null;
+          verified_facts: string[];
+          unknowns: string[];
+          lessons: string[];
           submitter_handle: string | null;
           submitter_email: string | null;
           edit_token_hash: string;
@@ -65,6 +71,12 @@ export type Database = {
           damage_level: 1 | 2 | 3 | 4 | 5;
           estimated_cost_usd?: number | null;
           screenshot_urls?: string[];
+          source_url?: string | null;
+          source_title?: string | null;
+          source_published_at?: string | null;
+          verified_facts?: string[];
+          unknowns?: string[];
+          lessons?: string[];
           submitter_handle?: string | null;
           submitter_email?: string | null;
           edit_token_hash?: string;
@@ -86,6 +98,12 @@ export type Database = {
           damage_level?: 1 | 2 | 3 | 4 | 5;
           estimated_cost_usd?: number | null;
           screenshot_urls?: string[];
+          source_url?: string | null;
+          source_title?: string | null;
+          source_published_at?: string | null;
+          verified_facts?: string[];
+          unknowns?: string[];
+          lessons?: string[];
           submitter_handle?: string | null;
           submitter_email?: string | null;
           edit_token_hash?: string;

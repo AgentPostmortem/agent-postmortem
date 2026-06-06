@@ -1,19 +1,6 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { getSiteUrl } from "@/lib/utils/urls";
 import "./globals.css";
-
-const GeistSans = localFont({
-  src: "../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2",
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const GeistMono = localFont({
-  src: "../node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2",
-  variable: "--font-mono",
-  display: "swap",
-});
 
 const siteUrl = getSiteUrl();
 
@@ -57,13 +44,27 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "AgentPostmortem",
+    url: siteUrl,
+    description:
+      "A public registry of documented AI agent failures and operational lessons.",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/search?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
-    <html
-      lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-bg-canvas text-text-primary font-sans antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         {children}
       </body>
     </html>

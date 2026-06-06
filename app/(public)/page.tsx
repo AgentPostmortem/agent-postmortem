@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "AgentPostmortem — AI Failure Case Files",
   description:
     "A public ledger of AI agent failures. Real cases, real damages, documented so the industry can learn.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 const TABS: { label: string; value: FeedTab }[] = [
@@ -77,8 +80,7 @@ async function HomepageStats() {
       : []),
     { value: stats.totalAgents.toString(), label: "Agents Implicated" },
   ];
-  const statsGridClass =
-    statItems.length === 2 ? "grid-cols-2" : "grid-cols-3";
+  const statsGridClass = statItems.length === 2 ? "grid-cols-2" : "grid-cols-3";
 
   return (
     <div

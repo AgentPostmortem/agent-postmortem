@@ -19,8 +19,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         serif: ["Georgia", "serif"],
-        sans: ["var(--font-sans)"],
-        mono: ["var(--font-mono)"],
+        sans: ["ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Consolas", "monospace"],
       },
       colors: {
         "bg-canvas": "#0a0a0b",

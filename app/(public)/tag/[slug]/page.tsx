@@ -23,6 +23,9 @@ export async function generateMetadata({
   return {
     title: `#${tag.label} — AI Agent Failures`,
     description: tag.description,
+    alternates: {
+      canonical: `/tag/${params.slug}`,
+    },
     openGraph: {
       title: `#${tag.label} — AI Agent Failures`,
       description: tag.description,

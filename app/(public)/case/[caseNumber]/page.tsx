@@ -18,6 +18,15 @@ const getCachedCase = cache((caseNumber: string) =>
   fetchPostByCase(caseNumber),
 );
 
+function getSourceDomain(sourceUrl?: string) {
+  if (!sourceUrl) return null;
+  try {
+    return new URL(sourceUrl).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+}
+
 interface PageProps {
   params: { caseNumber: string };
 }
@@ -37,6 +46,9 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: {
+      canonical: `/case/${caseNum}`,
+    },
     openGraph: {
       title,
       description,
@@ -120,12 +132,14 @@ export default async function CasePage({ params }: PageProps) {
 
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
-  const jsonLd = {
+  const sourceDomain = getSourceDomain(post.sourceUrl);
+  const articleJsonLd = {
     "@context": "https://schema.org",
-    "@type": "NewsArticle",
+    "@type": "Article",
     headline: post.title,
     description: post.outcome.slice(0, 160),
     datePublished: post.createdAt,
+    dateModified: post.createdAt,
     author: {
       "@type": "Organization",
       name: "AgentPostmortem",
@@ -136,14 +150,46 @@ export default async function CasePage({ params }: PageProps) {
       url: siteUrl,
     },
     url: `${siteUrl}/case/${post.caseNumber}`,
+    mainEntityOfPage: `${siteUrl}/case/${post.caseNumber}`,
     keywords: post.tags.join(", "),
+    ...(post.sourceUrl
+      ? {
+          citation: {
+            "@type": "CreativeWork",
+            name: post.sourceTitle ?? sourceDomain ?? "Source report",
+            url: post.sourceUrl,
+          },
+        }
+      : {}),
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Registry",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: post.caseNumber,
+        item: `${siteUrl}/case/${post.caseNumber}`,
+      },
+    ],
   };
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
         {/* Breadcrumb */}
@@ -266,13 +312,96 @@ export default async function CasePage({ params }: PageProps) {
 
         {/* Findings */}
         <section className="mb-6">
-          <div className="section-label">Findings</div>
+          <div className="section-label">Incident Summary</div>
           <div className="rounded border border-border-default bg-bg-surface px-5 py-5">
             <p className="text-[0.95rem] leading-7 text-text-primary">
               {post.outcome}
             </p>
           </div>
         </section>
+
+        {(post.verifiedFacts.length > 0 ||
+          post.unknowns.length > 0 ||
+          post.lessons.length > 0) && (
+          <section className="mb-6">
+            <div className="section-label">Case Analysis</div>
+            <div className="divide-y divide-border-default rounded border border-border-default bg-bg-surface">
+              {post.verifiedFacts.length > 0 && (
+                <div className="px-5 py-5">
+                  <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
+                    Verified Facts
+                  </h2>
+                  <ul className="mt-3 space-y-2">
+                    {post.verifiedFacts.map((fact) => (
+                      <li
+                        key={fact}
+                        className="flex gap-3 text-sm leading-6 text-text-primary"
+                      >
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-red" />
+                        <span>{fact}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {post.unknowns.length > 0 && (
+                <div className="px-5 py-5">
+                  <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
+                    Not Publicly Confirmed
+                  </h2>
+                  <ul className="mt-3 space-y-2">
+                    {post.unknowns.map((unknown) => (
+                      <li
+                        key={unknown}
+                        className="flex gap-3 text-sm leading-6 text-text-secondary"
+                      >
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-border-strong" />
+                        <span>{unknown}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {post.lessons.length > 0 && (
+                <div className="px-5 py-5">
+                  <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
+                    Operational Lessons
+                  </h2>
+                  <ul className="mt-3 space-y-2">
+                    {post.lessons.map((lesson) => (
+                      <li
+                        key={lesson}
+                        className="flex gap-3 text-sm leading-6 text-text-primary"
+                      >
+                        <span className="font-mono text-accent-red">→</span>
+                        <span>{lesson}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {post.sourceUrl && (
+          <section className="mb-6">
+            <div className="section-label">Primary Source</div>
+            <a
+              href={post.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded border border-border-default bg-bg-surface px-5 py-4 transition-colors hover:border-border-strong"
+            >
+              <span className="block text-sm leading-6 text-text-primary">
+                {post.sourceTitle ?? "Read the source report"}
+              </span>
+              <span className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
+                {sourceDomain} ↗
+              </span>
+            </a>
+          </section>
+        )}
 
         {/* Evidence */}
         {post.screenshots && post.screenshots.length > 0 && (
