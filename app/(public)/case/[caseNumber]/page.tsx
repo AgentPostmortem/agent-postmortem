@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { TagBadge } from "@/components/post/TagBadge";
 import { VoteButtons } from "@/components/post/VoteButtons";
 import { PostCard } from "@/components/post/PostCard";
@@ -12,14 +12,11 @@ import { CommentsSection } from "@/components/post/CommentsSection";
 export const revalidate = 60;
 
 // Cache the case fetch so generateMetadata and the page share the same result.
-// The cache key MUST include the case number, otherwise every case page shares
-// one cache entry and they all return whatever was cached first (e.g. a null -> 404).
-const getCachedCase = (caseNumber: string) =>
-  unstable_cache(
-    () => fetchPostByCase(caseNumber),
-    ["case", caseNumber],
-    { revalidate: 60 },
-  )();
+// Route-level ISR still uses the OpenNext incremental cache; this request-level
+// memo avoids wrapping Supabase cookie reads in unstable_cache.
+const getCachedCase = cache((caseNumber: string) =>
+  fetchPostByCase(caseNumber),
+);
 
 interface PageProps {
   params: { caseNumber: string };

@@ -1,9 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { SEVERITY_LABELS } from "@/lib/constants/severity";
-import { getSiteUrl } from "@/lib/utils/urls";
-
-export const runtime = "edge";
 
 interface CaseData {
   caseNumber: string;
@@ -14,6 +11,16 @@ interface CaseData {
   estimatedCostUsd: number | null;
   outcome: string;
   tags: string[];
+}
+
+interface CaseRow {
+  case_number: string;
+  title: string;
+  agents: { name: string; company: string | null } | null;
+  damage_level: number;
+  estimated_cost_usd: number | null;
+  outcome: string | null;
+  post_tags: { tags: { slug: string } | null }[];
 }
 
 async function fetchCase(caseNumber: string): Promise<CaseData | null> {
@@ -27,7 +34,7 @@ async function fetchCase(caseNumber: string): Promise<CaseData | null> {
       { headers: { apikey: key, Authorization: `Bearer ${key}` } },
     );
     if (!res.ok) return null;
-    const rows = await res.json();
+    const rows = (await res.json()) as CaseRow[];
     if (!rows?.length) return null;
     const row = rows[0];
     return {
@@ -40,7 +47,7 @@ async function fetchCase(caseNumber: string): Promise<CaseData | null> {
       outcome: row.outcome ?? "",
       tags: (row.post_tags ?? [])
         .map((pt: { tags: { slug: string } | null }) => pt.tags?.slug)
-        .filter(Boolean),
+        .filter((slug): slug is string => Boolean(slug)),
     };
   } catch {
     return null;
@@ -70,15 +77,6 @@ export async function GET(
           : `$${data.estimatedCostUsd}`
       : null;
 
-    const siteUrl = getSiteUrl();
-    const fontData = await fetch(`${siteUrl}/fonts/Inter-SemiBold.ttf`)
-      .then((r) => r.arrayBuffer())
-      .catch(() => null);
-
-    const fonts = fontData
-      ? [{ name: "Inter", data: fontData, style: "normal" as const }]
-      : [];
-
     return new ImageResponse(
       <div
         style={{
@@ -88,7 +86,7 @@ export async function GET(
           display: "flex",
           flexDirection: "column",
           padding: "60px 80px",
-          fontFamily: fonts.length ? "Inter" : "sans-serif",
+          fontFamily: "sans-serif",
           position: "relative",
         }}
       >
@@ -285,8 +283,8 @@ export async function GET(
           </span>
         </div>
       </div>,
-      { width: 1200, height: 630, fonts },
-    );
+    { width: 1200, height: 630 },
+  );
   } catch (err) {
     // Return a plain error image so we can see what's failing
     return new ImageResponse(

@@ -6,6 +6,10 @@ import { PostCard } from "@/components/post/PostCard";
 import { AGENTS } from "@/lib/constants/agents";
 import type { Post } from "@/types";
 
+interface SearchResponse {
+  posts?: Post[];
+}
+
 const SEVERITY_LABELS: Record<number, string> = {
   1: "Minimal",
   2: "Low",
@@ -73,7 +77,7 @@ export function SearchResults({
     debounceRef.current = setTimeout(async () => {
       try {
         const res = await fetch(buildApiUrl(query));
-        const json = await res.json();
+        const json = (await res.json()) as SearchResponse;
         setResults(json.posts ?? []);
         setStatus("done");
       } catch {

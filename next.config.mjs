@@ -1,3 +1,7 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
+initOpenNextCloudflareForDev();
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -10,9 +14,6 @@ const nextConfig = {
         hostname: "**.supabase.co",
       },
     ],
-  },
-  experimental: {
-    browsersListForSwc: true,
   },
 };
 

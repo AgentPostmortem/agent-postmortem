@@ -12,6 +12,8 @@ interface StatusData {
   agentName: string;
 }
 
+type StatusResponse = StatusData | { error: string };
+
 const STATUS_CONFIG = {
   pending: {
     label: "Under Review",
@@ -46,11 +48,12 @@ export function StatusClient() {
     fetch(`/api/status/${token}`)
       .then((r) => r.json())
       .then((json) => {
-        if (json.error) {
+        const response = json as StatusResponse;
+        if ("error" in response) {
           setNotFound(true);
           return;
         }
-        setData(json);
+        setData(response);
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));

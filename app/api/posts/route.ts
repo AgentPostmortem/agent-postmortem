@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
         screenshot_urls: data.screenshotUrls ?? [],
         is_anonymous: data.isAnonymous,
         submitter_handle: cleanHandle,
-        submitter_email: data.email ?? null,
+        submitter_email: null,
         edit_token_hash: tokenHash,
         ip_hash: ipHash,
         status: "pending",

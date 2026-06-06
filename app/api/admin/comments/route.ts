@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
+const COMMENT_STATUSES = ["visible", "hidden", "removed"] as const;
+type CommentStatus = (typeof COMMENT_STATUSES)[number];
+
 function checkAuth(req: NextRequest): boolean {
   const pwd = req.headers.get("x-admin-password");
   return pwd === process.env.ADMIN_PASSWORD;
+}
+
+interface PatchBody {
+  id?: unknown;
+  status?: unknown;
 }
 
 export async function GET(req: NextRequest) {
@@ -12,8 +20,8 @@ export async function GET(req: NextRequest) {
   }
 
   const rawStatus = req.nextUrl.searchParams.get("status") ?? "visible";
-  const status = ["visible", "hidden", "removed"].includes(rawStatus)
-    ? (rawStatus as "visible" | "hidden" | "removed")
+  const status = COMMENT_STATUSES.includes(rawStatus as CommentStatus)
+    ? (rawStatus as CommentStatus)
     : ("visible" as const);
   const supabase = createSupabaseAdminClient();
 
@@ -35,15 +43,20 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id, status } = await req.json();
-  if (!id || !["visible", "hidden", "removed"].includes(status)) {
+  const { id, status } = (await req.json()) as PatchBody;
+  if (
+    typeof id !== "string" ||
+    typeof status !== "string" ||
+    !COMMENT_STATUSES.includes(status as CommentStatus)
+  ) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
+  const nextStatus = status as CommentStatus;
 
   const supabase = createSupabaseAdminClient();
   const { error } = await supabase
     .from("comments")
-    .update({ status })
+    .update({ status: nextStatus })
     .eq("id", id);
 
   if (error) return NextResponse.json({ error: "Failed" }, { status: 500 });

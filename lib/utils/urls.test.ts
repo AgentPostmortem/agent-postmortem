@@ -16,7 +16,8 @@ describe("url helpers", () => {
   });
 
   it("falls back to NEXT_PUBLIC_APP_URL when the public site URL is missing", () => {
-    delete process.env.NEXT_PUBLIC_SITE_URL;
+    delete (process.env as Record<string, string | undefined>)
+      .NEXT_PUBLIC_SITE_URL;
     process.env.NEXT_PUBLIC_APP_URL = "https://fallback.example.com/";
 
     expect(getSiteUrl()).toBe("https://fallback.example.com");

@@ -2,15 +2,6 @@ import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { TAGS } from "@/lib/constants/tags";
 
-export const runtime = "edge";
-
-async function loadFont(): Promise<ArrayBuffer> {
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
-  const res = await fetch(`${siteUrl}/fonts/Inter-SemiBold.ttf`);
-  return res.arrayBuffer();
-}
-
 export async function GET(
   _req: NextRequest,
   { params }: { params: { slug: string } },
@@ -18,11 +9,6 @@ export async function GET(
   const tag = TAGS.find((t) => t.slug === params.slug);
   const label = tag?.label ?? params.slug;
   const description = tag?.description ?? "AI agent failure cases";
-
-  const fontData = await loadFont().catch(() => null);
-  const fonts = fontData
-    ? [{ name: "Inter", data: fontData, style: "normal" as const }]
-    : [];
 
   return new ImageResponse(
     <div
@@ -33,7 +19,7 @@ export async function GET(
         display: "flex",
         flexDirection: "column",
         padding: "60px 80px",
-        fontFamily: fonts.length ? "Inter" : "sans-serif",
+        fontFamily: "sans-serif",
         position: "relative",
       }}
     >
@@ -144,6 +130,6 @@ export async function GET(
         </span>
       </div>
     </div>,
-    { width: 1200, height: 630, fonts },
+    { width: 1200, height: 630 },
   );
 }

@@ -18,7 +18,9 @@ SETUP.md
 
 # next.js
 /.next/
+/.open-next/
 /out/
+.wrangler/
 
 # production build
 /build
@@ -29,6 +31,7 @@ SETUP.md
 .env.development.local
 .env.test.local
 .env.production.local
+.dev.vars
 
 # supabase local dev
 /supabase/.temp/
@@ -36,6 +39,7 @@ SETUP.md
 
 # generated types — regenerate with: npm run types:db
 /types/db.ts
+cloudflare-env.d.ts
 
 # vercel
 /.vercel

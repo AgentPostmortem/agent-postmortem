@@ -45,6 +45,15 @@ interface TabCounts {
   rejected: number;
 }
 
+interface AdminPostsResponse {
+  posts?: AdminPost[];
+  counts?: TabCounts;
+}
+
+interface AdminCommentsResponse {
+  comments?: AdminComment[];
+}
+
 function DamagePip({ level }: { level: number }) {
   return (
     <div className="flex gap-0.5 shrink-0">
@@ -105,7 +114,7 @@ export default function AdminPage() {
         console.error("[admin] fetch failed:", res.status, await res.text());
         return;
       }
-      const json = await res.json();
+      const json = (await res.json()) as AdminPostsResponse;
       setPosts(json.posts ?? []);
       setCounts(json.counts ?? { pending: 0, approved: 0, rejected: 0 });
     } finally {
@@ -128,7 +137,7 @@ export default function AdminPage() {
       headers: { "x-admin-password": password },
     });
     if (res.ok) {
-      const json = await res.json();
+      const json = (await res.json()) as AdminPostsResponse;
       setAuthedPassword(password);
       authedPasswordRef.current = password;
       setPosts(json.posts ?? []);
@@ -147,7 +156,7 @@ export default function AdminPage() {
         headers: { "x-admin-password": pwd },
       });
       if (res.ok) {
-        const json = await res.json();
+        const json = (await res.json()) as AdminCommentsResponse;
         setComments(json.comments ?? []);
       }
     } finally {

@@ -10,6 +10,12 @@ interface Comment {
   created_at: string;
 }
 
+interface CommentsResponse {
+  comments?: Comment[];
+  comment?: Comment;
+  error?: string;
+}
+
 function CommentAnchorLink({ commentId }: { commentId: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -53,7 +59,8 @@ export function CommentsSection({ postId }: { postId: string }) {
     fetch(`/api/comments?post_id=${postId}`)
       .then((r) => r.json())
       .then((json) => {
-        setComments(json.comments ?? []);
+        const response = json as CommentsResponse;
+        setComments(response.comments ?? []);
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
@@ -86,12 +93,14 @@ export function CommentsSection({ postId }: { postId: string }) {
           author_handle: isAnonymous ? null : handle.trim() || null,
         }),
       });
-      const json = await res.json();
+      const json = (await res.json()) as CommentsResponse;
       if (!res.ok) {
         setError(json.error ?? "Failed to post comment.");
         return;
       }
-      setComments((prev) => [...prev, json.comment]);
+      if (json.comment) {
+        setComments((prev) => [...prev, json.comment as Comment]);
+      }
       setBody("");
       setHandle("");
       setSuccess(true);

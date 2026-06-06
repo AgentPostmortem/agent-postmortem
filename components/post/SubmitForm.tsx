@@ -97,11 +97,11 @@ export function SubmitForm() {
   useEffect(() => {
     fetch("/api/agents")
       .then((r) => r.json())
-      .then(setAgents)
+      .then((json) => setAgents(json as AgentOption[]))
       .catch(() => {});
     fetch("/api/tags")
       .then((r) => r.json())
-      .then(setTags)
+      .then((json) => setTags(json as TagOption[]))
       .catch(() => {});
   }, []);
 

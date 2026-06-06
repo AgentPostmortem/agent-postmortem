@@ -15,6 +15,13 @@ function getIp(req: NextRequest): string {
   return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 }
 
+interface CommentBody {
+  post_id?: unknown;
+  body?: unknown;
+  is_anonymous?: unknown;
+  author_handle?: unknown;
+}
+
 export async function GET(req: NextRequest) {
   const postId = req.nextUrl.searchParams.get("post_id");
   if (!postId) return NextResponse.json({ comments: [] });
@@ -33,10 +40,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const body = (await req.json()) as CommentBody;
     const { post_id, body: text, is_anonymous, author_handle } = body;
 
-    if (!post_id || !text || typeof text !== "string") {
+    if (typeof post_id !== "string" || typeof text !== "string") {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
@@ -48,7 +55,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const isAnon = is_anonymous ?? true;
+    const isAnon = typeof is_anonymous === "boolean" ? is_anonymous : true;
     const handle =
       typeof author_handle === "string" ? author_handle.trim() : null;
     if (!isAnon && !handle) {
