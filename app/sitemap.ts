@@ -3,6 +3,8 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AGENTS } from "@/lib/constants/agents";
 import { TAGS } from "@/lib/constants/tags";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";

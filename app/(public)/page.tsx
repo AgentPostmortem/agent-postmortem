@@ -64,17 +64,27 @@ async function HomepageStats() {
 
   if (!stats.totalPosts && !formattedDamage) return null;
 
+  const statItems = [
+    { value: stats.totalPosts.toLocaleString(), label: "Cases Filed" },
+    ...(formattedDamage
+      ? [
+          {
+            value: formattedDamage,
+            label: "Estimated Damage",
+            red: true,
+          },
+        ]
+      : []),
+    { value: stats.totalAgents.toString(), label: "Agents Implicated" },
+  ];
+  const statsGridClass =
+    statItems.length === 2 ? "grid-cols-2" : "grid-cols-3";
+
   return (
-    <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded border border-border-default bg-border-default">
-      {[
-        { value: stats.totalPosts.toLocaleString(), label: "Cases Filed" },
-        {
-          value: formattedDamage ?? "—",
-          label: "Estimated Damage",
-          red: true,
-        },
-        { value: stats.totalAgents.toString(), label: "Agents Implicated" },
-      ].map((stat) => (
+    <div
+      className={`mt-7 grid ${statsGridClass} gap-px overflow-hidden rounded border border-border-default bg-border-default`}
+    >
+      {statItems.map((stat) => (
         <div
           key={stat.label}
           className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5"
