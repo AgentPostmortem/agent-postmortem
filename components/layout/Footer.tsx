@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 
 const LINK_GROUPS = [
   {
@@ -47,6 +48,9 @@ export function Footer() {
               product named. Reports may be unverified — always check the linked
               source.
             </p>
+            <div className="mt-4">
+              <NewsletterSignup />
+            </div>
           </div>
 
           {/* Link groups */}
