@@ -17,7 +17,10 @@ export async function POST(req: NextRequest) {
   }
 
   const { searchParams } = new URL(req.url);
-  const count = Math.min(20, Math.max(1, parseInt(searchParams.get("count") ?? "8")));
+  const count = Math.min(
+    20,
+    Math.max(1, parseInt(searchParams.get("count") ?? "8")),
+  );
 
   const supabase = createSupabaseAdminClient();
 
