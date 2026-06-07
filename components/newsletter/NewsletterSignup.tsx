@@ -40,7 +40,7 @@ export function NewsletterSignup() {
   return (
     <form onSubmit={submit} className="flex max-w-xs flex-col gap-2">
       <label className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
-        Get new failures by email
+        Get the weekly digest by email
       </label>
       <div className="flex gap-2">
         <input

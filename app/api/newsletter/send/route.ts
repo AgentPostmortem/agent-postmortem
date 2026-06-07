@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   const { data: cases } = await supabase
     .from("posts")
-    .select("case_number, title, outcome, damage_level, created_at, agents(name)")
+    .select("case_number, title, outcome, damage_level, agents(name)")
     .eq("status", "approved")
     .not("case_number", "is", null)
     .order("case_number", { ascending: false })
@@ -42,7 +42,6 @@ export async function POST(req: NextRequest) {
       outcome: c.outcome,
       damageLevel: c.damage_level ?? undefined,
       agentName: agentName ?? undefined,
-      date: c.created_at ?? undefined,
     };
   });
 
