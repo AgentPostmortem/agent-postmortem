@@ -33,6 +33,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, sent: 0, reason: "no cases" });
   }
 
+  const digestCases: DigestCase[] = cases.map((c) => ({
+    caseNumber: c.case_number,
+    title: c.title,
+    outcome: c.outcome,
+  }));
+
   const { data: subs } = await supabase
     .from("newsletter_subscribers")
     .select("email, unsubscribe_token")
@@ -42,11 +48,7 @@ export async function POST(req: NextRequest) {
   let failed = 0;
   for (const s of subs ?? []) {
     try {
-      await sendNewsletterDigest(
-        s.email,
-        s.unsubscribe_token,
-        cases as DigestCase[],
-      );
+      await sendNewsletterDigest(s.email, s.unsubscribe_token, digestCases);
       sent++;
     } catch (e) {
       failed++;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 
 export function NewsletterSignup() {
   const [email, setEmail] = useState("");
@@ -8,7 +8,7 @@ export function NewsletterSignup() {
     "idle",
   );
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     if (!email) return;
     setStatus("loading");

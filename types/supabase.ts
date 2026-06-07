@@ -6,6 +6,30 @@
 export type Database = {
   public: {
     Tables: {
+      newsletter_subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          status: string;
+          unsubscribe_token: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          status?: string;
+          unsubscribe_token?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          status?: string;
+          unsubscribe_token?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       agents: {
         Row: {
           id: string;
