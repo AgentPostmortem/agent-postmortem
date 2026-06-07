@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   const { data: cases } = await supabase
     .from("posts")
-    .select("case_number, title, outcome")
+    .select("case_number, title, outcome, damage_level, created_at, agents(name)")
     .eq("status", "approved")
     .not("case_number", "is", null)
     .order("case_number", { ascending: false })
@@ -33,11 +33,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, sent: 0, reason: "no cases" });
   }
 
-  const digestCases: DigestCase[] = cases.map((c) => ({
-    caseNumber: c.case_number,
-    title: c.title,
-    outcome: c.outcome,
-  }));
+  const digestCases: DigestCase[] = cases.map((c) => {
+    const agent = c.agents as { name?: string } | { name?: string }[] | null;
+    const agentName = Array.isArray(agent) ? agent[0]?.name : agent?.name;
+    return {
+      caseNumber: c.case_number,
+      title: c.title,
+      outcome: c.outcome,
+      damageLevel: c.damage_level ?? undefined,
+      agentName: agentName ?? undefined,
+      date: c.created_at ?? undefined,
+    };
+  });
 
   const { data: subs } = await supabase
     .from("newsletter_subscribers")
