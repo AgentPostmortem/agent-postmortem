@@ -3,34 +3,34 @@ import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 
 const SUITE_LINKS = [
   {
-    href: "https://greenlite.aashinyraa.workers.dev",
+    href: "https://greenlite.agentpostmortem.com",
     label: "Greenlite",
     description: "Human approvals",
-    icon: "https://greenlite.aashinyraa.workers.dev/favicon.svg",
+    icon: "https://greenlite.agentpostmortem.com/favicon.svg",
   },
   {
-    href: "https://resolvd.aashinyraa.workers.dev",
+    href: "https://resolvd.agentpostmortem.com",
     label: "Resolvd",
     description: "Support operations",
-    icon: "https://resolvd.aashinyraa.workers.dev/icon.svg",
+    icon: "https://resolvd.agentpostmortem.com/icon.svg",
   },
   {
-    href: "https://tracecase.aashinyraa.workers.dev",
+    href: "https://tracecase.agentpostmortem.com",
     label: "Tracecase",
     description: "Agent evaluation",
-    icon: "https://tracecase.aashinyraa.workers.dev/icon.svg",
+    icon: "https://tracecase.agentpostmortem.com/icon.svg",
   },
   {
-    href: "https://bridgekit.aashinyraa.workers.dev",
+    href: "https://bridgekit.agentpostmortem.com",
     label: "Bridgekit",
     description: "MCP tools",
-    icon: "https://bridgekit.aashinyraa.workers.dev/icon.svg",
+    icon: "https://bridgekit.agentpostmortem.com/icon.svg",
   },
   {
-    href: "https://webhands.aashinyraa.workers.dev",
+    href: "https://webhands.agentpostmortem.com",
     label: "Webhands",
     description: "Browser agents",
-    icon: "https://webhands.aashinyraa.workers.dev/icon.svg",
+    icon: "https://webhands.agentpostmortem.com/icon.svg",
   },
 ];
 
