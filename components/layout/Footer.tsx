@@ -70,7 +70,7 @@ const LINK_GROUPS = [
 export function Footer() {
   return (
     <footer className="mt-20 border-t border-border-default">
-      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-10">
           <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
             <div>

@@ -198,7 +198,7 @@ export default function HomePage({ searchParams }: PageProps) {
   const activeSeverity = searchParams.severity ?? "";
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       {/* Hero — streams immediately, no DB dependency */}
       <div className="mb-10 border-b border-border-default pb-10">
         <div className="mb-4 flex items-center gap-2">
