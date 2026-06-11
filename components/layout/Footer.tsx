@@ -1,6 +1,39 @@
 import Link from "next/link";
 import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 
+const SUITE_LINKS = [
+  {
+    href: "https://greenlite.aashinyraa.workers.dev",
+    label: "Greenlite",
+    description: "Human approvals",
+    icon: "https://greenlite.aashinyraa.workers.dev/favicon.svg",
+  },
+  {
+    href: "https://resolvd.aashinyraa.workers.dev",
+    label: "Resolvd",
+    description: "Support operations",
+    icon: "https://resolvd.aashinyraa.workers.dev/icon.svg",
+  },
+  {
+    href: "https://tracecase.aashinyraa.workers.dev",
+    label: "Tracecase",
+    description: "Agent evaluation",
+    icon: "https://tracecase.aashinyraa.workers.dev/icon.svg",
+  },
+  {
+    href: "https://bridgekit.aashinyraa.workers.dev",
+    label: "Bridgekit",
+    description: "MCP tools",
+    icon: "https://bridgekit.aashinyraa.workers.dev/icon.svg",
+  },
+  {
+    href: "https://webhands.aashinyraa.workers.dev",
+    label: "Webhands",
+    description: "Browser agents",
+    icon: "https://webhands.aashinyraa.workers.dev/icon.svg",
+  },
+];
+
 const LINK_GROUPS = [
   {
     links: [
@@ -33,6 +66,43 @@ export function Footer() {
   return (
     <footer className="mt-20 border-t border-border-default">
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-10">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent-red">
+                Agent operating suite
+              </p>
+              <p className="mt-1 text-sm text-text-secondary">
+                Tools for building, testing, operating, and supervising AI agents.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+            {SUITE_LINKS.map((product) => (
+              <a
+                key={product.href}
+                href={product.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-md border border-border-default bg-surface-primary p-3 transition-colors hover:border-border-strong hover:bg-surface-secondary"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={product.icon}
+                  alt=""
+                  className="h-7 w-7 rounded-md"
+                />
+                <p className="mt-3 font-mono text-xs text-text-primary transition-colors group-hover:text-accent-red">
+                  {product.label}
+                </p>
+                <p className="mt-1 font-mono text-[9px] text-text-tertiary">
+                  {product.description}
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+
         <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
           {/* Brand */}
           <div className="flex flex-col gap-2">
