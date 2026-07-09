@@ -8,6 +8,7 @@ import { PostCard } from "@/components/post/PostCard";
 import { fetchPostByCase, fetchRelatedPosts } from "@/lib/db/posts";
 import { CopyLinkButton } from "@/components/post/CopyLinkButton";
 import { CommentsSection } from "@/components/post/CommentsSection";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/components/ui/icons";
 
 export const revalidate = 60;
 
@@ -380,7 +381,9 @@ export default async function CasePage({ params }: PageProps) {
                         key={lesson}
                         className="flex gap-3 text-sm leading-6 text-text-primary"
                       >
-                        <span className="font-mono text-accent-red">→</span>
+                        <span className="mt-1 shrink-0 text-accent-red">
+                          <ArrowRightIcon size={11} />
+                        </span>
                         <span>{lesson}</span>
                       </li>
                     ))}
@@ -455,13 +458,17 @@ export default async function CasePage({ params }: PageProps) {
               href="/"
               className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
             >
-              ← All Cases
+              <span className="inline-flex items-center gap-1.5">
+                <ArrowLeftIcon size={10} /> All Cases
+              </span>
             </Link>
             <Link
               href={`/agent/${post.agentSlug}`}
               className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
             >
-              More {post.agentName} →
+              <span className="inline-flex items-center gap-1.5">
+                More {post.agentName} <ArrowRightIcon size={10} />
+              </span>
             </Link>
           </div>
           {/* Share */}
@@ -472,7 +479,9 @@ export default async function CasePage({ params }: PageProps) {
               rel="noopener noreferrer"
               className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
             >
-              Share on X →
+              <span className="inline-flex items-center gap-1.5">
+                Share on X <ArrowRightIcon size={10} />
+              </span>
             </a>
             <CopyLinkButton caseNumber={post.caseNumber} />
           </div>

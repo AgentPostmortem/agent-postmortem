@@ -44,7 +44,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link
             href="/submit"
-            className="hidden items-center gap-1.5 rounded border border-accent-red bg-accent-red-soft px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:bg-accent-red hover:text-white md:flex"
+            className="hidden items-center gap-1.5 rounded-full border border-accent-red/60 bg-accent-red-soft px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas md:flex"
           >
             <span aria-hidden="true">+</span> File Report
           </Link>

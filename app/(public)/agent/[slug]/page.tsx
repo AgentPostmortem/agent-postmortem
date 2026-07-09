@@ -135,7 +135,7 @@ export default async function AgentPage({ params }: PageProps) {
       {posts.length === 0 ? (
         <EmptyState
           title={`No cases filed for ${agent.name} yet.`}
-          action={{ label: "File the first report →", href: "/submit" }}
+          action={{ label: "File the first report", href: "/submit" }}
         />
       ) : (
         <div className="space-y-2">

@@ -348,7 +348,7 @@ export function EditCaseForm({
       <button
         type="submit"
         disabled={status === "saving"}
-        className="w-full rounded border border-accent-red bg-accent-red py-3 font-mono text-[11px] uppercase tracking-wider text-white transition-all hover:bg-accent-red/90 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-full border border-accent-red bg-accent-red py-3 font-mono text-[11px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-red-muted hover:bg-accent-red-muted disabled:cursor-not-allowed disabled:opacity-50"
       >
         {status === "saving" ? "Saving…" : "Save Changes"}
       </button>

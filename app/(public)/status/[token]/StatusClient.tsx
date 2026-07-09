@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/components/ui/icons";
 
 interface StatusData {
   caseNumber: string | null;
@@ -78,9 +79,9 @@ export function StatusClient() {
         </p>
         <Link
           href="/"
-          className="mt-6 inline-block font-mono text-xs uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+          className="mt-6 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-text-tertiary hover:text-text-primary"
         >
-          ← Back to Registry
+          <ArrowLeftIcon size={10} /> Back to Registry
         </Link>
       </div>
     );
@@ -169,7 +170,9 @@ export function StatusClient() {
             href={`/case/${data.caseNumber.toLowerCase()}`}
             className="rounded border border-accent-red bg-accent-red/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted hover:bg-accent-red/20"
           >
-            View Case →
+            <span className="inline-flex items-center gap-1.5">
+              View Case <ArrowRightIcon size={10} />
+            </span>
           </Link>
         )}
         {data.status !== "rejected" && (
@@ -184,7 +187,9 @@ export function StatusClient() {
           href="/"
           className="rounded border border-border-default bg-bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:border-border-strong hover:text-text-secondary"
         >
-          ← Registry
+          <span className="inline-flex items-center gap-1.5">
+            <ArrowLeftIcon size={10} /> Registry
+          </span>
         </Link>
       </div>
     </div>

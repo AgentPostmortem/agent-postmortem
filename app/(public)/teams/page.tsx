@@ -3,6 +3,18 @@
 import { useState } from "react";
 import { z } from "zod";
 
+const featureIcon = {
+  width: 20,
+  height: 20,
+  viewBox: "0 0 20 20",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.4,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  "aria-hidden": true as const,
+};
+
 const waitlistSchema = z.object({
   email: z.string().email(),
   company: z.string().min(1),
@@ -14,37 +26,70 @@ type WaitlistForm = z.infer<typeof waitlistSchema>;
 
 const FEATURES = [
   {
-    icon: "◈",
+    icon: (
+      <svg {...featureIcon}>
+        <path d="M10 2.5l7 7.5-7 7.5L3 10l7-7.5z" />
+        <path d="M10 6.5L13.5 10 10 13.5 6.5 10 10 6.5z" />
+      </svg>
+    ),
     title: "Private Case Repository",
     description:
       "Keep your internal AI failure reports private, searchable, and structured — separate from the public ledger.",
   },
   {
-    icon: "◉",
+    icon: (
+      <svg {...featureIcon}>
+        <circle cx="10" cy="10" r="7.5" />
+        <circle cx="10" cy="10" r="3" fill="currentColor" stroke="none" />
+      </svg>
+    ),
     title: "Team Attribution",
     description:
       "Track which team, product, or project each failure originated in. Pattern analysis across your organization.",
   },
   {
-    icon: "◎",
+    icon: (
+      <svg {...featureIcon}>
+        <circle cx="10" cy="10" r="7.5" />
+        <circle cx="10" cy="10" r="3.5" />
+      </svg>
+    ),
     title: "Severity Dashboards",
     description:
       "Real-time dashboards showing incident frequency, damage trends, and agent performance comparisons.",
   },
   {
-    icon: "◇",
+    icon: (
+      <svg {...featureIcon}>
+        <path d="M10 2.5l7 7.5-7 7.5L3 10l7-7.5z" />
+      </svg>
+    ),
     title: "API Access",
     description:
       "Programmatic submission via REST API. Integrate directly with your CI/CD pipelines, Slack, or PagerDuty.",
   },
   {
-    icon: "◆",
+    icon: (
+      <svg {...featureIcon}>
+        <path d="M4 16.5h12M4 12.5l4-4 3 3 5-5" />
+        <path d="M13 6.5h3v3" />
+      </svg>
+    ),
     title: "Compliance Export",
     description:
       "Export structured incident reports for SOC 2, ISO 27001, and AI governance documentation.",
   },
   {
-    icon: "◐",
+    icon: (
+      <svg {...featureIcon}>
+        <circle cx="10" cy="10" r="7.5" />
+        <path
+          d="M10 2.5v15A7.5 7.5 0 0010 2.5z"
+          fill="currentColor"
+          stroke="none"
+        />
+      </svg>
+    ),
     title: "Benchmark Reports",
     description:
       "Compare your agent failure rate against anonymized industry benchmarks.",
@@ -232,7 +277,7 @@ export default function TeamsPage() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="w-full rounded border border-accent-red bg-accent-red-soft py-2.5 font-mono text-sm uppercase tracking-widest text-accent-red-muted transition-colors hover:bg-accent-red hover:text-white disabled:opacity-50"
+              className="w-full rounded-full border border-accent-red/60 bg-accent-red-soft py-2.5 font-mono text-sm uppercase tracking-widest text-accent-red-muted transition-colors hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas disabled:opacity-50"
             >
               {status === "submitting" ? "Submitting…" : "Request Access"}
             </button>

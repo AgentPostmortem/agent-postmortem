@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRightIcon } from "@/components/ui/icons";
 
 interface EmptyStateProps {
   title?: string;
@@ -9,7 +10,7 @@ interface EmptyStateProps {
 export function EmptyState({
   title = "No cases on file.",
   description,
-  action = { label: "File the first report →", href: "/submit" },
+  action = { label: "File the first report", href: "/submit" },
 }: EmptyStateProps) {
   return (
     <div className="rounded border border-dashed border-border-default py-16 text-center">
@@ -19,8 +20,11 @@ export function EmptyState({
       )}
       {action && (
         <p className="mt-2 text-sm text-text-tertiary">
-          <Link href={action.href} className="text-accent-red hover:underline">
-            {action.label}
+          <Link
+            href={action.href}
+            className="inline-flex items-center gap-1.5 text-accent-red hover:text-accent-red-muted hover:underline"
+          >
+            {action.label} <ArrowRightIcon size={10} />
           </Link>
         </p>
       )}

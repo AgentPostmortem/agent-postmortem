@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { CheckIcon } from "@/components/ui/icons";
 
 export function CopyLinkButton({ caseNumber }: { caseNumber: string }) {
   const [copied, setCopied] = useState(false);
@@ -12,9 +13,15 @@ export function CopyLinkButton({ caseNumber }: { caseNumber: string }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       }}
-      className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+      className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
     >
-      {copied ? "Copied ✓" : "Copy Link"}
+      {copied ? (
+        <>
+          Copied <CheckIcon size={10} />
+        </>
+      ) : (
+        "Copy Link"
+      )}
     </button>
   );
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/components/ui/icons";
 
 export default function NotFound() {
   return (
@@ -26,15 +27,15 @@ export default function NotFound() {
       <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
         <Link
           href="/"
-          className="rounded border border-accent-red bg-accent-red-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:bg-accent-red hover:text-white"
+          className="inline-flex items-center gap-2 rounded-full border border-accent-red/60 bg-accent-red-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas"
         >
-          ← Back to Registry
+          <ArrowLeftIcon size={10} /> Back to Registry
         </Link>
         <Link
           href="/submit"
-          className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-text-primary"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-text-primary"
         >
-          File a Report →
+          File a Report <ArrowRightIcon size={10} />
         </Link>
       </div>
     </div>

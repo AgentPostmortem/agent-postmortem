@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { ArrowLeftIcon } from "@/components/ui/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -32,9 +33,9 @@ export default async function UnsubscribePage({
       </p>
       <a
         href="/"
-        className="mt-6 inline-block font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+        className="mt-6 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
       >
-        ← Back to the registry
+        <ArrowLeftIcon size={10} /> Back to the registry
       </a>
     </div>
   );

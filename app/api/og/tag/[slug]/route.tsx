@@ -15,7 +15,7 @@ export async function GET(
       style={{
         width: "1200px",
         height: "630px",
-        backgroundColor: "#0a0a0b",
+        backgroundColor: "#0d0c0a",
         display: "flex",
         flexDirection: "column",
         padding: "60px 80px",
@@ -30,7 +30,7 @@ export async function GET(
           left: 0,
           right: 0,
           height: "4px",
-          backgroundColor: "#dc2626",
+          backgroundColor: "#c9a35c",
         }}
       />
 
@@ -76,7 +76,7 @@ export async function GET(
         <div
           style={{
             fontSize: "16px",
-            color: "#dc2626",
+            color: "#c9a35c",
             letterSpacing: "3px",
             textTransform: "uppercase",
             marginBottom: "16px",
@@ -87,7 +87,7 @@ export async function GET(
         <div
           style={{
             fontSize: "48px",
-            color: "#f0f0f0",
+            color: "#efece5",
             fontWeight: 700,
             lineHeight: 1.2,
             marginBottom: "24px",

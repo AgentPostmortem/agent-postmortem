@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SubmitForm } from "@/components/post/SubmitForm";
+import { ArrowRightIcon } from "@/components/ui/icons";
 
 export const metadata: Metadata = {
   title: "File a Case Report — AgentPostmortem",
@@ -44,8 +45,8 @@ export default function SubmitPage() {
             "Concrete impact: financial, operational, or reputational",
           ].map((item) => (
             <li key={item} className="flex items-start gap-3 px-4 py-2.5">
-              <span className="mt-0.5 font-mono text-[10px] text-accent-red">
-                →
+              <span className="mt-1 text-accent-red">
+                <ArrowRightIcon size={10} />
               </span>
               <span className="text-sm text-text-secondary">{item}</span>
             </li>

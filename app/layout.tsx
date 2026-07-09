@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
+import { Instrument_Serif } from "next/font/google";
 import { getSiteUrl } from "@/lib/utils/urls";
 import "./globals.css";
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 const siteUrl = getSiteUrl();
 
@@ -59,7 +68,11 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={instrumentSerif.variable}
+    >
       <body className="min-h-screen bg-bg-canvas text-text-primary font-sans antialiased">
         <script
           type="application/ld+json"

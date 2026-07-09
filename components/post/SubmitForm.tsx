@@ -5,6 +5,11 @@ import Link from "next/link";
 import { z } from "zod";
 import { submitSchema } from "@/lib/schemas/submit";
 import { cn } from "@/lib/utils/cn";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+} from "@/components/ui/icons";
 
 interface AgentOption {
   slug: string;
@@ -199,7 +204,9 @@ export function SubmitForm() {
     return (
       <div className="rounded border border-border-default bg-bg-surface p-8 text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded border border-border-strong bg-bg-elevated">
-          <span className="font-mono text-lg text-text-tertiary">✓</span>
+          <span className="text-accent-red">
+            <CheckIcon size={16} />
+          </span>
         </div>
         <h2 className="font-serif text-xl text-text-primary">Case Filed</h2>
         <p className="mt-2 text-sm text-text-secondary">
@@ -231,7 +238,9 @@ export function SubmitForm() {
             href="/"
             className="rounded border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
           >
-            ← Browse Cases
+            <span className="inline-flex items-center gap-1.5">
+              <ArrowLeftIcon size={10} /> Browse Cases
+            </span>
           </Link>
           <Link
             href="/hall-of-fame"
@@ -563,9 +572,15 @@ export function SubmitForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="w-full rounded border border-accent-red bg-accent-red py-3 font-mono text-[11px] uppercase tracking-wider text-white transition-all hover:bg-accent-red/90 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-accent-red bg-accent-red py-3 font-mono text-[11px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-red-muted hover:bg-accent-red-muted disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {status === "submitting" ? "Filing Case…" : "Submit Case Report →"}
+        {status === "submitting" ? (
+          "Filing Case…"
+        ) : (
+          <>
+            Submit Case Report <ArrowRightIcon size={11} />
+          </>
+        )}
       </button>
 
       <p className="text-center font-mono text-[10px] text-text-tertiary">

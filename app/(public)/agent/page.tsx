@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AGENTS } from "@/lib/constants/agents";
 import { fetchAgentCaseCounts } from "@/lib/db/posts";
+import { ArrowRightIcon } from "@/components/ui/icons";
 
 export const revalidate = 60;
 
@@ -77,8 +78,8 @@ export default async function AgentsIndexPage() {
                           {agent.description}
                         </p>
                       </div>
-                      <span className="shrink-0 font-mono text-xs text-text-tertiary group-hover:text-accent-red">
-                        →
+                      <span className="shrink-0 text-text-tertiary group-hover:text-accent-red">
+                        <ArrowRightIcon size={11} />
                       </span>
                     </div>
                   </Link>

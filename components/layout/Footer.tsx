@@ -7,35 +7,30 @@ const SUITE_LINKS = [
     label: "Greenlite",
     description: "Human approvals",
     mark: "G",
-    accent: "bg-purple-600",
   },
   {
     href: "https://resolvd.agentpostmortem.com",
     label: "Resolvd",
     description: "Support operations",
     mark: "R",
-    accent: "bg-sky-500",
   },
   {
     href: "https://tracecase.agentpostmortem.com",
     label: "Tracecase",
     description: "Agent evaluation",
     mark: "T",
-    accent: "bg-emerald-500",
   },
   {
     href: "https://bridgekit.agentpostmortem.com",
     label: "Bridgekit",
     description: "MCP tools",
     mark: "B",
-    accent: "bg-indigo-600",
   },
   {
     href: "https://webhands.agentpostmortem.com",
     label: "Webhands",
     description: "Browser agents",
     mark: "W",
-    accent: "bg-cyan-500",
   },
 ];
 
@@ -78,7 +73,8 @@ export function Footer() {
                 Agent operating suite
               </p>
               <p className="mt-1 text-sm text-text-secondary">
-                Tools for building, testing, operating, and supervising AI agents.
+                Tools for building, testing, operating, and supervising AI
+                agents.
               </p>
             </div>
           </div>
@@ -89,11 +85,9 @@ export function Footer() {
                 href={product.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex min-w-0 items-center gap-3 rounded-md border border-border-default bg-surface-primary p-3 transition-colors hover:border-border-strong hover:bg-surface-secondary"
+                className="group flex min-w-0 items-center gap-3 rounded-md border border-border-default bg-bg-surface p-3 transition-colors hover:border-border-strong hover:bg-bg-elevated"
               >
-                <span
-                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-md ${product.accent} font-mono text-xs font-bold text-white`}
-                >
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-border-strong bg-bg-elevated font-mono text-xs font-bold text-accent-red-muted transition-colors group-hover:border-accent-red/50">
                   {product.mark}
                 </span>
                 <span className="min-w-0">

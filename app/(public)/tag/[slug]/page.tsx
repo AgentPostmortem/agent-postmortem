@@ -111,7 +111,7 @@ export default async function TagPage({ params }: PageProps) {
         <EmptyState
           title="No cases filed yet."
           description="Witnessed a failure?"
-          action={{ label: "File the first report →", href: "/submit" }}
+          action={{ label: "File the first report", href: "/submit" }}
         />
       ) : (
         <div className="space-y-2">

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
 import { Pagination } from "@/components/ui/Pagination";
+import { ArrowRightIcon, CloseIcon, PlusIcon } from "@/components/ui/icons";
 import {
   fetchFeedPosts,
   fetchSiteStats,
@@ -210,7 +211,7 @@ export default function HomePage({ searchParams }: PageProps) {
           Every AI Agent
           <br />
           <span className="text-text-secondary">Failure,</span>{" "}
-          <span className="relative">
+          <span className="relative italic text-accent-red-muted">
             Documented.
             <span className="absolute -bottom-1 left-0 h-px w-full bg-accent-red/50" />
           </span>
@@ -248,15 +249,15 @@ export default function HomePage({ searchParams }: PageProps) {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Link
             href="/submit"
-            className="inline-flex items-center gap-2 rounded border border-accent-red bg-accent-red-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:bg-accent-red hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full border border-accent-red/60 bg-accent-red-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas"
           >
-            <span>+</span> File a Case Report
+            <PlusIcon size={10} /> File a Case Report
           </Link>
           <Link
             href="/about"
-            className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-text-primary"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-text-primary"
           >
-            How it works →
+            How it works <ArrowRightIcon size={10} />
           </Link>
         </div>
       </div>
@@ -400,9 +401,9 @@ export default function HomePage({ searchParams }: PageProps) {
               ))}
               <Link
                 href="/agent"
-                className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent-red"
+                className="inline-flex items-center gap-1.5 rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent-red"
               >
-                All →
+                All <ArrowRightIcon size={10} />
               </Link>
             </div>
             <div className="mb-3 mt-5 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
@@ -426,9 +427,9 @@ export default function HomePage({ searchParams }: PageProps) {
               ))}
               <Link
                 href="/tag"
-                className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent-red"
+                className="inline-flex items-center gap-1.5 rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent-red"
               >
-                All →
+                All <ArrowRightIcon size={10} />
               </Link>
             </div>
           </div>
@@ -451,14 +452,18 @@ export default function HomePage({ searchParams }: PageProps) {
                   className="flex items-center justify-between py-3 font-mono text-xs text-text-secondary transition-colors hover:text-text-primary"
                 >
                   <span>{name}</span>
-                  <span className="text-text-tertiary">→</span>
+                  <span className="text-text-tertiary">
+                    <ArrowRightIcon size={10} />
+                  </span>
                 </Link>
               ))}
               <Link
                 href="/agent"
                 className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
               >
-                All agents →
+                <span className="inline-flex items-center gap-1.5">
+                  All agents <ArrowRightIcon size={9} />
+                </span>
               </Link>
             </SidebarCard>
 
@@ -482,7 +487,9 @@ export default function HomePage({ searchParams }: PageProps) {
                 href="/tag"
                 className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
               >
-                All tags →
+                <span className="inline-flex items-center gap-1.5">
+                  All tags <ArrowRightIcon size={9} />
+                </span>
               </Link>
             </SidebarCard>
 
@@ -492,9 +499,9 @@ export default function HomePage({ searchParams }: PageProps) {
               </p>
               <Link
                 href="/submit"
-                className="block rounded border border-accent-red bg-accent-red-soft px-3 py-2 text-center font-mono text-[10px] uppercase tracking-wider text-accent-red-muted transition-all hover:bg-accent-red hover:text-white"
+                className="flex items-center justify-center gap-1.5 rounded-full border border-accent-red/60 bg-accent-red-soft px-3 py-2 text-center font-mono text-[10px] uppercase tracking-wider text-accent-red-muted transition-all hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas"
               >
-                + File Report
+                <PlusIcon size={9} /> File Report
               </Link>
             </SidebarCard>
           </div>
@@ -525,7 +532,9 @@ function EmptyFeed() {
   return (
     <div className="rounded border border-dashed border-border-default py-16 text-center">
       <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded border border-border-strong">
-        <span className="font-mono text-text-tertiary">✕</span>
+        <span className="text-text-tertiary">
+          <CloseIcon size={14} />
+        </span>
       </div>
       <p className="font-serif text-lg text-text-secondary">
         No cases on file yet.

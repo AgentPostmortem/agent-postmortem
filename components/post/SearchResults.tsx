@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
 import { AGENTS } from "@/lib/constants/agents";
 import type { Post } from "@/types";
+import { ChevronDownIcon, ChevronUpIcon } from "@/components/ui/icons";
 
 interface SearchResponse {
   posts?: Post[];
@@ -133,7 +134,13 @@ export function SearchResults({
           onClick={() => setFiltersOpen((o) => !o)}
           className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-text-tertiary hover:text-text-secondary"
         >
-          <span>{filtersOpen ? "▲" : "▼"}</span>
+          <span>
+            {filtersOpen ? (
+              <ChevronUpIcon size={9} />
+            ) : (
+              <ChevronDownIcon size={9} />
+            )}
+          </span>
           <span>Filters</span>
           {hasActiveFilters && (
             <span className="ml-1 rounded bg-accent-red/20 px-1 py-px text-accent-red">
