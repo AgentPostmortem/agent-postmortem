@@ -29,7 +29,7 @@ export function EditTokenEmail({
       </head>
       <body
         style={{
-          backgroundColor: "#0d0c0a",
+          backgroundColor: "#0b0b0c",
           fontFamily: "Georgia, serif",
           margin: "0",
           padding: "0",
@@ -39,7 +39,7 @@ export function EditTokenEmail({
           width="100%"
           cellPadding="0"
           cellSpacing="0"
-          style={{ backgroundColor: "#0d0c0a" }}
+          style={{ backgroundColor: "#0b0b0c" }}
         >
           <tbody>
             <tr>
@@ -49,8 +49,8 @@ export function EditTokenEmail({
                   cellPadding="0"
                   cellSpacing="0"
                   style={{
-                    backgroundColor: "#121110",
-                    border: "1px solid #26231d",
+                    backgroundColor: "#111113",
+                    border: "1px solid #232326",
                     borderRadius: "4px",
                     overflow: "hidden",
                   }}
@@ -60,7 +60,7 @@ export function EditTokenEmail({
                     <tr>
                       <td
                         style={{
-                          backgroundColor: "#c9a35c",
+                          backgroundColor: "#e2674e",
                           height: "3px",
                           fontSize: "0",
                           lineHeight: "0",
@@ -91,7 +91,7 @@ export function EditTokenEmail({
                             fontSize: "16px",
                             letterSpacing: "0.15em",
                             textTransform: "uppercase",
-                            color: "#c9a35c",
+                            color: "#e2674e",
                             margin: "0",
                             fontWeight: "bold",
                           }}
@@ -105,7 +105,7 @@ export function EditTokenEmail({
                     <tr>
                       <td
                         style={{
-                          borderTop: "1px solid #26231d",
+                          borderTop: "1px solid #232326",
                           padding: "0",
                           fontSize: "0",
                         }}
@@ -119,7 +119,7 @@ export function EditTokenEmail({
                       <td style={{ padding: "32px 40px" }}>
                         <p
                           style={{
-                            color: "#a49e91",
+                            color: "#a0a0a6",
                             fontSize: "13px",
                             fontFamily: "monospace",
                             letterSpacing: "0.05em",
@@ -131,7 +131,7 @@ export function EditTokenEmail({
                         </p>
                         <p
                           style={{
-                            color: "#efece5",
+                            color: "#ededef",
                             fontSize: "18px",
                             fontFamily: "Georgia, serif",
                             lineHeight: "1.4",
@@ -142,7 +142,7 @@ export function EditTokenEmail({
                         </p>
                         <p
                           style={{
-                            color: "#a49e91",
+                            color: "#a0a0a6",
                             fontSize: "14px",
                             lineHeight: "1.6",
                             margin: "0 0 28px",
@@ -163,9 +163,9 @@ export function EditTokenEmail({
                                   style={{
                                     display: "inline-block",
                                     backgroundColor: "#1f0a0a",
-                                    border: "1px solid #c9a35c",
+                                    border: "1px solid #e2674e",
                                     borderRadius: "3px",
-                                    color: "#c9a35c",
+                                    color: "#e2674e",
                                     fontFamily: "monospace",
                                     fontSize: "11px",
                                     fontWeight: "bold",
@@ -221,13 +221,13 @@ export function EditTokenEmail({
                     <tr>
                       <td
                         style={{
-                          borderTop: "1px solid #26231d",
+                          borderTop: "1px solid #232326",
                           padding: "16px 40px",
                         }}
                       >
                         <p
                           style={{
-                            color: "#3a352c",
+                            color: "#37373c",
                             fontSize: "10px",
                             fontFamily: "monospace",
                             letterSpacing: "0.1em",

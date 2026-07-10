@@ -82,7 +82,7 @@ export async function GET(
         style={{
           width: "1200px",
           height: "630px",
-          backgroundColor: "#0d0c0a",
+          backgroundColor: "#0b0b0c",
           display: "flex",
           flexDirection: "column",
           padding: "60px 80px",
@@ -98,7 +98,7 @@ export async function GET(
             left: 0,
             right: 0,
             height: "4px",
-            backgroundColor: "#c9a35c",
+            backgroundColor: "#e2674e",
           }}
         />
 
@@ -128,7 +128,7 @@ export async function GET(
                 fontSize: "22px",
                 letterSpacing: "3px",
                 textTransform: "uppercase",
-                color: "#c9a35c",
+                color: "#e2674e",
                 fontWeight: 700,
               }}
             >
@@ -142,7 +142,7 @@ export async function GET(
               flexDirection: "column",
               alignItems: "flex-end",
               gap: "4px",
-              backgroundColor: "#121110",
+              backgroundColor: "#111113",
               border: "1px solid #222",
               borderRadius: "6px",
               padding: "14px 22px",
@@ -159,7 +159,7 @@ export async function GET(
               Subject Agent
             </span>
             <span
-              style={{ fontSize: "22px", color: "#efece5", fontWeight: 600 }}
+              style={{ fontSize: "22px", color: "#ededef", fontWeight: 600 }}
             >
               {agentName}
             </span>
@@ -174,7 +174,7 @@ export async function GET(
           style={{
             fontSize: "38px",
             lineHeight: 1.2,
-            color: "#efece5",
+            color: "#ededef",
             fontWeight: 600,
             marginBottom: "20px",
           }}
@@ -233,8 +233,8 @@ export async function GET(
                     width: "44px",
                     height: "8px",
                     borderRadius: "3px",
-                    backgroundColor: pip <= damageLevel ? "#c9a35c" : "#1a1815",
-                    border: `1px solid ${pip <= damageLevel ? "#c9a35c" : "#332d24"}`,
+                    backgroundColor: pip <= damageLevel ? "#e2674e" : "#18181b",
+                    border: `1px solid ${pip <= damageLevel ? "#e2674e" : "#2e2e33"}`,
                   }}
                 />
               ))}
@@ -263,7 +263,7 @@ export async function GET(
                 Est. Damage
               </span>
               <span
-                style={{ fontSize: "36px", color: "#c9a35c", fontWeight: 700 }}
+                style={{ fontSize: "36px", color: "#e2674e", fontWeight: 700 }}
               >
                 {costFormatted}
               </span>

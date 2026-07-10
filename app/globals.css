@@ -9,10 +9,10 @@
   }
 
   body {
-    /* Subtle dot-grid texture on warm near-black */
+    /* Subtle dot-grid texture on neutral near-black */
     background-image: radial-gradient(
       circle,
-      rgba(239, 236, 229, 0.055) 1px,
+      rgba(237, 237, 240, 0.05) 1px,
       transparent 1px
     );
     background-size: 28px 28px;
@@ -28,17 +28,17 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #2c2822;
+    background: #26262a;
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #4a4336;
+    background: #3f3f45;
   }
 
-  /* Copper text selection */
+  /* Signal-ember text selection */
   ::selection {
-    background: #c9a35c;
-    color: #0d0c0a;
+    background: #e2674e;
+    color: #0b0b0c;
   }
 
   /* Tabular numbers everywhere monospace is used */

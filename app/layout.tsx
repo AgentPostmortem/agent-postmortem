@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Instrument_Serif } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import { getSiteUrl } from "@/lib/utils/urls";
 import "./globals.css";
 
-const instrumentSerif = Instrument_Serif({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+  weight: ["400", "500"],
   variable: "--font-display",
   display: "swap",
 });
@@ -68,11 +67,7 @@ export default function RootLayout({
   };
 
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={instrumentSerif.variable}
-    >
+    <html lang="en" suppressHydrationWarning className={spaceGrotesk.variable}>
       <body className="min-h-screen bg-bg-canvas text-text-primary font-sans antialiased">
         <script
           type="application/ld+json"

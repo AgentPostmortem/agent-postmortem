@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoIcon } from "@/components/brand/Logo";
+import { PlusIcon } from "@/components/ui/icons";
 
 const NAV = [
   { href: "/hall-of-fame", label: "Hall of Fame" },
@@ -46,14 +47,14 @@ export function Header() {
             href="/submit"
             className="hidden items-center gap-1.5 rounded-full border border-accent-red/60 bg-accent-red-soft px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas md:flex"
           >
-            <span aria-hidden="true">+</span> File Report
+            <PlusIcon size={10} /> File Report
           </Link>
 
           <Link
             href="/submit"
-            className="flex items-center gap-1 rounded border border-accent-red bg-accent-red-soft px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-accent-red-muted md:hidden"
+            className="flex items-center gap-1.5 rounded-full border border-accent-red/60 bg-accent-red-soft px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-accent-red-muted md:hidden"
           >
-            + File
+            <PlusIcon size={9} /> File
           </Link>
 
           <details className="group relative md:hidden">

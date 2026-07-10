@@ -64,24 +64,24 @@ export async function sendApprovalEmail({
     html: `
 <!DOCTYPE html>
 <html>
-<body style="background:#0d0c0a;font-family:Georgia,serif;margin:0;padding:40px 16px;">
+<body style="background:#0b0b0c;font-family:Georgia,serif;margin:0;padding:40px 16px;">
   <table width="100%" cellpadding="0" cellspacing="0">
     <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#121110;border:1px solid #26231d;border-radius:4px;overflow:hidden;">
-        <tr><td style="background:#c9a35c;height:3px;font-size:0;">&nbsp;</td></tr>
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#111113;border:1px solid #232326;border-radius:4px;overflow:hidden;">
+        <tr><td style="background:#e2674e;height:3px;font-size:0;">&nbsp;</td></tr>
         <tr><td style="padding:32px 40px 24px;">
           <p style="font-family:monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#5a5a5a;margin:0 0 8px;">AgentPostmortem</p>
-          <p style="font-family:monospace;font-size:16px;letter-spacing:.15em;text-transform:uppercase;color:#c9a35c;margin:0;font-weight:bold;">${caseNumber}</p>
+          <p style="font-family:monospace;font-size:16px;letter-spacing:.15em;text-transform:uppercase;color:#e2674e;margin:0;font-weight:bold;">${caseNumber}</p>
         </td></tr>
-        <tr><td style="border-top:1px solid #26231d;padding:0;font-size:0;">&nbsp;</td></tr>
+        <tr><td style="border-top:1px solid #232326;padding:0;font-size:0;">&nbsp;</td></tr>
         <tr><td style="padding:32px 40px;">
-          <p style="color:#a49e91;font-size:13px;font-family:monospace;letter-spacing:.05em;text-transform:uppercase;margin:0 0 8px;">Case Approved</p>
-          <p style="color:#efece5;font-size:18px;line-height:1.4;margin:0 0 24px;">${caseTitle}</p>
-          <p style="color:#a49e91;font-size:14px;line-height:1.6;margin:0 0 28px;">Your submission has been reviewed and approved. It is now publicly visible in the AgentPostmortem registry.</p>
-          <a href="${caseUrl}" style="display:inline-block;background:#1f0a0a;border:1px solid #c9a35c;border-radius:3px;color:#c9a35c;font-family:monospace;font-size:11px;font-weight:bold;letter-spacing:.15em;text-decoration:none;text-transform:uppercase;padding:12px 24px;">View Case →</a>
+          <p style="color:#a0a0a6;font-size:13px;font-family:monospace;letter-spacing:.05em;text-transform:uppercase;margin:0 0 8px;">Case Approved</p>
+          <p style="color:#ededef;font-size:18px;line-height:1.4;margin:0 0 24px;">${caseTitle}</p>
+          <p style="color:#a0a0a6;font-size:14px;line-height:1.6;margin:0 0 28px;">Your submission has been reviewed and approved. It is now publicly visible in the AgentPostmortem registry.</p>
+          <a href="${caseUrl}" style="display:inline-block;background:#1f0a0a;border:1px solid #e2674e;border-radius:3px;color:#e2674e;font-family:monospace;font-size:11px;font-weight:bold;letter-spacing:.15em;text-decoration:none;text-transform:uppercase;padding:12px 24px;">View Case →</a>
         </td></tr>
-        <tr><td style="border-top:1px solid #26231d;padding:16px 40px;">
-          <p style="color:#3a352c;font-size:10px;font-family:monospace;letter-spacing:.1em;margin:0;">AgentPostmortem — agentpostmortem.com</p>
+        <tr><td style="border-top:1px solid #232326;padding:16px 40px;">
+          <p style="color:#37373c;font-size:10px;font-family:monospace;letter-spacing:.1em;margin:0;">AgentPostmortem — agentpostmortem.com</p>
         </td></tr>
       </table>
     </td></tr>

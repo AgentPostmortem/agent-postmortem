@@ -211,7 +211,7 @@ export default function HomePage({ searchParams }: PageProps) {
           Every AI Agent
           <br />
           <span className="text-text-secondary">Failure,</span>{" "}
-          <span className="relative italic text-accent-red-muted">
+          <span className="relative font-medium text-accent-red-muted">
             Documented.
             <span className="absolute -bottom-1 left-0 h-px w-full bg-accent-red/50" />
           </span>
@@ -325,7 +325,7 @@ export default function HomePage({ searchParams }: PageProps) {
                     className="rounded border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent-red hover:text-accent-red"
                     title="Clear agent filter"
                   >
-                    ×
+                    <CloseIcon size={9} />
                   </Link>
                 )}
               </div>
@@ -361,7 +361,7 @@ export default function HomePage({ searchParams }: PageProps) {
                     className="rounded border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent-red hover:text-accent-red"
                     title="Clear severity filter"
                   >
-                    ×
+                    <CloseIcon size={9} />
                   </Link>
                 )}
               </div>

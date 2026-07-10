@@ -9,6 +9,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   CheckIcon,
+  CloseIcon,
 } from "@/components/ui/icons";
 
 interface AgentOption {
@@ -464,7 +465,7 @@ export function SubmitForm() {
                   aria-label="Remove screenshot"
                   className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-bg-elevated border border-border-strong font-mono text-xs text-text-secondary hover:text-accent-red"
                 >
-                  ×
+                  <CloseIcon size={10} />
                 </button>
               </div>
             ))}
