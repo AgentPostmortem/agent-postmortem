@@ -3,6 +3,7 @@ import { LogoIcon } from "@/components/brand/Logo";
 import { PlusIcon } from "@/components/ui/icons";
 
 const NAV = [
+  { href: "/tools", label: "Tools" },
   { href: "/hall-of-fame", label: "Hall of Fame" },
   { href: "/stats", label: "Stats" },
   { href: "/about", label: "About" },
@@ -31,7 +32,7 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
-          {NAV.slice(0, 4).map((link) => (
+          {NAV.slice(0, 5).map((link) => (
             <Link
               key={link.href}
               href={link.href}
