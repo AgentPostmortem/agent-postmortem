@@ -1,0 +1,577 @@
+{
+  "updatedAt": "2026-06-07T04:39:26.935Z",
+  "createdAt": "2026-06-06T10:55:13.058Z",
+  "id": "oXJq3Y3Droz4h1mi",
+  "name": "AgentPostmortem - HN Ingestion v5 (backfill)",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "run-test",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "w1",
+      "name": "Manual Run",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        200
+      ],
+      "webhookId": "ab782d75-69a9-4356-9f99-c4925125104d"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\nconst sd=$getWorkflowStaticData('global'); sd.seenV5=sd.seenV5||[]; const seenSet=new Set(sd.seenV5);\nconst QUERIES=[\"Replit AI deleted production database\",\"Air Canada chatbot bereavement fare\",\"Cursor AI support hallucination cancellations\",\"Amazon Kiro AWS outage\",\"Claude Code deleted files\",\"AWS Bedrock prompt caching bill\",\"Devin AI Upwork debunked\",\"NYC MyCity chatbot illegal advice\",\"DPD chatbot swore customer\",\"McDonald's AI drive-thru\",\"Chevrolet dealership chatbot $1\",\"Sakana AI CUDA kernel\",\"AI agent deleted entire codebase\",\"GitHub Copilot leaked secrets\",\"AI coding agent rm -rf\",\"Lovable AI security leak\",\"Manus AI agent\",\"OpenAI Operator agent\",\"Anthropic computer use mistake\",\"AI agent drained crypto wallet\",\"vibe coding production incident\",\"AI agent sent wrong emails\",\"Gemini CLI deleted\",\"Windsurf agent bug\",\"AI agent infinite loop bill\",\"Salesforce Agentforce incident\",\"AI agent fabricated data\",\"AI customer service refund exploit\",\"Replit agent wiped codebase\",\"AI coding agent pushed bad code production\",\"autonomous AI agent caused outage\",\"AI agent leaked database\"];\n// shuffle queries so different incidents get covered across runs\nfor(let i=QUERIES.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[QUERIES[i],QUERIES[j]]=[QUERIES[j],QUERIES[i]];}\nconst found=new Map();\nfor(const q of QUERIES){\n  let hits=[];\n  try{const r=await this.helpers.httpRequest({method:'GET',url:'https://hn.algolia.com/api/v1/search?tags=story&hitsPerPage=5&query='+encodeURIComponent(q),json:true});hits=(r.hits||[]).filter(h=>h&&h.title&&h.objectID);}catch(e){continue;}\n  hits.sort((a,b)=>(b.points||0)-(a.points||0));\n  for(const h of hits){\n    if(seenSet.has(h.objectID)||found.has(h.objectID))continue;\n    found.set(h.objectID,{objectID:h.objectID,title:h.title,url:h.url||('https://news.ycombinator.com/item?id='+h.objectID),text:(h.story_text||'').replace(/<[^>]+>/g,' ').slice(0,2000),points:h.points||0,createdAt:h.created_at||null,numComments:h.num_comments||0});\n    break;\n  }\n  if(found.size>=8)break;\n}\nreturn [...found.values()].map(c=>({json:c}));\n"
+      },
+      "id": "n2",
+      "name": "Gather HN",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\nconst SUPA='https://uqkveghvmrzjvdpxlhty.supabase.co/rest/v1';\nconst K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxa3ZlZ2h2bXJ6anZkcHhsaHR5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzM2ODc4MCwiZXhwIjoyMDkyOTQ0NzgwfQ.eQkonhQOBaAc3D4LnyauVpoAVbRGVNqbDp0T_R6lesc'; const H={apikey:K,Authorization:'Bearer '+K};\nconst SLUGS='claude, gpt-4, devin, cursor, gemini, replit, copilot, perplexity, o1, o3, gemini-2, codeium, mistral, llama, autogpt, langchain-agent, bing-chat, character-ai, aider, agentgpt, openai-assistants, aws-bedrock-agent, azure-openai, google-agentspace, zapier-ai, make-ai, n8n, crew-ai, anthropic-api, openai-api, openai, other';\nconst helpers=this.helpers;\nconst strip=(h)=>String(h||'').replace(/<[^>]+>/g,' ').replace(/&#x27;/g,\"'\").replace(/&quot;/g,'\"').replace(/&amp;/g,'&').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&[a-z]+;/g,' ').replace(/\\s+/g,' ').trim();\nconst getComments=async(id)=>{\n  try{\n    const it=await helpers.httpRequest({method:'GET',url:'https://hn.algolia.com/api/v1/items/'+id,json:true,timeout:20000});\n    const texts=[]; const walk=(n)=>{ if(!n)return; if(n.text) texts.push(strip(n.text)); (n.children||[]).forEach(walk); }; walk(it);\n    return texts.filter(t=>t.length>60).sort((a,b)=>b.length-a.length).slice(0,14).join('\\n---\\n').slice(0,5500);\n  }catch(e){return '';}\n};\nconst getArticle=async(url)=>{\n  if(!url||url.indexOf('news.ycombinator.com')>=0)return '';\n  try{\n    const r=await helpers.httpRequest({method:'GET',url,timeout:15000,headers:{'User-Agent':'Mozilla/5.0 (compatible; AgentPostmortemBot/1.0)'},returnFullResponse:false});\n    const body=typeof r==='string'?r:'';\n    if(!body)return '';\n    const m=body.match(/<body[\\s\\S]*?<\\/body>/i); const seg=m?m[0]:body;\n    return strip(seg).slice(0,4500);\n  }catch(e){return '';}\n};\nlet existing=[];\ntry{const ex=await helpers.httpRequest({method:'GET',url:SUPA+'/posts?select=title,outcome&limit=500',headers:H,json:true});existing=(ex||[]).map(p=>({title:p.title,outcome:String(p.outcome||'').slice(0,180)}));}catch(e){}\nlet base=0;\ntry{const c=await helpers.httpRequest({method:'GET',url:SUPA+'/posts?select=id&status=eq.approved&limit=10000',headers:H,json:true});base=Array.isArray(c)?c.length:0;}catch(e){}\nconst sd=$getWorkflowStaticData('global'); sd.seenV5=sd.seenV5||[]; const seenSet=new Set(sd.seenV5);\nfunction norm(t){return new Set(String(t).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\\s+/).filter(Boolean));}\nfunction sim(a,b){const A=norm(a),B=norm(b);if(!A.size||!B.size)return 0;let i=0;for(const x of A)if(B.has(x))i++;return i/(A.size+B.size-i);}\nconst items=$input.all(); const out=[]; let counter=0; const localTitles=existing.map(e=>e.title); let localList=existing.slice();\nfor(const it of items){\n  const c=it.json;\n  seenSet.add(c.objectID);\n  const cmts=await getComments(c.objectID);\n  const art=await getArticle(c.url);\n  const material='STORY BODY: '+(c.text||'(none)')+'\\n\\nLINKED ARTICLE EXCERPT: '+(art||'(none)')+'\\n\\nTOP HACKER NEWS COMMENTS:\\n'+(cmts||'(none)');\n  const existStr=localList.slice(0,50).map((e,i)=>(i+1)+'. '+e.title).join('\\n');\n  const prompt='You are an investigative editor curating a public registry of REAL AI agent failures. Write a detailed, engaging, strictly factual case file from the source material provided.\\n\\nEXISTING CASES (titles, for duplicate check):\\n'+(existStr||'(none)')+'\\n\\nRespond ONLY with JSON:\\n{\"isAgentFailure\":true|false,\"isDuplicate\":true|false,\"agentSlug\":\"<one of: '+SLUGS+'>\",\"title\":\"crisp 30-110 char headline\",\"prompt\":\"the instruction/context given to the agent, or null\",\"outcome\":\"500-1200 char narrative: what the agent did, the sequence of events, who/what was affected, and the consequences. Specific and readable, grounded ONLY in the source material.\",\"damageLevel\":1-5,\"estimatedCostUsd\":int or null,\"confidence\":0-1,\"verifiedFacts\":[\"4-8 specific facts directly supported by the source material\"],\"unknowns\":[\"1-4 important details not confirmed in the source\"],\"lessons\":[\"2-5 concrete, practical lessons for teams deploying AI agents\"]}\\n\\nRULES: isAgentFailure=true ONLY for a concrete real-world incident where an autonomous/agentic AI action caused specific harm. Every verifiedFact must be directly supported by the source material below; anything not supported goes in unknowns. Do NOT invent details, numbers, names, or quotes. Make outcome vivid but factual. Reject product launches, opinions, tutorials, benchmarks, and generic discussion (isAgentFailure=false). isDuplicate=true if the same real-world event already exists above. If material is too thin to support >=4 facts, set isAgentFailure=false. Use \"other\" if no slug fits.\\n\\nSTORY TITLE: '+c.title+'\\nURL: '+c.url+'\\n\\nSOURCE MATERIAL:\\n'+material;\n  let draft;\n  try{const resp=await helpers.httpRequest({method:'POST',url:'http://172.18.0.1:8088/draft',body:{prompt},json:true,timeout:180000});const m=String(resp.text||'').match(/\\{[\\s\\S]*\\}/);if(!m)continue;draft=JSON.parse(m[0]);}catch(e){continue;}\n  if(!draft||draft.isAgentFailure!==true||draft.isDuplicate===true)continue;\n  if(Number(draft.confidence||0)<0.7)continue;\n  if(!draft.title||!draft.outcome||String(draft.outcome).length<300)continue;\n  if(!Array.isArray(draft.verifiedFacts)||draft.verifiedFacts.length<3)continue;\n  if(!Array.isArray(draft.lessons)||draft.lessons.length<2)continue;\n  const t=String(draft.title).slice(0,200);\n  if(localTitles.some(x=>sim(x,t)>=0.4))continue;\n  let agentId=null;\n  try{const ag=await helpers.httpRequest({method:'GET',url:SUPA+'/agents?select=id&slug=eq.'+(draft.agentSlug||'other')+'&limit=1',headers:H,json:true});if(Array.isArray(ag)&&ag.length)agentId=ag[0].id;}catch(e){}\n  if(!agentId){try{const ot=await helpers.httpRequest({method:'GET',url:SUPA+'/agents?select=id&slug=eq.other&limit=1',headers:H,json:true});if(Array.isArray(ot)&&ot.length)agentId=ot[0].id;}catch(e){}}\n  if(!agentId)continue;\n  counter++; const cn='APM-'+String(base+counter).padStart(4,'0');\n  let cost=draft.estimatedCostUsd; if(cost===undefined)cost=null;\n  const body={agent_id:agentId,case_number:cn,title:t,prompt:draft.prompt?String(draft.prompt).slice(0,2000):null,outcome:String(draft.outcome).slice(0,10000),damage_level:Math.min(5,Math.max(1,parseInt(draft.damageLevel)||3)),estimated_cost_usd:cost,screenshot_urls:[],source_url:c.url||null,source_title:c.title||null,source_published_at:c.createdAt||null,created_at:c.createdAt||undefined,verified_facts:(draft.verifiedFacts||[]).map(x=>String(x).slice(0,1000)).slice(0,8),unknowns:(draft.unknowns||[]).map(x=>String(x).slice(0,1000)).slice(0,4),lessons:(draft.lessons||[]).map(x=>String(x).slice(0,1000)).slice(0,5),is_anonymous:true,submitter_handle:'auto-ingest (HN)',submitter_email:null,edit_token_hash:'auto-ingest',ip_hash:'auto-ingest',status:'approved',vote_score:0};\n  try{await helpers.httpRequest({method:'POST',url:SUPA+'/posts',headers:Object.assign({},H,{'Content-Type':'application/json','Prefer':'return=minimal'}),body,json:true});localTitles.push(t);localList.push({title:t});out.push({json:{case:cn,title:t,outcomeLen:String(draft.outcome).length,facts:draft.verifiedFacts.length}});}catch(e){counter--;out.push({json:{error:String(e).slice(0,160),title:t}});}\n}\nsd.seenV5=[...seenSet].slice(-4000);\nreturn out;\n"
+      },
+      "id": "n3",
+      "name": "Process",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        100
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "Gather HN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Run": {
+      "main": [
+        [
+          {
+            "node": "Gather HN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gather HN": {
+      "main": [
+        [
+          {
+            "node": "Process",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "saveDataErrorExecution": "all"
+  },
+  "staticData": {
+    "node:Schedule": {
+      "recurrenceRules": []
+    },
+    "global": {
+      "seen": [
+        "44185913",
+        "47911524",
+        "44463967",
+        "44646151",
+        "47444195",
+        "46670181",
+        "44625119",
+        "44632575",
+        "47182387",
+        "44450294",
+        "46911873",
+        "46597781",
+        "44622725",
+        "47105637",
+        "44185986",
+        "47444130",
+        "47249964",
+        "45129208",
+        "46154278",
+        "44655569",
+        "47479724",
+        "47950752",
+        "47505561",
+        "46428595",
+        "46157993",
+        "46478789",
+        "45163350",
+        "46204066",
+        "44632270",
+        "46830235"
+      ],
+      "seenV3": [
+        "43683012",
+        "44185913",
+        "47911524",
+        "39679787",
+        "44563324",
+        "44463967",
+        "40008109",
+        "44646151",
+        "43692476",
+        "47444195",
+        "47172238",
+        "46670181",
+        "44625119",
+        "45373008",
+        "44632575",
+        "47182387",
+        "39741933",
+        "46911873",
+        "44742710",
+        "46711589",
+        "44450294",
+        "39680342",
+        "38000694",
+        "40020926",
+        "41607251",
+        "42420423",
+        "47357515",
+        "46565265",
+        "44622725",
+        "47105637",
+        "47501348",
+        "46696348",
+        "44185986",
+        "44563290",
+        "45812473",
+        "44429298",
+        "35343646",
+        "47329678",
+        "35343065",
+        "47249964"
+      ],
+      "seenV4": [
+        "43683012",
+        "44185913",
+        "47911524",
+        "39679787",
+        "44563324",
+        "39378235",
+        "44463967",
+        "39455131",
+        "40008109",
+        "44646151",
+        "43692476",
+        "47444195",
+        "39404364",
+        "47172238",
+        "48225596",
+        "46670181",
+        "44625119",
+        "45427482",
+        "45373008",
+        "44632575",
+        "21507481",
+        "45199648",
+        "47182387",
+        "39741933",
+        "46911873",
+        "43080895",
+        "47441629",
+        "44742710",
+        "46711589",
+        "46964162",
+        "44450294",
+        "39426107",
+        "16240984",
+        "39680342",
+        "38000694",
+        "40020926",
+        "48415633",
+        "47049776",
+        "39392810",
+        "41607251",
+        "43766726",
+        "42420423",
+        "47357515",
+        "46565265",
+        "44622725",
+        "47105637",
+        "36820378",
+        "46711958",
+        "47501348",
+        "46696348",
+        "44185986",
+        "44563290",
+        "37821324",
+        "45812473",
+        "44429298",
+        "48188727",
+        "35343646",
+        "44595898",
+        "47329678",
+        "35343065",
+        "39421527",
+        "47249964",
+        "47444130",
+        "38418499",
+        "45109966",
+        "44629343",
+        "47479724",
+        "45204768",
+        "47229931",
+        "39397387",
+        "40460084",
+        "47081472",
+        "47133305",
+        "43895255",
+        "47053308",
+        "44632270",
+        "45129208",
+        "45901525",
+        "46500081",
+        "47520448",
+        "46154278",
+        "47950752",
+        "44655569",
+        "45864204",
+        "47117725",
+        "39389620",
+        "39399388",
+        "46428595",
+        "47505561",
+        "45163350",
+        "46566103",
+        "47494909",
+        "47440460",
+        "38688671",
+        "48256017",
+        "47583255",
+        "46846055",
+        "47002748",
+        "45914307",
+        "46674790",
+        "48037640",
+        "47933355",
+        "46169773",
+        "47543554",
+        "46157993",
+        "44658769",
+        "47197011",
+        "44205881",
+        "46584555",
+        "36250317",
+        "46478789",
+        "47586753",
+        "44047710",
+        "45556135",
+        "45903367",
+        "44203938",
+        "46204066",
+        "48049770",
+        "47833278",
+        "47382912"
+      ],
+      "seenV5": [
+        "47111705",
+        "42816506",
+        "44632575",
+        "43380152",
+        "45258202",
+        "46913404",
+        "35375540",
+        "40008109",
+        "47091182",
+        "46524514",
+        "46934582",
+        "43425767",
+        "47933355",
+        "46708449",
+        "47182387",
+        "48188727",
+        "47265246",
+        "44646151",
+        "40020926",
+        "42247368",
+        "44651485",
+        "27494288",
+        "46428595",
+        "46420769",
+        "43266666",
+        "46245673",
+        "44309393",
+        "46893795",
+        "47106215",
+        "40776970",
+        "46897408",
+        "39987163",
+        "42830856",
+        "43269461",
+        "40750888",
+        "46830235",
+        "47846681",
+        "47833278",
+        "42975760",
+        "44655569",
+        "47398628",
+        "47400285",
+        "43122089",
+        "44632270",
+        "46994985",
+        "44573539",
+        "47050216",
+        "42638000",
+        "45701753",
+        "47743208",
+        "47113273",
+        "46634915",
+        "47525283",
+        "44639695",
+        "46911968",
+        "34796496",
+        "46598970",
+        "43110059",
+        "33862793",
+        "42461738",
+        "40736861",
+        "44613072",
+        "47379690",
+        "47161352",
+        "42810048",
+        "44713687",
+        "43112033",
+        "46365999",
+        "45732231",
+        "47298242",
+        "43275243",
+        "40786308",
+        "43302875",
+        "43355728",
+        "43142717",
+        "47990395",
+        "43114260",
+        "44085244",
+        "44295377",
+        "48462046",
+        "48558502",
+        "47227826"
+      ]
+    }
+  },
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": null,
+  "versionId": "167f3714-cde2-419e-94ad-de83e1e40108",
+  "activeVersionId": "167f3714-cde2-419e-94ad-de83e1e40108",
+  "versionCounter": 14,
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2026-06-06T10:55:13.133Z",
+      "createdAt": "2026-06-06T10:55:13.133Z",
+      "role": "workflow:owner",
+      "workflowId": "oXJq3Y3Droz4h1mi",
+      "projectId": "uRE8JSno37HwCdKf",
+      "project": {
+        "updatedAt": "2026-06-06T10:45:35.460Z",
+        "createdAt": "2026-06-06T10:44:08.834Z",
+        "id": "uRE8JSno37HwCdKf",
+        "name": "Agent Postmortem <agentpostmortem@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "bd48412e-ebd2-4c72-b240-675a1702f21d"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-06-07T04:39:27.028Z",
+    "createdAt": "2026-06-07T04:39:27.028Z",
+    "versionId": "167f3714-cde2-419e-94ad-de83e1e40108",
+    "workflowId": "oXJq3Y3Droz4h1mi",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours",
+                "hoursInterval": 1
+              }
+            ]
+          }
+        },
+        "id": "n1",
+        "name": "Schedule",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "GET",
+          "path": "run-test",
+          "responseMode": "onReceived",
+          "options": {}
+        },
+        "id": "w1",
+        "name": "Manual Run",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          200
+        ],
+        "webhookId": "ab782d75-69a9-4356-9f99-c4925125104d"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "jsCode": "\nconst sd=$getWorkflowStaticData('global'); sd.seenV5=sd.seenV5||[]; const seenSet=new Set(sd.seenV5);\nconst QUERIES=[\"Replit AI deleted production database\",\"Air Canada chatbot bereavement fare\",\"Cursor AI support hallucination cancellations\",\"Amazon Kiro AWS outage\",\"Claude Code deleted files\",\"AWS Bedrock prompt caching bill\",\"Devin AI Upwork debunked\",\"NYC MyCity chatbot illegal advice\",\"DPD chatbot swore customer\",\"McDonald's AI drive-thru\",\"Chevrolet dealership chatbot $1\",\"Sakana AI CUDA kernel\",\"AI agent deleted entire codebase\",\"GitHub Copilot leaked secrets\",\"AI coding agent rm -rf\",\"Lovable AI security leak\",\"Manus AI agent\",\"OpenAI Operator agent\",\"Anthropic computer use mistake\",\"AI agent drained crypto wallet\",\"vibe coding production incident\",\"AI agent sent wrong emails\",\"Gemini CLI deleted\",\"Windsurf agent bug\",\"AI agent infinite loop bill\",\"Salesforce Agentforce incident\",\"AI agent fabricated data\",\"AI customer service refund exploit\",\"Replit agent wiped codebase\",\"AI coding agent pushed bad code production\",\"autonomous AI agent caused outage\",\"AI agent leaked database\"];\n// shuffle queries so different incidents get covered across runs\nfor(let i=QUERIES.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[QUERIES[i],QUERIES[j]]=[QUERIES[j],QUERIES[i]];}\nconst found=new Map();\nfor(const q of QUERIES){\n  let hits=[];\n  try{const r=await this.helpers.httpRequest({method:'GET',url:'https://hn.algolia.com/api/v1/search?tags=story&hitsPerPage=5&query='+encodeURIComponent(q),json:true});hits=(r.hits||[]).filter(h=>h&&h.title&&h.objectID);}catch(e){continue;}\n  hits.sort((a,b)=>(b.points||0)-(a.points||0));\n  for(const h of hits){\n    if(seenSet.has(h.objectID)||found.has(h.objectID))continue;\n    found.set(h.objectID,{objectID:h.objectID,title:h.title,url:h.url||('https://news.ycombinator.com/item?id='+h.objectID),text:(h.story_text||'').replace(/<[^>]+>/g,' ').slice(0,2000),points:h.points||0,createdAt:h.created_at||null,numComments:h.num_comments||0});\n    break;\n  }\n  if(found.size>=8)break;\n}\nreturn [...found.values()].map(c=>({json:c}));\n"
+        },
+        "id": "n2",
+        "name": "Gather HN",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          260,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "jsCode": "\nconst SUPA='https://uqkveghvmrzjvdpxlhty.supabase.co/rest/v1';\nconst K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxa3ZlZ2h2bXJ6anZkcHhsaHR5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzM2ODc4MCwiZXhwIjoyMDkyOTQ0NzgwfQ.eQkonhQOBaAc3D4LnyauVpoAVbRGVNqbDp0T_R6lesc'; const H={apikey:K,Authorization:'Bearer '+K};\nconst SLUGS='claude, gpt-4, devin, cursor, gemini, replit, copilot, perplexity, o1, o3, gemini-2, codeium, mistral, llama, autogpt, langchain-agent, bing-chat, character-ai, aider, agentgpt, openai-assistants, aws-bedrock-agent, azure-openai, google-agentspace, zapier-ai, make-ai, n8n, crew-ai, anthropic-api, openai-api, openai, other';\nconst helpers=this.helpers;\nconst strip=(h)=>String(h||'').replace(/<[^>]+>/g,' ').replace(/&#x27;/g,\"'\").replace(/&quot;/g,'\"').replace(/&amp;/g,'&').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&[a-z]+;/g,' ').replace(/\\s+/g,' ').trim();\nconst getComments=async(id)=>{\n  try{\n    const it=await helpers.httpRequest({method:'GET',url:'https://hn.algolia.com/api/v1/items/'+id,json:true,timeout:20000});\n    const texts=[]; const walk=(n)=>{ if(!n)return; if(n.text) texts.push(strip(n.text)); (n.children||[]).forEach(walk); }; walk(it);\n    return texts.filter(t=>t.length>60).sort((a,b)=>b.length-a.length).slice(0,14).join('\\n---\\n').slice(0,5500);\n  }catch(e){return '';}\n};\nconst getArticle=async(url)=>{\n  if(!url||url.indexOf('news.ycombinator.com')>=0)return '';\n  try{\n    const r=await helpers.httpRequest({method:'GET',url,timeout:15000,headers:{'User-Agent':'Mozilla/5.0 (compatible; AgentPostmortemBot/1.0)'},returnFullResponse:false});\n    const body=typeof r==='string'?r:'';\n    if(!body)return '';\n    const m=body.match(/<body[\\s\\S]*?<\\/body>/i); const seg=m?m[0]:body;\n    return strip(seg).slice(0,4500);\n  }catch(e){return '';}\n};\nlet existing=[];\ntry{const ex=await helpers.httpRequest({method:'GET',url:SUPA+'/posts?select=title,outcome&limit=500',headers:H,json:true});existing=(ex||[]).map(p=>({title:p.title,outcome:String(p.outcome||'').slice(0,180)}));}catch(e){}\nlet base=0;\ntry{const c=await helpers.httpRequest({method:'GET',url:SUPA+'/posts?select=id&status=eq.approved&limit=10000',headers:H,json:true});base=Array.isArray(c)?c.length:0;}catch(e){}\nconst sd=$getWorkflowStaticData('global'); sd.seenV5=sd.seenV5||[]; const seenSet=new Set(sd.seenV5);\nfunction norm(t){return new Set(String(t).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\\s+/).filter(Boolean));}\nfunction sim(a,b){const A=norm(a),B=norm(b);if(!A.size||!B.size)return 0;let i=0;for(const x of A)if(B.has(x))i++;return i/(A.size+B.size-i);}\nconst items=$input.all(); const out=[]; let counter=0; const localTitles=existing.map(e=>e.title); let localList=existing.slice();\nfor(const it of items){\n  const c=it.json;\n  seenSet.add(c.objectID);\n  const cmts=await getComments(c.objectID);\n  const art=await getArticle(c.url);\n  const material='STORY BODY: '+(c.text||'(none)')+'\\n\\nLINKED ARTICLE EXCERPT: '+(art||'(none)')+'\\n\\nTOP HACKER NEWS COMMENTS:\\n'+(cmts||'(none)');\n  const existStr=localList.slice(0,50).map((e,i)=>(i+1)+'. '+e.title).join('\\n');\n  const prompt='You are an investigative editor curating a public registry of REAL AI agent failures. Write a detailed, engaging, strictly factual case file from the source material provided.\\n\\nEXISTING CASES (titles, for duplicate check):\\n'+(existStr||'(none)')+'\\n\\nRespond ONLY with JSON:\\n{\"isAgentFailure\":true|false,\"isDuplicate\":true|false,\"agentSlug\":\"<one of: '+SLUGS+'>\",\"title\":\"crisp 30-110 char headline\",\"prompt\":\"the instruction/context given to the agent, or null\",\"outcome\":\"500-1200 char narrative: what the agent did, the sequence of events, who/what was affected, and the consequences. Specific and readable, grounded ONLY in the source material.\",\"damageLevel\":1-5,\"estimatedCostUsd\":int or null,\"confidence\":0-1,\"verifiedFacts\":[\"4-8 specific facts directly supported by the source material\"],\"unknowns\":[\"1-4 important details not confirmed in the source\"],\"lessons\":[\"2-5 concrete, practical lessons for teams deploying AI agents\"]}\\n\\nRULES: isAgentFailure=true ONLY for a concrete real-world incident where an autonomous/agentic AI action caused specific harm. Every verifiedFact must be directly supported by the source material below; anything not supported goes in unknowns. Do NOT invent details, numbers, names, or quotes. Make outcome vivid but factual. Reject product launches, opinions, tutorials, benchmarks, and generic discussion (isAgentFailure=false). isDuplicate=true if the same real-world event already exists above. If material is too thin to support >=4 facts, set isAgentFailure=false. Use \"other\" if no slug fits.\\n\\nSTORY TITLE: '+c.title+'\\nURL: '+c.url+'\\n\\nSOURCE MATERIAL:\\n'+material;\n  let draft;\n  try{const resp=await helpers.httpRequest({method:'POST',url:'http://172.18.0.1:8088/draft',body:{prompt},json:true,timeout:180000});const m=String(resp.text||'').match(/\\{[\\s\\S]*\\}/);if(!m)continue;draft=JSON.parse(m[0]);}catch(e){continue;}\n  if(!draft||draft.isAgentFailure!==true||draft.isDuplicate===true)continue;\n  if(Number(draft.confidence||0)<0.7)continue;\n  if(!draft.title||!draft.outcome||String(draft.outcome).length<300)continue;\n  if(!Array.isArray(draft.verifiedFacts)||draft.verifiedFacts.length<3)continue;\n  if(!Array.isArray(draft.lessons)||draft.lessons.length<2)continue;\n  const t=String(draft.title).slice(0,200);\n  if(localTitles.some(x=>sim(x,t)>=0.4))continue;\n  let agentId=null;\n  try{const ag=await helpers.httpRequest({method:'GET',url:SUPA+'/agents?select=id&slug=eq.'+(draft.agentSlug||'other')+'&limit=1',headers:H,json:true});if(Array.isArray(ag)&&ag.length)agentId=ag[0].id;}catch(e){}\n  if(!agentId){try{const ot=await helpers.httpRequest({method:'GET',url:SUPA+'/agents?select=id&slug=eq.other&limit=1',headers:H,json:true});if(Array.isArray(ot)&&ot.length)agentId=ot[0].id;}catch(e){}}\n  if(!agentId)continue;\n  counter++; const cn='APM-'+String(base+counter).padStart(4,'0');\n  let cost=draft.estimatedCostUsd; if(cost===undefined)cost=null;\n  const body={agent_id:agentId,case_number:cn,title:t,prompt:draft.prompt?String(draft.prompt).slice(0,2000):null,outcome:String(draft.outcome).slice(0,10000),damage_level:Math.min(5,Math.max(1,parseInt(draft.damageLevel)||3)),estimated_cost_usd:cost,screenshot_urls:[],source_url:c.url||null,source_title:c.title||null,source_published_at:c.createdAt||null,created_at:c.createdAt||undefined,verified_facts:(draft.verifiedFacts||[]).map(x=>String(x).slice(0,1000)).slice(0,8),unknowns:(draft.unknowns||[]).map(x=>String(x).slice(0,1000)).slice(0,4),lessons:(draft.lessons||[]).map(x=>String(x).slice(0,1000)).slice(0,5),is_anonymous:true,submitter_handle:'auto-ingest (HN)',submitter_email:null,edit_token_hash:'auto-ingest',ip_hash:'auto-ingest',status:'approved',vote_score:0};\n  try{await helpers.httpRequest({method:'POST',url:SUPA+'/posts',headers:Object.assign({},H,{'Content-Type':'application/json','Prefer':'return=minimal'}),body,json:true});localTitles.push(t);localList.push({title:t});out.push({json:{case:cn,title:t,outcomeLen:String(draft.outcome).length,facts:draft.verifiedFacts.length}});}catch(e){counter--;out.push({json:{error:String(e).slice(0,160),title:t}});}\n}\nsd.seenV5=[...seenSet].slice(-4000);\nreturn out;\n"
+        },
+        "id": "n3",
+        "name": "Process",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          520,
+          100
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule": {
+        "main": [
+          [
+            {
+              "node": "Gather HN",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Manual Run": {
+        "main": [
+          [
+            {
+              "node": "Gather HN",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gather HN": {
+        "main": [
+          [
+            {
+              "node": "Process",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Agent Postmortem",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-07T04:39:27.939Z",
+        "id": 51,
+        "workflowId": "oXJq3Y3Droz4h1mi",
+        "versionId": "167f3714-cde2-419e-94ad-de83e1e40108",
+        "event": "activated",
+        "userId": "bd48412e-ebd2-4c72-b240-675a1702f21d"
+      },
+      {
+        "createdAt": "2026-06-07T04:39:33.447Z",
+        "id": 53,
+        "workflowId": "oXJq3Y3Droz4h1mi",
+        "versionId": "167f3714-cde2-419e-94ad-de83e1e40108",
+        "event": "activated",
+        "userId": "bd48412e-ebd2-4c72-b240-675a1702f21d"
+      },
+      {
+        "createdAt": "2026-06-07T04:39:27.681Z",
+        "id": 50,
+        "workflowId": "oXJq3Y3Droz4h1mi",
+        "versionId": "167f3714-cde2-419e-94ad-de83e1e40108",
+        "event": "deactivated",
+        "userId": "bd48412e-ebd2-4c72-b240-675a1702f21d"
+      },
+      {
+        "createdAt": "2026-06-07T04:39:29.458Z",
+        "id": 52,
+        "workflowId": "oXJq3Y3Droz4h1mi",
+        "versionId": "167f3714-cde2-419e-94ad-de83e1e40108",
+        "event": "deactivated",
+        "userId": "bd48412e-ebd2-4c72-b240-675a1702f21d"
+      }
+    ]
+  }
+}

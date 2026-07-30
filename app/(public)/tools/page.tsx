@@ -88,6 +88,20 @@ const TOOLING: Tool[] = [
     badge: "npm",
   },
   {
+    href: "https://www.npmjs.com/package/@royalpinto007/skill-audit",
+    label: "Skill-audit",
+    description:
+      "Security scanner for agent skills: flags prompt-injection, dangerous shell, secret access, and exfiltration before you install a Claude/agent Skill. 31 rules, SARIF.",
+    badge: "npm",
+  },
+  {
+    href: "https://www.npmjs.com/package/ctxtrim",
+    label: "Ctxtrim",
+    description:
+      "Trims AI-context bloat: finds the files ballooning your Claude Code, Cursor, and Codex token cost and writes the ignore files to cut it.",
+    badge: "npm",
+  },
+  {
     href: "https://www.npmjs.com/package/@royalpinto007/evalgate",
     label: "Evalgate",
     description:

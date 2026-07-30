@@ -1,0 +1,722 @@
+{
+  "updatedAt": "2026-07-01T13:15:55.943Z",
+  "createdAt": "2026-06-06T10:55:13.058Z",
+  "id": "oXJq3Y3Droz4h1mi",
+  "name": "AgentPostmortem - Public Ingestion v5 (backfill)",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "n1",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "run-test",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "w1",
+      "name": "Manual Run",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        200
+      ],
+      "webhookId": "ab782d75-69a9-4356-9f99-c4925125104d"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\nconst sd=$getWorkflowStaticData('global'); sd.seenPublicV1=sd.seenPublicV1||[]; const seenSet=new Set(sd.seenPublicV1);\nconst helpers=this.helpers;\nconst strip=(h)=>String(h||'').replace(/<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>/g,'$1').replace(/<[^>]+>/g,' ').replace(/&#x27;/g,\"'\").replace(/&#39;/g,\"'\").replace(/&quot;/g,'\"').replace(/&amp;/g,'&').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&nbsp;/g,' ').replace(/&[a-z]+;/g,' ').replace(/\\s+/g,' ').trim();\nconst tag=(xml,name)=>{const m=String(xml||'').match(new RegExp('<'+name+'(?:\\\\s[^>]*)?>([\\\\s\\\\S]*?)<\\\\/'+name+'>','i'));return m?strip(m[1]):'';};\nconst hash=(s)=>{let h=0; for(const ch of String(s)){h=((h<<5)-h)+ch.charCodeAt(0); h|=0;} return Math.abs(h).toString(36);};\nconst add=(map, c)=>{\n  const id=String(c.objectID||hash((c.url||'')+(c.title||'')));\n  if(!c.title||seenSet.has(id)||map.has(id))return;\n  map.set(id,{objectID:id,source:c.source||'public',sourceName:c.sourceName||c.source||'Public source',title:String(c.title).slice(0,240),url:c.url||'',text:String(c.text||'').slice(0,2600),points:c.points||0,createdAt:c.createdAt||null,numComments:c.numComments||0});\n};\nconst fetchText=async(url)=>{\n  try{return await helpers.httpRequest({method:'GET',url,timeout:25000,headers:{'User-Agent':'Mozilla/5.0 (compatible; AgentPostmortemBot/1.0)'},returnFullResponse:false});}catch(e){return '';}\n};\nconst parseRss=async(url, source, sourceName, limit, map)=>{\n  const xml=await fetchText(url); if(!xml)return;\n  const items=String(xml).match(/<item[\\s\\S]*?<\\/item>/gi)||[];\n  for(const item of items.slice(0,limit)){\n    const title=tag(item,'title');\n    const link=tag(item,'link') || tag(item,'guid');\n    const desc=tag(item,'description') || tag(item,'content:encoded');\n    const pub=tag(item,'pubDate') || tag(item,'dc:date') || null;\n    const createdAt=pub && !Number.isNaN(Date.parse(pub)) ? new Date(pub).toISOString() : null;\n    add(map,{objectID:source+':'+hash(link||title),source,sourceName,title,url:link,text:desc,createdAt});\n  }\n};\nconst gatherHn=async(map)=>{\n  const QUERIES=[\"Replit AI deleted production database\",\"Air Canada chatbot bereavement fare\",\"Cursor AI support hallucination cancellations\",\"Claude Code deleted files\",\"AI agent deleted entire codebase\",\"AI coding agent rm -rf\",\"AI agent leaked database\",\"AI agent sent wrong emails\",\"AI customer service refund exploit\",\"autonomous AI agent caused outage\",\"AI hallucinated legal citations\",\"AI chatbot harmful advice\"];\n  for(let i=QUERIES.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[QUERIES[i],QUERIES[j]]=[QUERIES[j],QUERIES[i]];}\n  for(const q of QUERIES){\n    let hits=[];\n    try{const r=await helpers.httpRequest({method:'GET',url:'https://hn.algolia.com/api/v1/search?tags=story&hitsPerPage=5&query='+encodeURIComponent(q),json:true,timeout:20000});hits=(r.hits||[]).filter(h=>h&&h.title&&h.objectID);}catch(e){continue;}\n    hits.sort((a,b)=>(b.points||0)-(a.points||0));\n    for(const h of hits){\n      add(map,{objectID:'hn:'+h.objectID,source:'hn',sourceName:'Hacker News',title:h.title,url:h.url||('https://news.ycombinator.com/item?id='+h.objectID),text:(h.story_text||'').replace(/<[^>]+>/g,' ').slice(0,2000),points:h.points||0,createdAt:h.created_at||null,numComments:h.num_comments||0});\n      break;\n    }\n    if(map.size>=10)break;\n  }\n};\nconst found=new Map();\nawait parseRss('https://incidentdatabase.ai/rss.xml','aiid','AI Incident Database',12,found);\nconst newsQueries=[\n  '\"AI agent\" failure OR incident',\n  '\"AI chatbot\" lawsuit OR harm',\n  '\"AI coding agent\" deleted OR wiped',\n  '\"prompt injection\" AI leak',\n  '\"AI hallucinated\" court filing OR legal'\n];\nfor(const q of newsQueries){\n  await parseRss('https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=en-US&gl=US&ceid=US:en','google-news','Google News',5,found);\n}\nawait gatherHn(found);\nreturn [...found.values()].slice(0,16).map(c=>({json:c}));\n"
+      },
+      "id": "n2",
+      "name": "Gather Public Sources",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\nconst SUPA='https://uqkveghvmrzjvdpxlhty.supabase.co/rest/v1';\nconst K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxa3ZlZ2h2bXJ6anZkcHhsaHR5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzM2ODc4MCwiZXhwIjoyMDkyOTQ0NzgwfQ.eQkonhQOBaAc3D4LnyauVpoAVbRGVNqbDp0T_R6lesc'; const H={apikey:K,Authorization:'Bearer '+K};\nconst SLUGS='claude, gpt-4, devin, cursor, gemini, replit, copilot, perplexity, o1, o3, gemini-2, codeium, mistral, llama, autogpt, langchain-agent, bing-chat, character-ai, aider, agentgpt, openai-assistants, aws-bedrock-agent, azure-openai, google-agentspace, zapier-ai, make-ai, n8n, crew-ai, anthropic-api, openai-api, openai, other';\nconst helpers=this.helpers;\nconst strip=(h)=>String(h||'').replace(/<[^>]+>/g,' ').replace(/&#x27;/g,\"'\").replace(/&quot;/g,'\"').replace(/&amp;/g,'&').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&[a-z]+;/g,' ').replace(/\\s+/g,' ').trim();\nconst getComments=async(id)=>{\n  try{\n    const it=await helpers.httpRequest({method:'GET',url:'https://hn.algolia.com/api/v1/items/'+id,json:true,timeout:20000});\n    const texts=[]; const walk=(n)=>{ if(!n)return; if(n.text) texts.push(strip(n.text)); (n.children||[]).forEach(walk); }; walk(it);\n    return texts.filter(t=>t.length>60).sort((a,b)=>b.length-a.length).slice(0,14).join('\\n---\\n').slice(0,5500);\n  }catch(e){return '';}\n};\nconst getArticle=async(url)=>{\n  if(!url||url.indexOf('news.ycombinator.com')>=0)return '';\n  try{\n    const r=await helpers.httpRequest({method:'GET',url,timeout:15000,headers:{'User-Agent':'Mozilla/5.0 (compatible; AgentPostmortemBot/1.0)'},returnFullResponse:false});\n    const body=typeof r==='string'?r:'';\n    if(!body)return '';\n    const m=body.match(/<body[\\s\\S]*?<\\/body>/i); const seg=m?m[0]:body;\n    return strip(seg).slice(0,4500);\n  }catch(e){return '';}\n};\nlet existing=[];\ntry{const ex=await helpers.httpRequest({method:'GET',url:SUPA+'/posts?select=title,outcome&limit=500',headers:H,json:true});existing=(ex||[]).map(p=>({title:p.title,outcome:String(p.outcome||'').slice(0,180)}));}catch(e){}\nlet base=0;\ntry{const c=await helpers.httpRequest({method:'GET',url:SUPA+'/posts?select=id&status=eq.approved&limit=10000',headers:H,json:true});base=Array.isArray(c)?c.length:0;}catch(e){}\nconst sd=$getWorkflowStaticData('global'); sd.seenV5=sd.seenV5||[]; const seenSet=new Set(sd.seenV5);\nfunction norm(t){return new Set(String(t).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\\s+/).filter(Boolean));}\nfunction sim(a,b){const A=norm(a),B=norm(b);if(!A.size||!B.size)return 0;let i=0;for(const x of A)if(B.has(x))i++;return i/(A.size+B.size-i);}\nconst items=$input.all(); const out=[]; let counter=0; const localTitles=existing.map(e=>e.title); let localList=existing.slice();\nfor(const it of items){\n  const c=it.json;\n  seenSet.add(c.objectID);\n  const cmts=c.source==='hn'?await getComments(String(c.objectID).replace(/^hn:/,'')):'';\n  const art=await getArticle(c.url);\n  const material='SOURCE: '+(c.sourceName||c.source||'Public source')+'\\n\\nSTORY BODY: '+(c.text||'(none)')+'\\n\\nLINKED ARTICLE EXCERPT: '+(art||'(none)')+'\\n\\nDISCUSSION CONTEXT:\\n'+(cmts||'(none)');\n  const existStr=localList.slice(0,50).map((e,i)=>(i+1)+'. '+e.title).join('\\n');\n  const prompt='You are an investigative editor curating a public registry of REAL AI agent failures. Write a detailed, engaging, strictly factual case file from the source material provided.\\n\\nEXISTING CASES (titles, for duplicate check):\\n'+(existStr||'(none)')+'\\n\\nRespond ONLY with JSON:\\n{\"isAgentFailure\":true|false,\"isDuplicate\":true|false,\"agentSlug\":\"<one of: '+SLUGS+'>\",\"title\":\"crisp 30-110 char headline\",\"prompt\":\"the instruction/context given to the agent, or null\",\"outcome\":\"500-1200 char narrative: what the agent did, the sequence of events, who/what was affected, and the consequences. Specific and readable, grounded ONLY in the source material.\",\"damageLevel\":1-5,\"estimatedCostUsd\":int or null,\"confidence\":0-1,\"verifiedFacts\":[\"4-8 specific facts directly supported by the source material\"],\"unknowns\":[\"1-4 important details not confirmed in the source\"],\"lessons\":[\"2-5 concrete, practical lessons for teams deploying AI agents\"]}\\n\\nRULES: isAgentFailure=true ONLY for a concrete real-world incident where an autonomous/agentic AI action caused specific harm. Every verifiedFact must be directly supported by the source material below; anything not supported goes in unknowns. Do NOT invent details, numbers, names, or quotes. Make outcome vivid but factual. Reject product launches, opinions, tutorials, benchmarks, and generic discussion (isAgentFailure=false). isDuplicate=true if the same real-world event already exists above. If material is too thin to support >=4 facts, set isAgentFailure=false. Use \"other\" if no slug fits.\\n\\nSTORY TITLE: '+c.title+'\\nURL: '+c.url+'\\n\\nSOURCE MATERIAL:\\n'+material;\n  let draft;\n  try{const resp=await helpers.httpRequest({method:'POST',url:'http://172.18.0.1:8088/draft',body:{prompt},json:true,timeout:180000});const m=String(resp.text||'').match(/\\{[\\s\\S]*\\}/);if(!m)continue;draft=JSON.parse(m[0]);}catch(e){continue;}\n  if(!draft||draft.isAgentFailure!==true||draft.isDuplicate===true)continue;\n  if(Number(draft.confidence||0)<0.7)continue;\n  if(!draft.title||!draft.outcome||String(draft.outcome).length<300)continue;\n  if(!Array.isArray(draft.verifiedFacts)||draft.verifiedFacts.length<3)continue;\n  if(!Array.isArray(draft.lessons)||draft.lessons.length<2)continue;\n  const t=String(draft.title).slice(0,200);\n  if(localTitles.some(x=>sim(x,t)>=0.4))continue;\n  let agentId=null;\n  try{const ag=await helpers.httpRequest({method:'GET',url:SUPA+'/agents?select=id&slug=eq.'+(draft.agentSlug||'other')+'&limit=1',headers:H,json:true});if(Array.isArray(ag)&&ag.length)agentId=ag[0].id;}catch(e){}\n  if(!agentId){try{const ot=await helpers.httpRequest({method:'GET',url:SUPA+'/agents?select=id&slug=eq.other&limit=1',headers:H,json:true});if(Array.isArray(ot)&&ot.length)agentId=ot[0].id;}catch(e){}}\n  if(!agentId)continue;\n  counter++; const cn='APM-'+String(base+counter).padStart(4,'0');\n  let cost=draft.estimatedCostUsd; if(cost===undefined)cost=null;\n  const body={agent_id:agentId,case_number:cn,title:t,prompt:draft.prompt?String(draft.prompt).slice(0,2000):null,outcome:String(draft.outcome).slice(0,10000),damage_level:Math.min(5,Math.max(1,parseInt(draft.damageLevel)||3)),estimated_cost_usd:cost,screenshot_urls:[],source_url:c.url||null,source_title:c.title||null,source_published_at:c.createdAt||null,created_at:c.createdAt||undefined,verified_facts:(draft.verifiedFacts||[]).map(x=>String(x).slice(0,1000)).slice(0,8),unknowns:(draft.unknowns||[]).map(x=>String(x).slice(0,1000)).slice(0,4),lessons:(draft.lessons||[]).map(x=>String(x).slice(0,1000)).slice(0,5),is_anonymous:true,submitter_handle:'auto-ingest ('+String(c.sourceName||c.source||'public').slice(0,40)+')',submitter_email:null,edit_token_hash:'auto-ingest',ip_hash:'auto-ingest',status:'approved',vote_score:0};\n  try{await helpers.httpRequest({method:'POST',url:SUPA+'/posts',headers:Object.assign({},H,{'Content-Type':'application/json','Prefer':'return=minimal'}),body,json:true});localTitles.push(t);localList.push({title:t});out.push({json:{case:cn,title:t,outcomeLen:String(draft.outcome).length,facts:draft.verifiedFacts.length}});}catch(e){counter--;out.push({json:{error:String(e).slice(0,160),title:t}});}\n}\nsd.seenV5=[...seenSet].slice(-4000);\nreturn out;\n"
+      },
+      "id": "n3",
+      "name": "Process",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        100
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "Gather Public Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Run": {
+      "main": [
+        [
+          {
+            "node": "Gather Public Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gather Public Sources": {
+      "main": [
+        [
+          {
+            "node": "Process",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "saveDataErrorExecution": "all"
+  },
+  "staticData": {
+    "node:Schedule": {
+      "recurrenceRules": []
+    },
+    "global": {
+      "seen": [
+        "44185913",
+        "47911524",
+        "44463967",
+        "44646151",
+        "47444195",
+        "46670181",
+        "44625119",
+        "44632575",
+        "47182387",
+        "44450294",
+        "46911873",
+        "46597781",
+        "44622725",
+        "47105637",
+        "44185986",
+        "47444130",
+        "47249964",
+        "45129208",
+        "46154278",
+        "44655569",
+        "47479724",
+        "47950752",
+        "47505561",
+        "46428595",
+        "46157993",
+        "46478789",
+        "45163350",
+        "46204066",
+        "44632270",
+        "46830235"
+      ],
+      "seenV3": [
+        "43683012",
+        "44185913",
+        "47911524",
+        "39679787",
+        "44563324",
+        "44463967",
+        "40008109",
+        "44646151",
+        "43692476",
+        "47444195",
+        "47172238",
+        "46670181",
+        "44625119",
+        "45373008",
+        "44632575",
+        "47182387",
+        "39741933",
+        "46911873",
+        "44742710",
+        "46711589",
+        "44450294",
+        "39680342",
+        "38000694",
+        "40020926",
+        "41607251",
+        "42420423",
+        "47357515",
+        "46565265",
+        "44622725",
+        "47105637",
+        "47501348",
+        "46696348",
+        "44185986",
+        "44563290",
+        "45812473",
+        "44429298",
+        "35343646",
+        "47329678",
+        "35343065",
+        "47249964"
+      ],
+      "seenV4": [
+        "43683012",
+        "44185913",
+        "47911524",
+        "39679787",
+        "44563324",
+        "39378235",
+        "44463967",
+        "39455131",
+        "40008109",
+        "44646151",
+        "43692476",
+        "47444195",
+        "39404364",
+        "47172238",
+        "48225596",
+        "46670181",
+        "44625119",
+        "45427482",
+        "45373008",
+        "44632575",
+        "21507481",
+        "45199648",
+        "47182387",
+        "39741933",
+        "46911873",
+        "43080895",
+        "47441629",
+        "44742710",
+        "46711589",
+        "46964162",
+        "44450294",
+        "39426107",
+        "16240984",
+        "39680342",
+        "38000694",
+        "40020926",
+        "48415633",
+        "47049776",
+        "39392810",
+        "41607251",
+        "43766726",
+        "42420423",
+        "47357515",
+        "46565265",
+        "44622725",
+        "47105637",
+        "36820378",
+        "46711958",
+        "47501348",
+        "46696348",
+        "44185986",
+        "44563290",
+        "37821324",
+        "45812473",
+        "44429298",
+        "48188727",
+        "35343646",
+        "44595898",
+        "47329678",
+        "35343065",
+        "39421527",
+        "47249964",
+        "47444130",
+        "38418499",
+        "45109966",
+        "44629343",
+        "47479724",
+        "45204768",
+        "47229931",
+        "39397387",
+        "40460084",
+        "47081472",
+        "47133305",
+        "43895255",
+        "47053308",
+        "44632270",
+        "45129208",
+        "45901525",
+        "46500081",
+        "47520448",
+        "46154278",
+        "47950752",
+        "44655569",
+        "45864204",
+        "47117725",
+        "39389620",
+        "39399388",
+        "46428595",
+        "47505561",
+        "45163350",
+        "46566103",
+        "47494909",
+        "47440460",
+        "38688671",
+        "48256017",
+        "47583255",
+        "46846055",
+        "47002748",
+        "45914307",
+        "46674790",
+        "48037640",
+        "47933355",
+        "46169773",
+        "47543554",
+        "46157993",
+        "44658769",
+        "47197011",
+        "44205881",
+        "46584555",
+        "36250317",
+        "46478789",
+        "47586753",
+        "44047710",
+        "45556135",
+        "45903367",
+        "44203938",
+        "46204066",
+        "48049770",
+        "47833278",
+        "47382912"
+      ],
+      "seenV5": [
+        "47111705",
+        "42816506",
+        "44632575",
+        "43380152",
+        "45258202",
+        "46913404",
+        "35375540",
+        "40008109",
+        "47091182",
+        "46524514",
+        "46934582",
+        "43425767",
+        "47933355",
+        "46708449",
+        "47182387",
+        "48188727",
+        "47265246",
+        "44646151",
+        "40020926",
+        "42247368",
+        "44651485",
+        "27494288",
+        "46428595",
+        "46420769",
+        "43266666",
+        "46245673",
+        "44309393",
+        "46893795",
+        "47106215",
+        "40776970",
+        "46897408",
+        "39987163",
+        "42830856",
+        "43269461",
+        "40750888",
+        "46830235",
+        "47846681",
+        "47833278",
+        "42975760",
+        "44655569",
+        "47398628",
+        "47400285",
+        "43122089",
+        "44632270",
+        "46994985",
+        "44573539",
+        "47050216",
+        "42638000",
+        "45701753",
+        "47743208",
+        "47113273",
+        "46634915",
+        "47525283",
+        "44639695",
+        "46911968",
+        "34796496",
+        "46598970",
+        "43110059",
+        "33862793",
+        "42461738",
+        "40736861",
+        "44613072",
+        "47379690",
+        "47161352",
+        "42810048",
+        "44713687",
+        "43112033",
+        "46365999",
+        "45732231",
+        "47298242",
+        "43275243",
+        "40786308",
+        "43302875",
+        "43355728",
+        "43142717",
+        "47990395",
+        "43114260",
+        "44085244",
+        "44295377",
+        "48462046",
+        "48558502",
+        "47227826",
+        "aiid:jiqm40",
+        "aiid:elx8s5",
+        "aiid:r2lmw0",
+        "aiid:isaha5",
+        "aiid:7uid6v",
+        "aiid:eh76td",
+        "aiid:qap02r",
+        "aiid:ssvr1i",
+        "aiid:o5iqfk",
+        "aiid:vgy5my",
+        "aiid:z1ecbj",
+        "aiid:fm0wlj",
+        "google-news:yy8en0",
+        "google-news:t9n0tc",
+        "google-news:p7lpsy",
+        "google-news:otwvj9",
+        "google-news:4t4v77",
+        "aiid:jta3er",
+        "aiid:qil5sl",
+        "aiid:o1yrgs",
+        "aiid:qjww90",
+        "aiid:4u1rt",
+        "aiid:dgpb43",
+        "aiid:mpnr0x",
+        "aiid:v8fd8k",
+        "aiid:c8xa54",
+        "aiid:2oxynq",
+        "aiid:vhnb7t",
+        "aiid:6snfwn",
+        "google-news:r1rnnm",
+        "google-news:fctdlc",
+        "google-news:gkvzmv",
+        "google-news:692a73",
+        "google-news:cr04b6",
+        "aiid:gwgtop",
+        "aiid:ivyscj",
+        "aiid:ft3u5q",
+        "aiid:yh03e6",
+        "aiid:7s9ort",
+        "aiid:ah56fb",
+        "aiid:ra33rv",
+        "google-news:nurywe",
+        "google-news:y467rp",
+        "aiid:ez2jxq",
+        "aiid:rm9qzm",
+        "aiid:4mu2ul",
+        "aiid:bhb2cx",
+        "aiid:ppvyvw",
+        "google-news:nmuwdb",
+        "aiid:7e2wue",
+        "aiid:v56301",
+        "aiid:mcux31",
+        "aiid:7qq72x",
+        "aiid:z60p1f",
+        "aiid:wnwf65",
+        "aiid:m6gf3m",
+        "aiid:hjksyo",
+        "aiid:szovi4",
+        "google-news:f6u3sj",
+        "google-news:xk0ouc",
+        "google-news:ecph20",
+        "aiid:79n6ef",
+        "aiid:4mzpe2",
+        "aiid:gd4fig",
+        "aiid:8smqhk",
+        "google-news:9mrhd8",
+        "aiid:lw5hfv",
+        "aiid:wgp80j",
+        "aiid:fxq2c1",
+        "aiid:2l35ve",
+        "aiid:nwbzbq",
+        "aiid:gtljyj",
+        "aiid:jbkalv",
+        "aiid:o9xlv9",
+        "aiid:dikzu4",
+        "aiid:twz9c3",
+        "google-news:9rgyq3",
+        "google-news:8mvgqi",
+        "google-news:n1b2qs",
+        "aiid:3o9gjt",
+        "aiid:r56mrz",
+        "aiid:6hk7p3",
+        "aiid:6vrtim",
+        "aiid:fsf3an",
+        "aiid:o9cu98",
+        "aiid:b9ay1c",
+        "aiid:qv8p59",
+        "aiid:qbwc9c",
+        "google-news:cxkbdp",
+        "google-news:j5o2cn",
+        "google-news:x2i9mw",
+        "google-news:gszdue",
+        "google-news:a1crfp",
+        "google-news:xp9rgd",
+        "google-news:osagot",
+        "google-news:fgdb7p",
+        "google-news:5bz8kc",
+        "aiid:t0cn0r",
+        "aiid:blkjsi",
+        "aiid:fddis",
+        "aiid:oek94k",
+        "aiid:rnpnjt",
+        "google-news:3i3fxe",
+        "google-news:av5ssk",
+        "google-news:klet45",
+        "google-news:iuvq04",
+        "google-news:jk4mg",
+        "google-news:uj1mq8",
+        "google-news:nii0so",
+        "google-news:dwfisd",
+        "google-news:qjfco6",
+        "google-news:7zwxxd",
+        "google-news:1d6krx",
+        "google-news:v5le1y",
+        "google-news:u9omc4",
+        "google-news:2i7s0o",
+        "google-news:w3p9ol",
+        "google-news:sch7vp",
+        "google-news:xu8ro7",
+        "google-news:tgw617",
+        "google-news:5n8a0m",
+        "google-news:qdxz82",
+        "aiid:91dhkd",
+        "aiid:gvu1el",
+        "aiid:unzwi4",
+        "aiid:1pjr7r",
+        "aiid:1rk7jn",
+        "aiid:3xmaxw",
+        "aiid:fnkl7h",
+        "aiid:wxolw3",
+        "aiid:c7qjv1",
+        "aiid:s0a2vw",
+        "aiid:n7y4az",
+        "aiid:7ibfcg",
+        "google-news:htd5j6",
+        "google-news:mqzbqr",
+        "google-news:wter3",
+        "google-news:x0nbzz",
+        "aiid:umvlr5",
+        "aiid:r99a1c",
+        "aiid:enc2v3",
+        "aiid:4br27o",
+        "aiid:uk2dpm",
+        "aiid:lbks2u",
+        "aiid:m66fiq",
+        "google-news:yy6f5z",
+        "google-news:gvinye",
+        "aiid:ypcj2f",
+        "aiid:yo7qnw",
+        "aiid:mm34nk",
+        "aiid:vldskg",
+        "aiid:u1sym6",
+        "aiid:cv8k3t",
+        "aiid:mlgjlh",
+        "aiid:6i7ioa",
+        "aiid:6fnup2",
+        "aiid:7d0tkk",
+        "aiid:wsuj3s",
+        "aiid:xfkrpr",
+        "google-news:c03jw0"
+      ],
+      "seenPublicV1": []
+    }
+  },
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": null,
+  "versionId": "6fdf1cbb-c9cd-4550-a2b6-827cd4240534",
+  "activeVersionId": "6fdf1cbb-c9cd-4550-a2b6-827cd4240534",
+  "versionCounter": 15,
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2026-06-06T10:55:13.133Z",
+      "createdAt": "2026-06-06T10:55:13.133Z",
+      "role": "workflow:owner",
+      "workflowId": "oXJq3Y3Droz4h1mi",
+      "projectId": "uRE8JSno37HwCdKf",
+      "project": {
+        "updatedAt": "2026-06-06T10:45:35.460Z",
+        "createdAt": "2026-06-06T10:44:08.834Z",
+        "id": "uRE8JSno37HwCdKf",
+        "name": "Agent Postmortem <agentpostmortem@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "bd48412e-ebd2-4c72-b240-675a1702f21d"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-07-01T13:15:55.944Z",
+    "createdAt": "2026-07-01T13:15:55.944Z",
+    "versionId": "6fdf1cbb-c9cd-4550-a2b6-827cd4240534",
+    "workflowId": "oXJq3Y3Droz4h1mi",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours",
+                "hoursInterval": 1
+              }
+            ]
+          }
+        },
+        "id": "n1",
+        "name": "Schedule",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "GET",
+          "path": "run-test",
+          "responseMode": "onReceived",
+          "options": {}
+        },
+        "id": "w1",
+        "name": "Manual Run",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          200
+        ],
+        "webhookId": "ab782d75-69a9-4356-9f99-c4925125104d"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "jsCode": "\nconst sd=$getWorkflowStaticData('global'); sd.seenPublicV1=sd.seenPublicV1||[]; const seenSet=new Set(sd.seenPublicV1);\nconst helpers=this.helpers;\nconst strip=(h)=>String(h||'').replace(/<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>/g,'$1').replace(/<[^>]+>/g,' ').replace(/&#x27;/g,\"'\").replace(/&#39;/g,\"'\").replace(/&quot;/g,'\"').replace(/&amp;/g,'&').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&nbsp;/g,' ').replace(/&[a-z]+;/g,' ').replace(/\\s+/g,' ').trim();\nconst tag=(xml,name)=>{const m=String(xml||'').match(new RegExp('<'+name+'(?:\\\\s[^>]*)?>([\\\\s\\\\S]*?)<\\\\/'+name+'>','i'));return m?strip(m[1]):'';};\nconst hash=(s)=>{let h=0; for(const ch of String(s)){h=((h<<5)-h)+ch.charCodeAt(0); h|=0;} return Math.abs(h).toString(36);};\nconst add=(map, c)=>{\n  const id=String(c.objectID||hash((c.url||'')+(c.title||'')));\n  if(!c.title||seenSet.has(id)||map.has(id))return;\n  map.set(id,{objectID:id,source:c.source||'public',sourceName:c.sourceName||c.source||'Public source',title:String(c.title).slice(0,240),url:c.url||'',text:String(c.text||'').slice(0,2600),points:c.points||0,createdAt:c.createdAt||null,numComments:c.numComments||0});\n};\nconst fetchText=async(url)=>{\n  try{return await helpers.httpRequest({method:'GET',url,timeout:25000,headers:{'User-Agent':'Mozilla/5.0 (compatible; AgentPostmortemBot/1.0)'},returnFullResponse:false});}catch(e){return '';}\n};\nconst parseRss=async(url, source, sourceName, limit, map)=>{\n  const xml=await fetchText(url); if(!xml)return;\n  const items=String(xml).match(/<item[\\s\\S]*?<\\/item>/gi)||[];\n  for(const item of items.slice(0,limit)){\n    const title=tag(item,'title');\n    const link=tag(item,'link') || tag(item,'guid');\n    const desc=tag(item,'description') || tag(item,'content:encoded');\n    const pub=tag(item,'pubDate') || tag(item,'dc:date') || null;\n    const createdAt=pub && !Number.isNaN(Date.parse(pub)) ? new Date(pub).toISOString() : null;\n    add(map,{objectID:source+':'+hash(link||title),source,sourceName,title,url:link,text:desc,createdAt});\n  }\n};\nconst gatherHn=async(map)=>{\n  const QUERIES=[\"Replit AI deleted production database\",\"Air Canada chatbot bereavement fare\",\"Cursor AI support hallucination cancellations\",\"Claude Code deleted files\",\"AI agent deleted entire codebase\",\"AI coding agent rm -rf\",\"AI agent leaked database\",\"AI agent sent wrong emails\",\"AI customer service refund exploit\",\"autonomous AI agent caused outage\",\"AI hallucinated legal citations\",\"AI chatbot harmful advice\"];\n  for(let i=QUERIES.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[QUERIES[i],QUERIES[j]]=[QUERIES[j],QUERIES[i]];}\n  for(const q of QUERIES){\n    let hits=[];\n    try{const r=await helpers.httpRequest({method:'GET',url:'https://hn.algolia.com/api/v1/search?tags=story&hitsPerPage=5&query='+encodeURIComponent(q),json:true,timeout:20000});hits=(r.hits||[]).filter(h=>h&&h.title&&h.objectID);}catch(e){continue;}\n    hits.sort((a,b)=>(b.points||0)-(a.points||0));\n    for(const h of hits){\n      add(map,{objectID:'hn:'+h.objectID,source:'hn',sourceName:'Hacker News',title:h.title,url:h.url||('https://news.ycombinator.com/item?id='+h.objectID),text:(h.story_text||'').replace(/<[^>]+>/g,' ').slice(0,2000),points:h.points||0,createdAt:h.created_at||null,numComments:h.num_comments||0});\n      break;\n    }\n    if(map.size>=10)break;\n  }\n};\nconst found=new Map();\nawait parseRss('https://incidentdatabase.ai/rss.xml','aiid','AI Incident Database',12,found);\nconst newsQueries=[\n  '\"AI agent\" failure OR incident',\n  '\"AI chatbot\" lawsuit OR harm',\n  '\"AI coding agent\" deleted OR wiped',\n  '\"prompt injection\" AI leak',\n  '\"AI hallucinated\" court filing OR legal'\n];\nfor(const q of newsQueries){\n  await parseRss('https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=en-US&gl=US&ceid=US:en','google-news','Google News',5,found);\n}\nawait gatherHn(found);\nreturn [...found.values()].slice(0,16).map(c=>({json:c}));\n"
+        },
+        "id": "n2",
+        "name": "Gather Public Sources",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          260,
+          100
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "jsCode": "\nconst SUPA='https://uqkveghvmrzjvdpxlhty.supabase.co/rest/v1';\nconst K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxa3ZlZ2h2bXJ6anZkcHhsaHR5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzM2ODc4MCwiZXhwIjoyMDkyOTQ0NzgwfQ.eQkonhQOBaAc3D4LnyauVpoAVbRGVNqbDp0T_R6lesc'; const H={apikey:K,Authorization:'Bearer '+K};\nconst SLUGS='claude, gpt-4, devin, cursor, gemini, replit, copilot, perplexity, o1, o3, gemini-2, codeium, mistral, llama, autogpt, langchain-agent, bing-chat, character-ai, aider, agentgpt, openai-assistants, aws-bedrock-agent, azure-openai, google-agentspace, zapier-ai, make-ai, n8n, crew-ai, anthropic-api, openai-api, openai, other';\nconst helpers=this.helpers;\nconst strip=(h)=>String(h||'').replace(/<[^>]+>/g,' ').replace(/&#x27;/g,\"'\").replace(/&quot;/g,'\"').replace(/&amp;/g,'&').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&[a-z]+;/g,' ').replace(/\\s+/g,' ').trim();\nconst getComments=async(id)=>{\n  try{\n    const it=await helpers.httpRequest({method:'GET',url:'https://hn.algolia.com/api/v1/items/'+id,json:true,timeout:20000});\n    const texts=[]; const walk=(n)=>{ if(!n)return; if(n.text) texts.push(strip(n.text)); (n.children||[]).forEach(walk); }; walk(it);\n    return texts.filter(t=>t.length>60).sort((a,b)=>b.length-a.length).slice(0,14).join('\\n---\\n').slice(0,5500);\n  }catch(e){return '';}\n};\nconst getArticle=async(url)=>{\n  if(!url||url.indexOf('news.ycombinator.com')>=0)return '';\n  try{\n    const r=await helpers.httpRequest({method:'GET',url,timeout:15000,headers:{'User-Agent':'Mozilla/5.0 (compatible; AgentPostmortemBot/1.0)'},returnFullResponse:false});\n    const body=typeof r==='string'?r:'';\n    if(!body)return '';\n    const m=body.match(/<body[\\s\\S]*?<\\/body>/i); const seg=m?m[0]:body;\n    return strip(seg).slice(0,4500);\n  }catch(e){return '';}\n};\nlet existing=[];\ntry{const ex=await helpers.httpRequest({method:'GET',url:SUPA+'/posts?select=title,outcome&limit=500',headers:H,json:true});existing=(ex||[]).map(p=>({title:p.title,outcome:String(p.outcome||'').slice(0,180)}));}catch(e){}\nlet base=0;\ntry{const c=await helpers.httpRequest({method:'GET',url:SUPA+'/posts?select=id&status=eq.approved&limit=10000',headers:H,json:true});base=Array.isArray(c)?c.length:0;}catch(e){}\nconst sd=$getWorkflowStaticData('global'); sd.seenV5=sd.seenV5||[]; const seenSet=new Set(sd.seenV5);\nfunction norm(t){return new Set(String(t).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\\s+/).filter(Boolean));}\nfunction sim(a,b){const A=norm(a),B=norm(b);if(!A.size||!B.size)return 0;let i=0;for(const x of A)if(B.has(x))i++;return i/(A.size+B.size-i);}\nconst items=$input.all(); const out=[]; let counter=0; const localTitles=existing.map(e=>e.title); let localList=existing.slice();\nfor(const it of items){\n  const c=it.json;\n  seenSet.add(c.objectID);\n  const cmts=c.source==='hn'?await getComments(String(c.objectID).replace(/^hn:/,'')):'';\n  const art=await getArticle(c.url);\n  const material='SOURCE: '+(c.sourceName||c.source||'Public source')+'\\n\\nSTORY BODY: '+(c.text||'(none)')+'\\n\\nLINKED ARTICLE EXCERPT: '+(art||'(none)')+'\\n\\nDISCUSSION CONTEXT:\\n'+(cmts||'(none)');\n  const existStr=localList.slice(0,50).map((e,i)=>(i+1)+'. '+e.title).join('\\n');\n  const prompt='You are an investigative editor curating a public registry of REAL AI agent failures. Write a detailed, engaging, strictly factual case file from the source material provided.\\n\\nEXISTING CASES (titles, for duplicate check):\\n'+(existStr||'(none)')+'\\n\\nRespond ONLY with JSON:\\n{\"isAgentFailure\":true|false,\"isDuplicate\":true|false,\"agentSlug\":\"<one of: '+SLUGS+'>\",\"title\":\"crisp 30-110 char headline\",\"prompt\":\"the instruction/context given to the agent, or null\",\"outcome\":\"500-1200 char narrative: what the agent did, the sequence of events, who/what was affected, and the consequences. Specific and readable, grounded ONLY in the source material.\",\"damageLevel\":1-5,\"estimatedCostUsd\":int or null,\"confidence\":0-1,\"verifiedFacts\":[\"4-8 specific facts directly supported by the source material\"],\"unknowns\":[\"1-4 important details not confirmed in the source\"],\"lessons\":[\"2-5 concrete, practical lessons for teams deploying AI agents\"]}\\n\\nRULES: isAgentFailure=true ONLY for a concrete real-world incident where an autonomous/agentic AI action caused specific harm. Every verifiedFact must be directly supported by the source material below; anything not supported goes in unknowns. Do NOT invent details, numbers, names, or quotes. Make outcome vivid but factual. Reject product launches, opinions, tutorials, benchmarks, and generic discussion (isAgentFailure=false). isDuplicate=true if the same real-world event already exists above. If material is too thin to support >=4 facts, set isAgentFailure=false. Use \"other\" if no slug fits.\\n\\nSTORY TITLE: '+c.title+'\\nURL: '+c.url+'\\n\\nSOURCE MATERIAL:\\n'+material;\n  let draft;\n  try{const resp=await helpers.httpRequest({method:'POST',url:'http://172.18.0.1:8088/draft',body:{prompt},json:true,timeout:180000});const m=String(resp.text||'').match(/\\{[\\s\\S]*\\}/);if(!m)continue;draft=JSON.parse(m[0]);}catch(e){continue;}\n  if(!draft||draft.isAgentFailure!==true||draft.isDuplicate===true)continue;\n  if(Number(draft.confidence||0)<0.7)continue;\n  if(!draft.title||!draft.outcome||String(draft.outcome).length<300)continue;\n  if(!Array.isArray(draft.verifiedFacts)||draft.verifiedFacts.length<3)continue;\n  if(!Array.isArray(draft.lessons)||draft.lessons.length<2)continue;\n  const t=String(draft.title).slice(0,200);\n  if(localTitles.some(x=>sim(x,t)>=0.4))continue;\n  let agentId=null;\n  try{const ag=await helpers.httpRequest({method:'GET',url:SUPA+'/agents?select=id&slug=eq.'+(draft.agentSlug||'other')+'&limit=1',headers:H,json:true});if(Array.isArray(ag)&&ag.length)agentId=ag[0].id;}catch(e){}\n  if(!agentId){try{const ot=await helpers.httpRequest({method:'GET',url:SUPA+'/agents?select=id&slug=eq.other&limit=1',headers:H,json:true});if(Array.isArray(ot)&&ot.length)agentId=ot[0].id;}catch(e){}}\n  if(!agentId)continue;\n  counter++; const cn='APM-'+String(base+counter).padStart(4,'0');\n  let cost=draft.estimatedCostUsd; if(cost===undefined)cost=null;\n  const body={agent_id:agentId,case_number:cn,title:t,prompt:draft.prompt?String(draft.prompt).slice(0,2000):null,outcome:String(draft.outcome).slice(0,10000),damage_level:Math.min(5,Math.max(1,parseInt(draft.damageLevel)||3)),estimated_cost_usd:cost,screenshot_urls:[],source_url:c.url||null,source_title:c.title||null,source_published_at:c.createdAt||null,created_at:c.createdAt||undefined,verified_facts:(draft.verifiedFacts||[]).map(x=>String(x).slice(0,1000)).slice(0,8),unknowns:(draft.unknowns||[]).map(x=>String(x).slice(0,1000)).slice(0,4),lessons:(draft.lessons||[]).map(x=>String(x).slice(0,1000)).slice(0,5),is_anonymous:true,submitter_handle:'auto-ingest ('+String(c.sourceName||c.source||'public').slice(0,40)+')',submitter_email:null,edit_token_hash:'auto-ingest',ip_hash:'auto-ingest',status:'approved',vote_score:0};\n  try{await helpers.httpRequest({method:'POST',url:SUPA+'/posts',headers:Object.assign({},H,{'Content-Type':'application/json','Prefer':'return=minimal'}),body,json:true});localTitles.push(t);localList.push({title:t});out.push({json:{case:cn,title:t,outcomeLen:String(draft.outcome).length,facts:draft.verifiedFacts.length}});}catch(e){counter--;out.push({json:{error:String(e).slice(0,160),title:t}});}\n}\nsd.seenV5=[...seenSet].slice(-4000);\nreturn out;\n"
+        },
+        "id": "n3",
+        "name": "Process",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          520,
+          100
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule": {
+        "main": [
+          [
+            {
+              "node": "Gather Public Sources",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Manual Run": {
+        "main": [
+          [
+            {
+              "node": "Gather Public Sources",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gather Public Sources": {
+        "main": [
+          [
+            {
+              "node": "Process",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Agent Postmortem",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-07-01T13:15:56.166Z",
+        "id": 119,
+        "workflowId": "oXJq3Y3Droz4h1mi",
+        "versionId": "6fdf1cbb-c9cd-4550-a2b6-827cd4240534",
+        "event": "activated",
+        "userId": "bd48412e-ebd2-4c72-b240-675a1702f21d"
+      },
+      {
+        "createdAt": "2026-07-01T13:15:56.066Z",
+        "id": 118,
+        "workflowId": "oXJq3Y3Droz4h1mi",
+        "versionId": "6fdf1cbb-c9cd-4550-a2b6-827cd4240534",
+        "event": "deactivated",
+        "userId": "bd48412e-ebd2-4c72-b240-675a1702f21d"
+      }
+    ]
+  }
+}
