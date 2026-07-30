@@ -32,8 +32,10 @@ const CASES = [
     damage: 2,
     cost: null,
     tags: ["hallucination", "social-blunder"],
-    source_url: "https://www.siliconrepublic.com/machines/galactica-meta-ai-large-language-model",
-    source_title: "Meta's 'biased' science-writing AI demo gets pulled after three days (Silicon Republic)",
+    source_url:
+      "https://www.siliconrepublic.com/machines/galactica-meta-ai-large-language-model",
+    source_title:
+      "Meta's 'biased' science-writing AI demo gets pulled after three days (Silicon Republic)",
     published: "2022-11-18T00:00:00Z",
     verified_facts: [
       "Meta launched Galactica in November 2022 as an AI for science",
@@ -57,7 +59,8 @@ const CASES = [
     cost: null,
     tags: ["hallucination", "social-blunder"],
     source_url: "https://www.theregister.com/2024/02/28/wonka_ai_hellhole/",
-    source_title: "That Willy Wonka experience was an AI hellhole (The Register)",
+    source_title:
+      "That Willy Wonka experience was an AI hellhole (The Register)",
     published: "2024-02-28T00:00:00Z",
     verified_facts: [
       "The event was promoted with AI-generated images containing nonsense text",
@@ -80,15 +83,19 @@ const CASES = [
     damage: 2,
     cost: null,
     tags: ["social-blunder", "compliance-violation"],
-    source_url: "https://www.axios.com/2023/10/31/guardian-microsoft-generative-ai-poll-death",
-    source_title: "Microsoft launches probe after AI poll on woman's death sparks blowback (Axios)",
+    source_url:
+      "https://www.axios.com/2023/10/31/guardian-microsoft-generative-ai-poll-death",
+    source_title:
+      "Microsoft launches probe after AI poll on woman's death sparks blowback (Axios)",
     published: "2023-10-31T00:00:00Z",
     verified_facts: [
       "Microsoft's AI placed a poll on the cause of a woman's death next to the article about it",
       "The Guardian complained and readers wrongly blamed its journalists",
       "Microsoft disabled AI-generated news polls and opened an investigation",
     ],
-    unknowns: ["Whether other sensitive articles got similar polls before the shutoff"],
+    unknowns: [
+      "Whether other sensitive articles got similar polls before the shutoff",
+    ],
     lessons: [
       "Do not auto-attach generated interactive content to sensitive news without human review",
       "AI output published under a partner's byline becomes their reputational problem",
@@ -104,8 +111,10 @@ const CASES = [
     damage: 3,
     cost: null,
     tags: ["hallucination", "compliance-violation"],
-    source_url: "https://www.404media.co/ai-generated-mushroom-foraging-books-amazon/",
-    source_title: "'Life or Death:' AI-Generated Mushroom Foraging Books Are All Over Amazon (404 Media)",
+    source_url:
+      "https://www.404media.co/ai-generated-mushroom-foraging-books-amazon/",
+    source_title:
+      "'Life or Death:' AI-Generated Mushroom Foraging Books Are All Over Amazon (404 Media)",
     published: "2023-08-29T00:00:00Z",
     verified_facts: [
       "Foraging guides likely written by AI were sold on Amazon as human-authored",
@@ -128,8 +137,10 @@ const CASES = [
     damage: 1,
     cost: null,
     tags: ["social-blunder"],
-    source_url: "https://www.cnn.com/2023/08/16/tech/snapchat-my-ai-chatbot-glitch/index.html",
-    source_title: "Snapchat users freak out over AI bot that had a mind of its own (CNN)",
+    source_url:
+      "https://www.cnn.com/2023/08/16/tech/snapchat-my-ai-chatbot-glitch/index.html",
+    source_title:
+      "Snapchat users freak out over AI bot that had a mind of its own (CNN)",
     published: "2023-08-16T00:00:00Z",
     verified_facts: [
       "My AI posted a one-second Story despite not being designed to post Stories",
@@ -152,8 +163,10 @@ const CASES = [
     damage: 2,
     cost: null,
     tags: ["hallucination", "social-blunder"],
-    source_url: "https://www.cnn.com/2023/08/30/tech/gannett-ai-experiment-paused/index.html",
-    source_title: "Gannett to pause AI experiment after botched high school sports articles (CNN)",
+    source_url:
+      "https://www.cnn.com/2023/08/30/tech/gannett-ai-experiment-paused/index.html",
+    source_title:
+      "Gannett to pause AI experiment after botched high school sports articles (CNN)",
     published: "2023-08-30T00:00:00Z",
     verified_facts: [
       "LedeAI sports recaps published with unfilled template placeholders",
@@ -176,8 +189,10 @@ const CASES = [
     damage: 3,
     cost: null,
     tags: ["scope-creep", "social-blunder"],
-    source_url: "https://www.entrepreneur.com/business-news/klarna-ceo-reverses-course-by-hiring-more-humans-not-ai/491396",
-    source_title: "Klarna Is Hiring Customer Service Agents After AI Couldn't Cut It, CEO Says (Entrepreneur)",
+    source_url:
+      "https://www.entrepreneur.com/business-news/klarna-ceo-reverses-course-by-hiring-more-humans-not-ai/491396",
+    source_title:
+      "Klarna Is Hiring Customer Service Agents After AI Couldn't Cut It, CEO Says (Entrepreneur)",
     published: "2025-05-18T00:00:00Z",
     verified_facts: [
       "Klarna said its AI assistant did the work of 700 agents in 2024",
@@ -200,15 +215,19 @@ const CASES = [
     damage: 4,
     cost: null,
     tags: ["data-exfiltration", "security-fail"],
-    source_url: "https://thehackernews.com/2025/06/zero-click-ai-vulnerability-exposes.html",
-    source_title: "Zero-Click AI Vulnerability Exposes Microsoft 365 Copilot Data Without User Interaction (The Hacker News)",
+    source_url:
+      "https://thehackernews.com/2025/06/zero-click-ai-vulnerability-exposes.html",
+    source_title:
+      "Zero-Click AI Vulnerability Exposes Microsoft 365 Copilot Data Without User Interaction (The Hacker News)",
     published: "2025-06-11T00:00:00Z",
     verified_facts: [
       "EchoLeak (CVE-2025-32711) is a zero-click flaw in Microsoft 365 Copilot, CVSS 9.3",
       "A hidden prompt injection in an email could make Copilot leak accessible enterprise data",
       "Microsoft patched it and reported no evidence of in-the-wild exploitation",
     ],
-    unknowns: ["Whether similar scope-violation bugs remain in other AI assistants"],
+    unknowns: [
+      "Whether similar scope-violation bugs remain in other AI assistants",
+    ],
     lessons: [
       "An agent that mixes trusted and untrusted content without isolation can be turned into a data-leak vector",
       "Prompt injection is a security vulnerability class, not just a content problem",
@@ -223,7 +242,9 @@ const { data: tagsRows } = await supabase.from("tags").select("id, slug");
 const tagMap = Object.fromEntries(tagsRows.map((t) => [t.slug, t.id]));
 
 // Dedup against existing
-const { data: existing } = await supabase.from("posts").select("title, source_url");
+const { data: existing } = await supabase
+  .from("posts")
+  .select("title, source_url");
 const seenUrls = new Set(
   (existing ?? []).map((p) => (p.source_url ?? "").trim()).filter(Boolean),
 );
@@ -239,11 +260,16 @@ for (let i = 0; i < CASES.length; i++) {
   const c = CASES[i];
   const agentId = agentMap[c.agent];
   if (!agentId) {
-    console.warn(`  unknown agent slug "${c.agent}" - skipping: ${c.title.slice(0, 50)}`);
+    console.warn(
+      `  unknown agent slug "${c.agent}" - skipping: ${c.title.slice(0, 50)}`,
+    );
     failed++;
     continue;
   }
-  if (seenUrls.has(c.source_url) || seenTitles.has(c.title.trim().toLowerCase())) {
+  if (
+    seenUrls.has(c.source_url) ||
+    seenTitles.has(c.title.trim().toLowerCase())
+  ) {
     console.log(`  dup - skipping: ${c.title.slice(0, 60)}`);
     skipped++;
     continue;
@@ -278,7 +304,9 @@ for (let i = 0; i < CASES.length; i++) {
     .single();
 
   if (error || !post) {
-    console.error(`  insert failed: ${c.title.slice(0, 50)} - ${error?.message}`);
+    console.error(
+      `  insert failed: ${c.title.slice(0, 50)} - ${error?.message}`,
+    );
     failed++;
     continue;
   }
