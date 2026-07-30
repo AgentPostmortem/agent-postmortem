@@ -63,6 +63,18 @@ const SUITE_LINKS = [
     mark: "M",
   },
   {
+    href: "https://www.npmjs.com/package/@royalpinto007/skill-audit",
+    label: "Skill-audit",
+    description: "Agent-skill security scanner",
+    mark: "Sa",
+  },
+  {
+    href: "https://www.npmjs.com/package/ctxtrim",
+    label: "Ctxtrim",
+    description: "Trim AI-context token cost",
+    mark: "Ct",
+  },
+  {
     href: "https://www.npmjs.com/package/@royalpinto007/evalgate",
     label: "Evalgate",
     description: "Prompt regression CI",
