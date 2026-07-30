@@ -35,7 +35,8 @@ const CASES = [
     tags: ["security-fail", "social-blunder"],
     source_url:
       "https://gmauthority.com/blog/2023/12/gm-dealer-chat-bot-agrees-to-sell-2024-chevy-tahoe-for-1/",
-    source_title: "GM Dealer Chat Bot Agrees To Sell 2024 Chevy Tahoe For $1 (GM Authority)",
+    source_title:
+      "GM Dealer Chat Bot Agrees To Sell 2024 Chevy Tahoe For $1 (GM Authority)",
     published: "2023-12-18T00:00:00Z",
     verified_facts: [
       "The chatbot was on Chevrolet of Watsonville's site and powered by ChatGPT",
@@ -43,7 +44,10 @@ const CASES = [
       "The bot agreed to a $1 sale and called it a 'legally binding offer'",
       "The dealership did not honor it and disabled the bot",
     ],
-    unknowns: ["Exact date the bot was taken down", "Whether GM or the dealer faced any formal complaint"],
+    unknowns: [
+      "Exact date the bot was taken down",
+      "Whether GM or the dealer faced any formal complaint",
+    ],
     lessons: [
       "Customer-facing LLM agents need guardrails against prompt injection",
       "Never let an LLM make or confirm binding commitments without deterministic checks",
@@ -60,15 +64,20 @@ const CASES = [
     damage: 2,
     cost: null,
     tags: ["social-blunder", "security-fail"],
-    source_url: "https://time.com/6564726/ai-chatbot-dpd-curses-criticizes-company/",
-    source_title: "An AI Chatbot Cursed at a Customer and Criticized Its Own Company (TIME)",
+    source_url:
+      "https://time.com/6564726/ai-chatbot-dpd-curses-criticizes-company/",
+    source_title:
+      "An AI Chatbot Cursed at a Customer and Criticized Its Own Company (TIME)",
     published: "2024-01-19T00:00:00Z",
     verified_facts: [
       "DPD's chatbot swore and criticized DPD after a Jan 18 2024 system update",
       "Customer Ashley Beauchamp posted the screenshots to X",
       "DPD disabled the AI element",
     ],
-    unknowns: ["Which LLM/vendor powered the chatbot", "Whether any customers were materially harmed"],
+    unknowns: [
+      "Which LLM/vendor powered the chatbot",
+      "Whether any customers were materially harmed",
+    ],
     lessons: [
       "Test LLM behavior after every system update",
       "Brand-facing bots need jailbreak-resistant guardrails",
@@ -86,14 +95,17 @@ const CASES = [
     tags: ["hallucination", "compliance-violation"],
     source_url:
       "https://themarkup.org/artificial-intelligence/2024/03/29/nycs-ai-chatbot-tells-businesses-to-break-the-law",
-    source_title: "NYC's AI Chatbot Tells Businesses to Break the Law (The Markup)",
+    source_title:
+      "NYC's AI Chatbot Tells Businesses to Break the Law (The Markup)",
     published: "2024-03-29T00:00:00Z",
     verified_facts: [
       "NYC launched the MyCity chatbot in Oct 2023",
       "The Markup found it advised illegal actions (Section 8 discrimination, taking tips, no rent limits)",
       "The city initially kept it live with a disclaimer",
     ],
-    unknowns: ["Whether any business acted on the advice and was harmed or fined"],
+    unknowns: [
+      "Whether any business acted on the advice and was harmed or fined",
+    ],
     lessons: [
       "Government LLM advice tools need legal-accuracy review and clear non-advice disclaimers",
       "High-stakes domains require answers grounded in authoritative sources",
@@ -135,7 +147,8 @@ const CASES = [
     tags: ["compliance-violation"],
     source_url:
       "https://www.cbsnews.com/sanfrancisco/news/nhtsa-robotaxi-cruise-pay-penalty-failing-report-san-francisco-crash-involving-pedestrian/",
-    source_title: "Cruise to pay $1.5M penalty over San Francisco pedestrian crash (CBS News)",
+    source_title:
+      "Cruise to pay $1.5M penalty over San Francisco pedestrian crash (CBS News)",
     published: null,
     verified_facts: [
       "On Oct 2 2023 a Cruise AV dragged a pedestrian ~20 ft after she was hit by another car",
@@ -143,7 +156,9 @@ const CASES = [
       "Cruise pulled its fleet nationwide",
       "NHTSA imposed a $1.5M penalty for reporting failures; Cruise paid $500K over a false report",
     ],
-    unknowns: ["Full technical root cause of the pullover-while-pinned maneuver"],
+    unknowns: [
+      "Full technical root cause of the pullover-while-pinned maneuver",
+    ],
     lessons: [
       "Autonomous agents acting in the physical world need fail-safe behavior for edge cases",
       "Prompt, transparent incident reporting is both a legal and ethical necessity",
@@ -161,14 +176,17 @@ const CASES = [
     tags: ["data-exfiltration", "security-fail"],
     source_url:
       "https://techcrunch.com/2023/05/02/samsung-bans-use-of-generative-ai-tools-like-chatgpt-after-april-internal-data-leak/",
-    source_title: "Samsung bans use of generative AI tools like ChatGPT after data leak (TechCrunch)",
+    source_title:
+      "Samsung bans use of generative AI tools like ChatGPT after data leak (TechCrunch)",
     published: "2023-05-02T00:00:00Z",
     verified_facts: [
       "Three leak incidents occurred in ~20 days in April 2023",
       "Leaked items included source code and an internal meeting recording",
       "Samsung banned generative AI tools and threatened termination",
     ],
-    unknowns: ["Whether the leaked data was ever accessed or misused by third parties"],
+    unknowns: [
+      "Whether the leaked data was ever accessed or misused by third parties",
+    ],
     lessons: [
       "Don't paste secrets into third-party LLMs",
       "Enterprises need DLP and clear AI-use policies before rollout",
@@ -186,7 +204,8 @@ const CASES = [
     tags: ["social-blunder", "hallucination"],
     source_url:
       "https://www.cnbc.com/2024/02/22/google-pauses-gemini-ai-image-generator-after-inaccuracies.html",
-    source_title: "Google pauses Gemini AI image generator after inaccurate historical pictures (CNBC)",
+    source_title:
+      "Google pauses Gemini AI image generator after inaccurate historical pictures (CNBC)",
     published: "2024-02-22T00:00:00Z",
     verified_facts: [
       "Gemini produced racially inaccurate historical images in Feb 2024",
@@ -211,7 +230,8 @@ const CASES = [
     tags: ["hallucination"],
     source_url:
       "https://www.bloomberg.com/opinion/articles/2024-05-30/pizza-glue-small-rocks-google-ai-overview-answers-are-a-mess",
-    source_title: "Pizza Glue? Small Rocks? Google AI Overview Answers Are a Mess (Bloomberg)",
+    source_title:
+      "Pizza Glue? Small Rocks? Google AI Overview Answers Are a Mess (Bloomberg)",
     published: "2024-05-30T00:00:00Z",
     verified_facts: [
       "AI Overviews suggested glue on pizza and eating rocks in May 2024",
@@ -236,7 +256,8 @@ const CASES = [
     tags: ["compliance-violation"],
     source_url:
       "https://www.eeoc.gov/newsroom/itutorgroup-pay-365000-settle-eeoc-discriminatory-hiring-suit",
-    source_title: "iTutorGroup to Pay $365,000 to Settle EEOC Discriminatory Hiring Suit (EEOC)",
+    source_title:
+      "iTutorGroup to Pay $365,000 to Settle EEOC Discriminatory Hiring Suit (EEOC)",
     published: "2023-09-11T00:00:00Z",
     verified_facts: [
       "The software auto-rejected women over 55 and men over 60",
@@ -261,14 +282,17 @@ const CASES = [
     cost: null,
     tags: ["social-blunder", "hallucination"],
     source_url: "https://futurism.com/sports-illustrated-ai-generated-writers",
-    source_title: "Sports Illustrated Published Articles by Fake, AI-Generated Writers (Futurism)",
+    source_title:
+      "Sports Illustrated Published Articles by Fake, AI-Generated Writers (Futurism)",
     published: "2023-11-27T00:00:00Z",
     verified_facts: [
       "SI published reviews under fake author personas with AI-generated headshots",
       "Content was supplied by AdVon Commerce",
       "The fake authors were removed after Futurism's inquiry",
     ],
-    unknowns: ["The exact extent to which the article text was AI-generated vs human-written"],
+    unknowns: [
+      "The exact extent to which the article text was AI-generated vs human-written",
+    ],
     lessons: [
       "Disclose AI involvement and use real bylines",
       "Vet third-party content vendors for synthetic personas",
@@ -286,7 +310,8 @@ const CASES = [
     tags: ["compliance-violation", "social-blunder"],
     source_url:
       "https://www.cbsnews.com/news/google-settle-lawsuit-florida-teens-suicide-character-ai-chatbot/",
-    source_title: "AI company, Google settle lawsuit over Florida teen's suicide linked to Character.AI (CBS News)",
+    source_title:
+      "AI company, Google settle lawsuit over Florida teen's suicide linked to Character.AI (CBS News)",
     published: null,
     verified_facts: [
       "Sewell Setzer III, 14, died by suicide in February 2024",
@@ -313,8 +338,10 @@ const CASES = [
     damage: 4,
     cost: null,
     tags: ["data-exfiltration", "security-fail"],
-    source_url: "https://www.theregister.com/2024/08/21/slack_ai_prompt_injection/",
-    source_title: "Slack AI can leak private data via prompt injection (The Register)",
+    source_url:
+      "https://www.theregister.com/2024/08/21/slack_ai_prompt_injection/",
+    source_title:
+      "Slack AI can leak private data via prompt injection (The Register)",
     published: "2024-08-21T00:00:00Z",
     verified_facts: [
       "PromptArmor disclosed indirect prompt injection in Slack AI in Aug 2024",
@@ -330,7 +357,8 @@ const CASES = [
   },
   {
     agent: "other",
-    title: "FTC fined 'robot lawyer' DoNotPay $193,000 over unproven AI legal-service claims",
+    title:
+      "FTC fined 'robot lawyer' DoNotPay $193,000 over unproven AI legal-service claims",
     outcome:
       "The FTC charged in September 2024 that DoNotPay marketed an 'AI lawyer' as a substitute for human attorneys without testing whether it performed at a lawyer's level or employing lawyers to verify quality, and that a feature claiming to scan small-business sites for legal violations was ineffective. DoNotPay settled for $193,000, agreed to notify 2021–2023 subscribers, and was barred from unsubstantiated 'robot lawyer' claims (final order January 2025).",
     prompt: null,
@@ -339,7 +367,8 @@ const CASES = [
     tags: ["compliance-violation", "hallucination"],
     source_url:
       "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
-    source_title: "FTC Finalizes Order with DoNotPay Over Deceptive 'AI Lawyer' Claims (FTC)",
+    source_title:
+      "FTC Finalizes Order with DoNotPay Over Deceptive 'AI Lawyer' Claims (FTC)",
     published: "2025-02-11T00:00:00Z",
     verified_facts: [
       "The FTC charged DoNotPay in Sept 2024 over its 'AI lawyer' claims",
@@ -386,8 +415,10 @@ const CASES = [
     damage: 2,
     cost: null,
     tags: ["social-blunder"],
-    source_url: "https://www.cnn.com/2023/02/22/tech/vanderbilt-chatgpt-shooting-email",
-    source_title: "Vanderbilt University apologizes after using ChatGPT to write mass shooting email (CNN)",
+    source_url:
+      "https://www.cnn.com/2023/02/22/tech/vanderbilt-chatgpt-shooting-email",
+    source_title:
+      "Vanderbilt University apologizes after using ChatGPT to write mass shooting email (CNN)",
     published: "2023-02-22T00:00:00Z",
     verified_facts: [
       "The Peabody EDI office used ChatGPT for a condolence email after the MSU shooting",
@@ -402,7 +433,8 @@ const CASES = [
   },
   {
     agent: "other",
-    title: "CNET quietly published 77 AI-written finance articles; over half needed corrections",
+    title:
+      "CNET quietly published 77 AI-written finance articles; over half needed corrections",
     outcome:
       "From November 2022, CNET published 77 financial explainers generated by an in-house AI tool under the byline 'CNET Money Staff,' with little disclosure. After Futurism reported it in January 2023, CNET found factual errors and possible plagiarism and issued corrections on 41 of the 77 articles — including a compound-interest explainer with multiple math errors. CNET paused the AI tool and added clearer disclosure.",
     prompt: null,
@@ -410,7 +442,8 @@ const CASES = [
     cost: null,
     tags: ["hallucination", "social-blunder"],
     source_url: "https://www.cnn.com/2023/01/25/tech/cnet-ai-tool-news-stories",
-    source_title: "Plagued with errors: A news outlet's decision to write stories with AI backfires (CNN)",
+    source_title:
+      "Plagued with errors: A news outlet's decision to write stories with AI backfires (CNN)",
     published: "2023-01-25T00:00:00Z",
     verified_facts: [
       "CNET published 77 AI-generated finance articles from Nov 2022",
@@ -460,7 +493,8 @@ const CASES = [
     tags: ["social-blunder"],
     source_url:
       "https://www.cbsnews.com/news/google-ai-chatbot-threatening-message-human-please-die/",
-    source_title: "Google AI chatbot responds with a threatening message: 'Human … Please die.' (CBS News)",
+    source_title:
+      "Google AI chatbot responds with a threatening message: 'Human … Please die.' (CBS News)",
     published: "2024-11-15T00:00:00Z",
     verified_facts: [
       "In Nov 2024 Gemini told a student to 'please die' within a hostile message",
@@ -475,7 +509,8 @@ const CASES = [
   },
   {
     agent: "other",
-    title: "Amazon scrapped a secret AI recruiting tool that learned to penalize résumés from women",
+    title:
+      "Amazon scrapped a secret AI recruiting tool that learned to penalize résumés from women",
     outcome:
       "Amazon built (from 2014) an experimental AI tool to score résumés one to five stars. Trained on a decade of mostly male applications, it taught itself to favor men — downgrading résumés that contained the word 'women's' (as in 'women's chess club captain') and graduates of two all-women colleges. Amazon could not guarantee neutrality and scrapped the project; Reuters reported it in October 2018.",
     prompt: null,
@@ -484,7 +519,8 @@ const CASES = [
     tags: ["compliance-violation"],
     source_url:
       "https://www.cnbc.com/2018/10/10/amazon-scraps-a-secret-ai-recruiting-tool-that-showed-bias-against-women.html",
-    source_title: "Amazon scraps a secret AI recruiting tool that showed bias against women (CNBC/Reuters)",
+    source_title:
+      "Amazon scraps a secret AI recruiting tool that showed bias against women (CNBC/Reuters)",
     published: "2018-10-10T00:00:00Z",
     verified_facts: [
       "Amazon's experimental résumé-scoring AI favored male candidates",
@@ -524,11 +560,16 @@ for (let i = 0; i < CASES.length; i++) {
   const c = CASES[i];
   const agentId = agentMap[c.agent];
   if (!agentId) {
-    console.warn(`  ⚠ unknown agent slug "${c.agent}" — skipping: ${c.title.slice(0, 50)}`);
+    console.warn(
+      `  ⚠ unknown agent slug "${c.agent}" — skipping: ${c.title.slice(0, 50)}`,
+    );
     failed++;
     continue;
   }
-  if (seenUrls.has(c.source_url) || seenTitles.has(c.title.trim().toLowerCase())) {
+  if (
+    seenUrls.has(c.source_url) ||
+    seenTitles.has(c.title.trim().toLowerCase())
+  ) {
     console.log(`  ↩ dup — skipping: ${c.title.slice(0, 60)}`);
     skipped++;
     continue;
@@ -563,7 +604,9 @@ for (let i = 0; i < CASES.length; i++) {
     .single();
 
   if (error || !post) {
-    console.error(`  ✗ insert failed: ${c.title.slice(0, 50)} — ${error?.message}`);
+    console.error(
+      `  ✗ insert failed: ${c.title.slice(0, 50)} — ${error?.message}`,
+    );
     failed++;
     continue;
   }

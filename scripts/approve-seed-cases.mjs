@@ -20,9 +20,12 @@ const SEED_HANDLE = "registry-seed";
 function qualifies(p) {
   const reasons = [];
   if (p.submitter_handle !== SEED_HANDLE) reasons.push("not registry-seed");
-  if (!p.source_url || !/^https?:\/\//i.test(p.source_url)) reasons.push("no http(s) source_url");
-  if (!Array.isArray(p.verified_facts) || p.verified_facts.length < 1) reasons.push("no verified_facts");
-  if (!p.title || p.title.length < 20 || p.title.length > 200) reasons.push("title length");
+  if (!p.source_url || !/^https?:\/\//i.test(p.source_url))
+    reasons.push("no http(s) source_url");
+  if (!Array.isArray(p.verified_facts) || p.verified_facts.length < 1)
+    reasons.push("no verified_facts");
+  if (!p.title || p.title.length < 20 || p.title.length > 200)
+    reasons.push("title length");
   if (!p.outcome || p.outcome.length < 100) reasons.push("outcome too short");
   if (p.status !== "pending") reasons.push(`status=${p.status}`);
   return reasons;
@@ -30,7 +33,9 @@ function qualifies(p) {
 
 const { data: candidates, error: selErr } = await supabase
   .from("posts")
-  .select("id, title, status, submitter_handle, source_url, verified_facts, outcome, submitter_email, case_number")
+  .select(
+    "id, title, status, submitter_handle, source_url, verified_facts, outcome, submitter_email, case_number",
+  )
   .eq("status", "pending")
   .eq("submitter_handle", SEED_HANDLE)
   .order("created_at", { ascending: true });
@@ -72,11 +77,15 @@ for (const p of candidates) {
     .single();
 
   if (error || !data) {
-    console.error(`  ✗ approve failed — ${p.title.slice(0, 50)}: ${error?.message}`);
+    console.error(
+      `  ✗ approve failed — ${p.title.slice(0, 50)}: ${error?.message}`,
+    );
     continue;
   }
   approved++;
   console.log(`  ✓ ${data.case_number} — ${data.title.slice(0, 58)}`);
 }
 
-console.log(`\nDone. approved=${approved} skipped=${skipped} (of ${candidates.length})`);
+console.log(
+  `\nDone. approved=${approved} skipped=${skipped} (of ${candidates.length})`,
+);

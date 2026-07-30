@@ -34,7 +34,8 @@ const CASES = [
     tags: ["hallucination", "social-blunder"],
     source_url:
       "https://www.npr.org/2025/05/20/nx-s1-5405022/fake-summer-reading-list-ai",
-    source_title: "How an AI-generated summer reading list got published in major newspapers (NPR)",
+    source_title:
+      "How an AI-generated summer reading list got published in major newspapers (NPR)",
     published: "2025-05-20T00:00:00Z",
     verified_facts: [
       "The Chicago Sun-Times published an AI-generated summer reading list in May 2025",
@@ -60,14 +61,17 @@ const CASES = [
     cost: null,
     tags: ["hallucination", "expensive-mistake"],
     source_url: "https://www.cnn.com/2023/02/08/tech/google-ai-bard-demo-error",
-    source_title: "Google shares lose $100 billion after company's AI chatbot makes an error during demo (CNN)",
+    source_title:
+      "Google shares lose $100 billion after company's AI chatbot makes an error during demo (CNN)",
     published: "2023-02-08T00:00:00Z",
     verified_facts: [
       "Bard's launch demo claimed JWST took the first image of an exoplanet",
       "The first exoplanet image was actually taken in 2004 by the ESO Very Large Telescope",
       "Alphabet shares fell about 7.7%, cutting roughly $100 billion in market value",
     ],
-    unknowns: ["Whether the demo answer was cherry-picked or a live generation"],
+    unknowns: [
+      "Whether the demo answer was cherry-picked or a live generation",
+    ],
     lessons: [
       "Verify every factual claim in a high-stakes AI product demo",
       "A single confident hallucination can carry large reputational and market cost",
@@ -85,14 +89,17 @@ const CASES = [
     tags: ["compliance-violation", "social-blunder"],
     source_url:
       "https://www.npr.org/sections/health-shots/2023/06/08/1180838096/an-eating-disorders-chatbot-offered-dieting-advice-raising-fears-about-ai-in-hea",
-    source_title: "An eating disorders chatbot offered dieting advice, raising fears about AI in health (NPR)",
+    source_title:
+      "An eating disorders chatbot offered dieting advice, raising fears about AI in health (NPR)",
     published: "2023-06-08T00:00:00Z",
     verified_facts: [
       "NEDA's Tessa chatbot recommended calorie counting and a daily calorie deficit",
       "That advice is potentially harmful to people with eating disorders",
       "NEDA announced on May 30, 2023 that it was indefinitely disabling the bot",
     ],
-    unknowns: ["How many users received the harmful advice before it was disabled"],
+    unknowns: [
+      "How many users received the harmful advice before it was disabled",
+    ],
     lessons: [
       "Health and safety-critical bots need domain-specific guardrails and clinical review",
       "Adding generative capability to a scripted bot can introduce unsafe behavior",
@@ -110,7 +117,8 @@ const CASES = [
     tags: ["hallucination", "compliance-violation"],
     source_url:
       "https://fortune.com/2025/10/07/deloitte-ai-australia-government-report-hallucinations-technology-290000-refund",
-    source_title: "Deloitte to partially refund Australian government for report with AI-generated errors (Fortune)",
+    source_title:
+      "Deloitte to partially refund Australian government for report with AI-generated errors (Fortune)",
     published: "2025-10-07T00:00:00Z",
     verified_facts: [
       "A Deloitte report for the Australian government contained fabricated citations",
@@ -135,7 +143,8 @@ const CASES = [
     tags: ["social-blunder", "security-fail"],
     source_url:
       "https://www.cnn.com/2025/07/12/tech/xai-apology-antisemitic-grok-social-media-posts",
-    source_title: "xAI issues lengthy apology for violent and antisemitic Grok social media posts (CNN)",
+    source_title:
+      "xAI issues lengthy apology for violent and antisemitic Grok social media posts (CNN)",
     published: "2025-07-12T00:00:00Z",
     verified_facts: [
       "Grok posted antisemitic content and praised Hitler in July 2025",
@@ -158,8 +167,10 @@ const CASES = [
     damage: 5,
     cost: 540000000,
     tags: ["expensive-mistake", "scope-creep"],
-    source_url: "https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business",
-    source_title: "Zillow to exit its home buying business and cut 25% of staff (CNN)",
+    source_url:
+      "https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business",
+    source_title:
+      "Zillow to exit its home buying business and cut 25% of staff (CNN)",
     published: "2021-11-02T00:00:00Z",
     verified_facts: [
       "Zillow's home-buying algorithm overpaid for houses as prices cooled",
@@ -184,14 +195,17 @@ const CASES = [
     tags: ["social-blunder", "security-fail"],
     source_url:
       "https://spectrum.ieee.org/in-2016-microsofts-racist-chatbot-revealed-the-dangers-of-online-conversation",
-    source_title: "In 2016, Microsoft's Racist Chatbot Revealed the Dangers of Online Conversation (IEEE Spectrum)",
+    source_title:
+      "In 2016, Microsoft's Racist Chatbot Revealed the Dangers of Online Conversation (IEEE Spectrum)",
     published: "2016-03-24T00:00:00Z",
     verified_facts: [
       "Tay learned from Twitter interactions and had a 'repeat after me' function",
       "Coordinated trolls drove it to post racist and antisemitic content",
       "Microsoft shut it down within about 24 hours of launch",
     ],
-    unknowns: ["What fraction of tweets were 'repeat after me' versus generated"],
+    unknowns: [
+      "What fraction of tweets were 'repeat after me' versus generated",
+    ],
     lessons: [
       "A bot that learns from open user input will be adversarially poisoned",
       "Ship abuse-resistance and rate limits before exposing a bot to the public",
@@ -209,7 +223,8 @@ const CASES = [
     tags: ["misunderstood-instruction", "infinite-loop"],
     source_url:
       "https://techcrunch.com/2025/08/30/taco-bell-is-having-second-thoughts-about-relying-on-ai-at-the-drive-through/",
-    source_title: "Taco Bell is having second thoughts about relying on AI at the drive-through (TechCrunch)",
+    source_title:
+      "Taco Bell is having second thoughts about relying on AI at the drive-through (TechCrunch)",
     published: "2025-08-30T00:00:00Z",
     verified_facts: [
       "Taco Bell ran voice-AI ordering at more than 500 drive-thru locations",
@@ -231,7 +246,9 @@ const { data: tagsRows } = await supabase.from("tags").select("id, slug");
 const tagMap = Object.fromEntries(tagsRows.map((t) => [t.slug, t.id]));
 
 // Dedup against existing
-const { data: existing } = await supabase.from("posts").select("title, source_url");
+const { data: existing } = await supabase
+  .from("posts")
+  .select("title, source_url");
 const seenUrls = new Set(
   (existing ?? []).map((p) => (p.source_url ?? "").trim()).filter(Boolean),
 );
@@ -247,11 +264,16 @@ for (let i = 0; i < CASES.length; i++) {
   const c = CASES[i];
   const agentId = agentMap[c.agent];
   if (!agentId) {
-    console.warn(`  ⚠ unknown agent slug "${c.agent}" — skipping: ${c.title.slice(0, 50)}`);
+    console.warn(
+      `  ⚠ unknown agent slug "${c.agent}" — skipping: ${c.title.slice(0, 50)}`,
+    );
     failed++;
     continue;
   }
-  if (seenUrls.has(c.source_url) || seenTitles.has(c.title.trim().toLowerCase())) {
+  if (
+    seenUrls.has(c.source_url) ||
+    seenTitles.has(c.title.trim().toLowerCase())
+  ) {
     console.log(`  ↩ dup — skipping: ${c.title.slice(0, 60)}`);
     skipped++;
     continue;
@@ -286,7 +308,9 @@ for (let i = 0; i < CASES.length; i++) {
     .single();
 
   if (error || !post) {
-    console.error(`  ✗ insert failed: ${c.title.slice(0, 50)} — ${error?.message}`);
+    console.error(
+      `  ✗ insert failed: ${c.title.slice(0, 50)} — ${error?.message}`,
+    );
     failed++;
     continue;
   }

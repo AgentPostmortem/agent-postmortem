@@ -1,0 +1,5 @@
+n8n-backups/
+.open-next/
+.wrangler/
+out/
+.next/
