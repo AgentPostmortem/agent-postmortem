@@ -81,6 +81,13 @@ const AGENTS: Tool[] = [
 
 const TOOLING: Tool[] = [
   {
+    href: "https://www.npmjs.com/package/tokencut",
+    label: "tokencut",
+    description:
+      "Measure and cut the token cost of an LLM or agent message payload before you send it: truncate bloated tool results, drop duplicate context, trim to a budget. Zero model calls.",
+    badge: "npm",
+  },
+  {
     href: "https://www.npmjs.com/package/@royalpinto007/mcp-audit",
     label: "MCP-audit",
     description:
@@ -152,6 +159,51 @@ const TOOLING: Tool[] = [
   },
 ];
 
+const LISTS: Tool[] = [
+  {
+    href: "https://mcp-security.agentpostmortem.com",
+    label: "Awesome MCP Security",
+    description:
+      "Curated, auto-updating directory of tools, standards, and research for securing Model Context Protocol servers, organized by what each one defends against.",
+    badge: "List",
+  },
+  {
+    href: "https://context-engineering.agentpostmortem.com",
+    label: "Awesome Context Engineering",
+    description:
+      "Practitioner-first directory for context engineering: fitting the right tokens in the window, and fighting context rot with the tool that mitigates each failure mode.",
+    badge: "List",
+  },
+  {
+    href: "https://agent-memory.agentpostmortem.com",
+    label: "Awesome Agent Memory",
+    description:
+      "Vendor-neutral directory of frameworks, stores, benchmarks, and papers for AI agent memory, with benchmarks as a first-class category.",
+    badge: "List",
+  },
+  {
+    href: "https://agent-skills.agentpostmortem.com",
+    label: "Awesome Agent Skills",
+    description:
+      "A small, verified, security-aware directory of Agent Skills (SKILL.md), curated for trust with a first-class security section the volume lists skip.",
+    badge: "List",
+  },
+  {
+    href: "https://github.com/royalpinto007/ship-skills",
+    label: "ship-skills",
+    description:
+      "Authored Agent Skills that make a repo shippable: tests, CI, packaging, release, and repo hygiene. Run ship-context, then ship-checklist sequences the rest.",
+    badge: "Skills",
+  },
+  {
+    href: "https://github.com/royalpinto007/distro-skills",
+    label: "distro-skills",
+    description:
+      "Authored Agent Skills that distribute a dev or indie product across GitHub, Hacker News, Reddit, dev.to, and more. The distribution counterpart to ship-skills.",
+    badge: "Skills",
+  },
+];
+
 function ToolCard({ tool }: { tool: Tool }) {
   return (
     <a
@@ -208,6 +260,17 @@ export default function ToolsPage() {
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {TOOLING.map((tool) => (
+            <ToolCard key={tool.href} tool={tool} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent-red">
+          Curated lists &amp; skills packs
+        </h2>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {LISTS.map((tool) => (
             <ToolCard key={tool.href} tool={tool} />
           ))}
         </div>
