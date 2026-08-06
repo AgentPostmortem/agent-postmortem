@@ -2,6 +2,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Post } from "@/types";
 import type { SeverityLevel } from "@/lib/constants/severity";
 import { incidentDate, incidentMonth } from "@/lib/utils/incident-date";
+import {
+  bucketByYear,
+  yearRange,
+  type YearBucket,
+} from "@/lib/utils/feed-year";
 
 export type FeedTab = "hot" | "new" | "week" | "hof";
 
@@ -41,6 +46,7 @@ export async function fetchFeedPosts(
   page = 1,
   agentSlug?: string,
   severity?: number,
+  year?: string,
 ): Promise<{ posts: Post[]; total: number }> {
   try {
     const supabase = createSupabaseServerClient();
@@ -58,6 +64,18 @@ export async function fetchFeedPosts(
 
     if (agentSlug) query = query.eq("agents.slug", agentSlug);
     if (severity != null) query = query.eq("damage_level", severity);
+
+    if (year) {
+      // Match incidentDate(): the source publication date decides the year,
+      // and only rows without one fall back to the record date.
+      const { start, end } = yearRange(year);
+      query = query.or(
+        [
+          `and(source_published_at.gte.${start},source_published_at.lt.${end})`,
+          `and(source_published_at.is.null,created_at.gte.${start},created_at.lt.${end})`,
+        ].join(","),
+      );
+    }
 
     if (tab === "new") {
       // Newest incident first, falling back to the record date for the
@@ -513,6 +531,8 @@ export interface RegistryOverview {
   byAgent: AgentBucket[];
   byTag: OverviewBucket[];
   byMonth: MonthBucket[];
+  /** Case counts per incident year, newest first */
+  byYear: YearBucket[];
   /** Newest case timestamp on file, ISO string */
   latestIncidentAt: string | null;
 }
@@ -525,6 +545,7 @@ const EMPTY_OVERVIEW: RegistryOverview = {
   byAgent: [],
   byTag: [],
   byMonth: [],
+  byYear: [],
   latestIncidentAt: null,
 };
 
@@ -614,6 +635,7 @@ export async function fetchRegistryOverview(): Promise<RegistryOverview> {
       byMonth: Array.from(monthMap.values())
         .sort((a, b) => a.month.localeCompare(b.month))
         .slice(-12),
+      byYear: bucketByYear(rows),
       latestIncidentAt: rows.reduce<string | null>((latest, row) => {
         const date = incidentDate(row);
         return latest == null || date > latest ? date : latest;
