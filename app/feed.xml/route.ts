@@ -1,11 +1,11 @@
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
 export async function GET() {
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const siteUrl = getSiteUrl();
   const supabase = createSupabaseAdminClient();
 
   const { data: posts } = await supabase

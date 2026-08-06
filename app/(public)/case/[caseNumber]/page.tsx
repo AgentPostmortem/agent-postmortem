@@ -41,8 +41,7 @@ export async function generateMetadata({
   const title = post ? post.title : `Case ${caseNum}`;
   const description =
     post?.outcome?.slice(0, 160) ?? `AI agent failure case file ${caseNum}`;
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const siteUrl = getSiteUrl();
   const ogImageUrl = `${siteUrl}/api/og/${caseNum}`;
 
   return {
@@ -132,8 +131,7 @@ export default async function CasePage({ params }: PageProps) {
           : `$${post.estimatedCostUsd}`
       : null;
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const siteUrl = getSiteUrl();
   const sourceDomain = getSourceDomain(post.sourceUrl);
   const articleJsonLd = {
     "@context": "https://schema.org",

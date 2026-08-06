@@ -5,6 +5,7 @@ import { PostCard } from "@/components/post/PostCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { TAGS } from "@/lib/constants/tags";
 import { fetchPostsByTag } from "@/lib/db/posts";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 export const revalidate = 60;
 
@@ -17,8 +18,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const tag = TAGS.find((t) => t.slug === params.slug);
   if (!tag) return { title: "Tag Not Found" };
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const siteUrl = getSiteUrl();
   const ogImageUrl = `${siteUrl}/api/og/tag/${params.slug}`;
   return {
     title: `#${tag.label} — AI Agent Failures`,

@@ -2,12 +2,12 @@ import { MetadataRoute } from "next";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AGENTS } from "@/lib/constants/agents";
 import { TAGS } from "@/lib/constants/tags";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const siteUrl = getSiteUrl();
   const supabase = createSupabaseAdminClient();
 
   const { data: posts } = await supabase
