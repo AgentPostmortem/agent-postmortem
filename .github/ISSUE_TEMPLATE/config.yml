@@ -8,7 +8,7 @@ contact_links:
     url: https://www.agentpostmortem.com/submit
     about: Reporting a real-world AI agent failure? Use the submit flow, not a GitHub issue.
   - name: Report a security vulnerability
-    url: https://github.com/AgentPostmortem/agent-postmortem/blob/main/SECURITY.md
+    url: https://github.com/AgentPostmortem/agentpostmortem/blob/main/SECURITY.md
     about: Please disclose vulnerabilities privately by email, not in a public issue.
   - name: Contact the maintainers
     url: https://www.agentpostmortem.com/contact

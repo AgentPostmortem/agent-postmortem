@@ -73,7 +73,7 @@ export default function AboutPage() {
           available, and contributions, bug reports, and new agent/tag additions
           are welcome on{" "}
           <a
-            href="https://github.com/AgentPostmortem/agent-postmortem"
+            href="https://github.com/AgentPostmortem/agentpostmortem"
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -6,10 +6,14 @@ Agents.md
 Plan.md
 SETUP.md
 
-# database migrations (add manually when ready to open-source)
-/supabase/*
-!/supabase/migrations/
-!/supabase/migrations/*.sql
+# database migrations and local supabase state — managed outside this repo
+/supabase/
+
+# private automation exports
+/n8n-backups/
+
+# sql dumps
+*.sql
 
 # dependencies
 /node_modules
@@ -33,13 +37,12 @@ SETUP.md
 .env.production.local
 .dev.vars
 
-# supabase local dev
-/supabase/.temp/
-/supabase/.branches/
-
 # generated types — regenerate with: npm run types:db
 /types/db.ts
 cloudflare-env.d.ts
+
+# build artifacts
+/.output/
 
 # vercel
 /.vercel

@@ -73,5 +73,5 @@ in production at https://www.agentpostmortem.com/.
 - Submitter IP addresses stored only as peppered hashes.
 - Admin pages excluded from search engine indexing.
 
-[Unreleased]: https://github.com/AgentPostmortem/agent-postmortem/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/AgentPostmortem/agent-postmortem/releases/tag/v1.0.0
+[Unreleased]: https://github.com/AgentPostmortem/agentpostmortem/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/AgentPostmortem/agentpostmortem/releases/tag/v1.0.0

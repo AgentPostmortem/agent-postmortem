@@ -71,8 +71,8 @@ supabase/
 **Prerequisites:** Node 22+, a Supabase project, Cloudflare R2 bucket, Resend account.
 
 ```bash
-git clone https://github.com/AgentPostmortem/agent-postmortem
-cd agent-postmortem
+git clone https://github.com/AgentPostmortem/agentpostmortem
+cd agentpostmortem
 npm install
 cp .env.example .env.local  # fill in values
 npm run dev
@@ -102,14 +102,9 @@ IP_HASH_PEPPER=   # 32+ random hex chars — never change after launch
 
 ### Database
 
-Run the migration against your Supabase project:
-
-```bash
-# Via Supabase CLI (after linking)
-npx supabase db push
-
-# Or paste supabase/migrations/0001_init.sql into the SQL editor
-```
+Schema migrations are managed outside this repository. The expected table
+shapes are documented by the TypeScript definitions in `types/supabase.ts`,
+which stay in sync with the deployed Supabase schema.
 
 Seed development data:
 

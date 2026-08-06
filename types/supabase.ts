@@ -1,5 +1,5 @@
 /**
- * Supabase TypeScript types — kept in sync with supabase/migrations/0001_init.sql.
+ * Supabase TypeScript types — kept in sync with the deployed Supabase schema.
  * Regenerate after schema changes with:
  *   npx supabase gen types typescript --project-id <id> > types/supabase.ts
  */

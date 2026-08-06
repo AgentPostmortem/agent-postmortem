@@ -15,8 +15,8 @@ Thanks for your interest in contributing. This document covers how to set up the
 ### Setup
 
 ```bash
-git clone https://github.com/AgentPostmortem/agent-postmortem
-cd agent-postmortem
+git clone https://github.com/AgentPostmortem/agentpostmortem
+cd agentpostmortem
 npm install
 ```
 
