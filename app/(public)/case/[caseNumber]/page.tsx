@@ -164,7 +164,7 @@ export default async function CasePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="shell py-12 sm:py-16">
-        <article className="max-w-[52rem]">
+        <article className="mx-auto w-full max-w-[52rem]">
           {/* Breadcrumb */}
           <div className="mb-8 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-text-tertiary">
             <Link href="/" className="hover:text-text-secondary">
