@@ -9,8 +9,6 @@ labels: bug
 
 **What you expected**
 
-**Steps to reproduce**
-1.
-2.
+**Steps to reproduce** 1. 2.
 
 **Environment** (OS, runtime/version, etc.)
