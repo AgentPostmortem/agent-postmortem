@@ -61,12 +61,17 @@ function FormSection({
 function FieldLabel({
   children,
   required,
+  htmlFor,
 }: {
   children: React.ReactNode;
   required?: boolean;
+  htmlFor?: string;
 }) {
   return (
-    <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+    <label
+      htmlFor={htmlFor}
+      className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+    >
       {children}
       {required && <span className="ml-1 text-accent">*</span>}
     </label>
@@ -266,8 +271,11 @@ export function SubmitForm() {
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {/* Section 1: Agent */}
       <FormSection number="1" title="Agent Involved">
-        <FieldLabel required>Which AI agent failed?</FieldLabel>
+        <FieldLabel htmlFor="field-agent" required>
+          Which AI agent failed?
+        </FieldLabel>
         <select
+          id="field-agent"
           value={form.agentSlug ?? ""}
           onChange={(e) => set("agentSlug", e.target.value)}
           className={cn(inputBase, "appearance-none")}
@@ -286,8 +294,11 @@ export function SubmitForm() {
       <FormSection number="2" title="Summary">
         <div className="space-y-3">
           <div>
-            <FieldLabel required>One-line title</FieldLabel>
+            <FieldLabel htmlFor="field-title" required>
+              One-line title
+            </FieldLabel>
             <input
+              id="field-title"
               type="text"
               value={form.title ?? ""}
               onChange={(e) => set("title", e.target.value)}
@@ -304,13 +315,14 @@ export function SubmitForm() {
           </div>
 
           <div>
-            <FieldLabel>
+            <FieldLabel htmlFor="field-prompt">
               Prompt / Instruction given{" "}
               <span className="normal-case tracking-normal text-text-tertiary">
                 (optional)
               </span>
             </FieldLabel>
             <textarea
+              id="field-prompt"
               value={form.prompt ?? ""}
               onChange={(e) => set("prompt", e.target.value)}
               placeholder="Paste the exact instruction or prompt you gave the agent…"
@@ -320,8 +332,11 @@ export function SubmitForm() {
           </div>
 
           <div>
-            <FieldLabel required>What actually happened?</FieldLabel>
+            <FieldLabel htmlFor="field-outcome" required>
+              What actually happened?
+            </FieldLabel>
             <textarea
+              id="field-outcome"
               value={form.outcome ?? ""}
               onChange={(e) => set("outcome", e.target.value)}
               placeholder="Describe what the agent did, what went wrong, and the consequences…"
@@ -337,10 +352,14 @@ export function SubmitForm() {
       <FormSection number="3" title="Damage Assessment">
         <div className="space-y-4">
           <div>
-            <FieldLabel required>Severity level</FieldLabel>
+            <FieldLabel htmlFor="field-severity" required>
+              Severity level
+            </FieldLabel>
             <div className="space-y-2">
               <input
+                id="field-severity"
                 type="range"
+                aria-valuetext={`${damageLevel} — ${damageInfo.label}`}
                 min={1}
                 max={5}
                 step={1}
@@ -387,7 +406,7 @@ export function SubmitForm() {
           </div>
 
           <div>
-            <FieldLabel>
+            <FieldLabel htmlFor="field-cost">
               Estimated financial damage{" "}
               <span className="normal-case tracking-normal text-text-tertiary">
                 (optional)
@@ -398,6 +417,7 @@ export function SubmitForm() {
                 $
               </span>
               <input
+                id="field-cost"
                 type="number"
                 min={0}
                 value={form.estimatedCostUsd ?? ""}
@@ -427,6 +447,7 @@ export function SubmitForm() {
               <button
                 key={tag.slug}
                 type="button"
+                aria-pressed={active}
                 onClick={() => toggleTag(tag.slug)}
                 className={cn(
                   "rounded-sm border px-2.5 py-1 font-mono text-xs transition-all",
@@ -501,6 +522,7 @@ export function SubmitForm() {
             <button
               key={opt}
               type="button"
+              aria-pressed={attribution === opt}
               onClick={() => {
                 setAttribution(opt);
                 set("isAnonymous", opt === "anonymous");
@@ -524,6 +546,9 @@ export function SubmitForm() {
           <div className="mt-3">
             <input
               type="text"
+              aria-label={
+                attribution === "handle" ? "Your handle" : "Your company name"
+              }
               value={form.authorHandle ?? ""}
               onChange={(e) => set("authorHandle", e.target.value)}
               placeholder={
@@ -535,13 +560,14 @@ export function SubmitForm() {
         )}
 
         <div className="mt-4">
-          <FieldLabel>
+          <FieldLabel htmlFor="field-email">
             Email{" "}
             <span className="normal-case tracking-normal text-text-tertiary">
               (optional — only to send you a private edit link)
             </span>
           </FieldLabel>
           <input
+            id="field-email"
             type="email"
             value={form.email ?? ""}
             onChange={(e) => set("email", e.target.value || undefined)}

@@ -173,10 +173,14 @@ export function SearchResults({
           <div className="grid gap-5 sm:grid-cols-2">
             {/* Agent filter */}
             <div>
-              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+              <label
+                htmlFor="filter-agent"
+                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              >
                 Agent
               </label>
               <select
+                id="filter-agent"
                 value={agentFilter}
                 onChange={(e) => setAgentFilter(e.target.value)}
                 className="w-full rounded-sm border border-border-default bg-bg-elevated px-3 py-2 font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
@@ -192,20 +196,29 @@ export function SearchResults({
 
             {/* Severity range */}
             <div>
-              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+              <span
+                id="filter-severity-label"
+                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              >
                 Severity —{" "}
                 {minSeverity === maxSeverity
                   ? SEVERITY_LABELS[minSeverity]
                   : `${SEVERITY_LABELS[minSeverity]} to ${SEVERITY_LABELS[maxSeverity]}`}
-              </label>
+              </span>
               <div className="flex items-center gap-3">
-                <div className="flex gap-1">
+                <div
+                  role="group"
+                  aria-labelledby="filter-severity-label"
+                  className="flex gap-1"
+                >
                   {[1, 2, 3, 4, 5].map((lvl) => {
                     const inRange = lvl >= minSeverity && lvl <= maxSeverity;
                     return (
                       <button
                         key={lvl}
                         type="button"
+                        aria-pressed={inRange}
+                        aria-label={`Severity ${lvl}: ${SEVERITY_LABELS[lvl]}`}
                         onClick={() => {
                           if (lvl < minSeverity) {
                             setMinSeverity(lvl);
