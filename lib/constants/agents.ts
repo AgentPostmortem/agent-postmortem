@@ -264,6 +264,48 @@ export const AGENTS: AgentMeta[] = [
     description: "xAI's conversational model, deployed on X and via API.",
   },
   {
+    slug: "sakana-cuda-engineer",
+    name: "AI CUDA Engineer",
+    company: "Sakana AI",
+    description:
+      "Sakana AI's agentic framework for discovering, optimizing and composing CUDA kernels.",
+  },
+  {
+    slug: "slack-ai",
+    name: "Slack AI",
+    company: "Salesforce / Slack",
+    description:
+      "Slack's built-in AI assistant for channel summaries and workspace search.",
+  },
+  {
+    slug: "summer-keeper-ai",
+    name: "Keeper AI (Summer.fi)",
+    company: "Summer.fi",
+    description:
+      "Autonomous rebalancing agents that move assets across Summer.fi Lazy Summer vault contracts.",
+  },
+  {
+    slug: "mastra",
+    name: "Mastra",
+    company: "Mastra",
+    description:
+      "Open-source TypeScript agent framework distributed via the @mastra npm namespace.",
+  },
+  {
+    slug: "ledeai",
+    name: "LedeAI",
+    company: "LedeAI",
+    description:
+      "Automated local-news writing service used by publishers for templated sports and civic recaps.",
+  },
+  {
+    slug: "snapchat-my-ai",
+    name: "My AI (Snapchat)",
+    company: "Snap",
+    description:
+      "Snapchat's in-app chatbot companion, powered by OpenAI's ChatGPT.",
+  },
+  {
     slug: "other",
     name: "Other / Unknown",
     company: "Unknown",
