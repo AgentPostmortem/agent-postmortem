@@ -9,13 +9,13 @@
   }
 
   body {
-    /* Subtle dot-grid texture on neutral near-black */
-    background-image: radial-gradient(
-      circle,
-      rgba(237, 237, 240, 0.05) 1px,
+    /* Faint ruled-paper texture: archival, not decorative */
+    background-image: linear-gradient(
+      to bottom,
+      rgba(242, 237, 228, 0.028) 1px,
       transparent 1px
     );
-    background-size: 28px 28px;
+    background-size: 100% 30px;
     background-attachment: scroll;
   }
 
@@ -28,17 +28,24 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #26262a;
+    background: #2a2622;
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #3f3f45;
+    background: #46403a;
   }
 
-  /* Signal-ember text selection */
+  /* Signal amber text selection */
   ::selection {
-    background: #e2674e;
-    color: #0b0b0c;
+    background: #f5a524;
+    color: #0c0b0a;
+  }
+
+  /* Visible, consistent keyboard focus everywhere */
+  :focus-visible {
+    outline: 2px solid #f5a524;
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
   /* Tabular numbers everywhere monospace is used */
@@ -62,15 +69,19 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 @layer components {
-  /* Stamped label — e.g. RESTRICTED, CASE FILE */
+  /* Stamped label, e.g. PUBLIC REGISTRY, CASE FILE */
   .stamp {
-    @apply inline-flex items-center gap-1.5 rounded border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em];
+    @apply inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em];
   }
   .stamp-red {
-    @apply border-accent-red/40 text-accent-red/80;
+    @apply border-accent/40 bg-accent-soft text-accent;
   }
   .stamp-muted {
     @apply border-border-strong text-text-tertiary;
@@ -89,5 +100,13 @@
   .rule-label::after {
     content: "";
     @apply flex-1 border-t border-border-default;
+  }
+
+  /* Registry metadata key/value pair */
+  .meta-key {
+    @apply font-mono text-[9px] uppercase tracking-[0.18em] text-text-tertiary;
+  }
+  .meta-val {
+    @apply font-mono text-sm tabular-nums text-text-primary;
   }
 }

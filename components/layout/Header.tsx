@@ -14,18 +14,18 @@ const NAV = [
 export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border-default bg-bg-canvas/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link
           href="/"
           className="group flex items-center gap-2.5"
           aria-label="AgentPostmortem home"
         >
-          <LogoIcon size={28} />
+          <LogoIcon size={26} />
           <div>
-            <div className="font-serif text-sm leading-none text-text-primary transition-colors group-hover:text-accent-red">
+            <div className="font-serif text-sm font-medium leading-none tracking-tight text-text-primary transition-colors group-hover:text-accent">
               AgentPostmortem
             </div>
-            <div className="mt-0.5 hidden font-mono text-[9px] uppercase tracking-widest text-text-tertiary sm:block">
+            <div className="mt-1 hidden font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary sm:block">
               Public Case Registry
             </div>
           </div>
@@ -36,7 +36,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-text-primary"
+              className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-accent"
             >
               {link.label}
             </Link>
@@ -46,14 +46,14 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link
             href="/submit"
-            className="hidden items-center gap-1.5 rounded-full border border-accent-red/60 bg-accent-red-soft px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas md:flex"
+            className="hidden items-center gap-1.5 rounded-sm border border-accent/60 bg-accent-soft px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas md:flex"
           >
             <PlusIcon size={10} /> File Report
           </Link>
 
           <Link
             href="/submit"
-            className="flex items-center gap-1.5 rounded-full border border-accent-red/60 bg-accent-red-soft px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-accent-red-muted md:hidden"
+            className="flex items-center gap-1.5 rounded-sm border border-accent/60 bg-accent-soft px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-accent md:hidden"
           >
             <PlusIcon size={9} /> File
           </Link>
@@ -67,10 +67,10 @@ export function Header() {
               <span className="h-px w-5 bg-text-secondary" />
               <span className="h-px w-5 bg-text-secondary" />
             </summary>
-            <nav className="absolute right-0 top-11 w-52 divide-y divide-border-default rounded border border-border-default bg-bg-canvas shadow-xl">
+            <nav className="absolute right-0 top-11 w-52 divide-y divide-border-default rounded-sm border border-border-default bg-bg-canvas shadow-xl">
               <Link
                 href="/"
-                className="block px-4 py-3.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary hover:text-text-primary"
+                className="block px-4 py-3.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary hover:text-accent"
               >
                 Registry
               </Link>
@@ -78,7 +78,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block px-4 py-3.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary hover:text-text-primary"
+                  className="block px-4 py-3.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary hover:text-accent"
                 >
                   {link.label}
                 </Link>

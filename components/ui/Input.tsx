@@ -21,10 +21,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       <input
         ref={ref}
         className={cn(
-          "w-full rounded border bg-bg-surface py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-colors focus:outline-none",
+          "w-full rounded-sm border bg-bg-surface py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-colors focus:outline-none",
           error
-            ? "border-accent-red focus:border-accent-red"
-            : "border-border-default focus:border-accent-red",
+            ? "border-accent focus:border-accent"
+            : "border-border-default focus:border-accent",
           prefix ? "pl-7 pr-3" : "px-3",
           suffix ? "pr-7" : "",
           className,
@@ -36,7 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           {suffix}
         </span>
       )}
-      {error && <p className="mt-1 text-xs text-accent-red">{error}</p>}
+      {error && <p className="mt-1 text-xs text-accent">{error}</p>}
     </div>
   );
 });

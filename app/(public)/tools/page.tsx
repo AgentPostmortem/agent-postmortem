@@ -210,10 +210,10 @@ function ToolCard({ tool }: { tool: Tool }) {
       href={tool.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col rounded-md border border-border-default bg-bg-surface p-4 transition-colors hover:border-border-strong hover:bg-bg-elevated"
+      className="group flex flex-col rounded-sm border border-border-default bg-bg-surface p-4 transition-colors hover:border-border-strong hover:bg-bg-elevated"
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="font-mono text-sm text-text-primary transition-colors group-hover:text-accent-red">
+        <span className="font-mono text-sm text-text-primary transition-colors group-hover:text-accent">
           {tool.label}
         </span>
         <span className="shrink-0 rounded-sm border border-border-strong px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-text-tertiary">
@@ -244,7 +244,7 @@ export default function ToolsPage() {
       </div>
 
       <section className="mb-12">
-        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent-red">
+        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent">
           Agents &amp; operations
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -255,7 +255,7 @@ export default function ToolsPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent-red">
+        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent">
           Tooling &amp; evals
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -266,7 +266,7 @@ export default function ToolsPage() {
       </section>
 
       <section className="mt-12">
-        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent-red">
+        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent">
           Curated lists &amp; skills packs
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -283,7 +283,7 @@ export default function ToolsPage() {
             href="https://royalpinto007.agentpostmortem.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent-red hover:underline"
+            className="text-accent hover:underline"
           >
             Royal Simpson Pinto
           </a>
@@ -292,7 +292,7 @@ export default function ToolsPage() {
             href="https://github.com/royalpinto007"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent-red hover:underline"
+            className="text-accent hover:underline"
           >
             GitHub
           </a>

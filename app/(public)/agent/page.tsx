@@ -60,16 +60,16 @@ export default async function AgentsIndexPage() {
                   <Link
                     key={agent.slug}
                     href={`/agent/${agent.slug}`}
-                    className="group rounded border border-border-default bg-bg-surface p-4 transition-colors hover:border-accent-red/40 hover:bg-bg-elevated"
+                    className="group rounded-sm border border-border-default bg-bg-surface p-4 transition-colors hover:border-accent/40 hover:bg-bg-elevated"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-sm font-semibold text-text-primary group-hover:text-accent-red">
+                          <span className="font-mono text-sm font-semibold text-text-primary group-hover:text-accent">
                             {agent.name}
                           </span>
                           {count > 0 && (
-                            <span className="rounded bg-accent-red/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-red-muted">
+                            <span className="rounded bg-accent/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-strong">
                               {count}
                             </span>
                           )}
@@ -78,7 +78,7 @@ export default async function AgentsIndexPage() {
                           {agent.description}
                         </p>
                       </div>
-                      <span className="shrink-0 text-text-tertiary group-hover:text-accent-red">
+                      <span className="shrink-0 text-text-tertiary group-hover:text-accent">
                         <ArrowRightIcon size={11} />
                       </span>
                     </div>

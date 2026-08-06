@@ -62,7 +62,7 @@ function DamagePip({ level }: { level: number }) {
           key={i}
           className={[
             "h-2 w-2 rounded-sm",
-            i < level ? "bg-accent-red" : "bg-border-strong",
+            i < level ? "bg-accent" : "bg-border-strong",
           ].join(" ")}
         />
       ))}
@@ -234,7 +234,7 @@ export default function AdminPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-canvas px-4">
         <div className="w-full max-w-sm">
-          <p className="mb-2 font-mono text-xs uppercase tracking-widest text-accent-red text-center">
+          <p className="mb-2 font-mono text-xs uppercase tracking-widest text-accent text-center">
             AgentPostmortem
           </p>
           <p className="mb-6 font-mono text-xs uppercase tracking-widest text-text-tertiary text-center">
@@ -246,12 +246,10 @@ export default function AdminPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full rounded border border-border-default bg-bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary focus:border-accent-red focus:outline-none"
+              className="w-full rounded-sm border border-border-default bg-bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary focus:border-accent focus:outline-none"
               autoFocus
             />
-            {authError && (
-              <p className="text-xs text-accent-red">{authError}</p>
-            )}
+            {authError && <p className="text-xs text-accent">{authError}</p>}
             <Button type="submit" variant="primary" className="w-full">
               Enter
             </Button>
@@ -274,7 +272,7 @@ export default function AdminPage() {
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-accent-red">
+              <p className="font-mono text-xs uppercase tracking-widest text-accent">
                 Admin
               </p>
               <h1 className="font-serif text-xl text-text-primary">
@@ -291,7 +289,7 @@ export default function AdminPage() {
                 <span className="ml-1 hidden sm:inline">approved</span>
               </span>
               <span className="text-text-tertiary">
-                <span className="text-accent-red">{counts.rejected}</span>
+                <span className="text-accent">{counts.rejected}</span>
                 <span className="ml-1 hidden sm:inline">rejected</span>
               </span>
             </div>
@@ -313,7 +311,7 @@ export default function AdminPage() {
               className={[
                 "shrink-0 border-b-2 px-5 py-3 font-mono text-xs uppercase tracking-widest transition-colors",
                 adminTab === t
-                  ? "border-accent-red text-text-primary"
+                  ? "border-accent text-text-primary"
                   : "border-transparent text-text-tertiary hover:text-text-secondary",
               ].join(" ")}
             >
@@ -334,7 +332,7 @@ export default function AdminPage() {
                 className={[
                   "shrink-0 border-b-2 px-4 py-3 font-mono text-xs uppercase tracking-widest transition-colors sm:px-5",
                   tab === key
-                    ? "border-accent-red text-text-primary"
+                    ? "border-accent text-text-primary"
                     : "border-transparent text-text-tertiary hover:text-text-secondary",
                 ].join(" ")}
               >
@@ -358,9 +356,9 @@ export default function AdminPage() {
                   fetchComments(s, authedPassword);
                 }}
                 className={[
-                  "rounded border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-colors",
+                  "rounded-sm border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-colors",
                   commentStatus === s
-                    ? "border-accent-red bg-accent-red/10 text-accent-red"
+                    ? "border-accent bg-accent/10 text-accent"
                     : "border-border-default text-text-tertiary hover:text-text-secondary",
                 ].join(" ")}
               >
@@ -382,7 +380,7 @@ export default function AdminPage() {
               {comments.map((c) => (
                 <div
                   key={c.id}
-                  className="rounded border border-border-default bg-bg-surface p-4"
+                  className="rounded-sm border border-border-default bg-bg-surface p-4"
                 >
                   <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
@@ -406,7 +404,7 @@ export default function AdminPage() {
                       {c.status !== "visible" && (
                         <button
                           onClick={() => handleCommentStatus(c.id, "visible")}
-                          className="rounded border border-border-default px-2 py-0.5 font-mono text-[10px] text-text-secondary transition-colors hover:border-green-500 hover:text-green-400"
+                          className="rounded-sm border border-border-default px-2 py-0.5 font-mono text-[10px] text-text-secondary transition-colors hover:border-green-500 hover:text-green-400"
                         >
                           Restore
                         </button>
@@ -414,7 +412,7 @@ export default function AdminPage() {
                       {c.status !== "hidden" && (
                         <button
                           onClick={() => handleCommentStatus(c.id, "hidden")}
-                          className="rounded border border-border-default px-2 py-0.5 font-mono text-[10px] text-text-secondary transition-colors hover:border-yellow-500 hover:text-yellow-400"
+                          className="rounded-sm border border-border-default px-2 py-0.5 font-mono text-[10px] text-text-secondary transition-colors hover:border-yellow-500 hover:text-yellow-400"
                         >
                           Hide
                         </button>
@@ -422,7 +420,7 @@ export default function AdminPage() {
                       {c.status !== "removed" && (
                         <button
                           onClick={() => handleCommentStatus(c.id, "removed")}
-                          className="rounded border border-border-default px-2 py-0.5 font-mono text-[10px] text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red"
+                          className="rounded-sm border border-border-default px-2 py-0.5 font-mono text-[10px] text-text-secondary transition-colors hover:border-accent hover:text-accent"
                         >
                           Remove
                         </button>
@@ -465,9 +463,9 @@ export default function AdminPage() {
                         setEditing(false);
                       }}
                       className={[
-                        "w-full rounded border p-4 text-left transition-colors",
+                        "w-full rounded-sm border p-4 text-left transition-colors",
                         selected?.id === post.id
-                          ? "border-accent-red bg-accent-red/5"
+                          ? "border-accent bg-accent/5"
                           : "border-border-default bg-bg-surface hover:border-border-strong",
                       ].join(" ")}
                     >
@@ -502,7 +500,7 @@ export default function AdminPage() {
             {/* Detail panel */}
             <div className="lg:sticky lg:top-6 lg:self-start">
               {selected ? (
-                <div className="rounded border border-border-default bg-bg-surface p-6">
+                <div className="rounded-sm border border-border-default bg-bg-surface p-6">
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
@@ -511,14 +509,14 @@ export default function AdminPage() {
                         </p>
                         <button
                           onClick={() => setEditing((e) => !e)}
-                          className="shrink-0 rounded border border-border-default px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red"
+                          className="shrink-0 rounded-sm border border-border-default px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent"
                         >
                           {editing ? "Cancel" : "Edit fields"}
                         </button>
                       </div>
                       {editing ? (
                         <input
-                          className="mt-1 w-full rounded border border-border-default bg-bg-elevated px-3 py-1.5 text-sm text-text-primary focus:border-accent-red focus:outline-none"
+                          className="mt-1 w-full rounded-sm border border-border-default bg-bg-elevated px-3 py-1.5 text-sm text-text-primary focus:border-accent focus:outline-none"
                           value={editForm.title}
                           onChange={(e) =>
                             setEditForm((f) => ({
@@ -584,7 +582,7 @@ export default function AdminPage() {
                             ·{" "}
                             <a
                               href={`mailto:${selected.submitter_email}`}
-                              className="hover:text-accent-red hover:underline"
+                              className="hover:text-accent hover:underline"
                             >
                               {selected.submitter_email}
                             </a>
@@ -617,7 +615,7 @@ export default function AdminPage() {
                         </dt>
                         <dd className="mt-1">
                           <select
-                            className="rounded border border-border-default bg-bg-elevated px-2 py-1 text-sm text-text-primary focus:border-accent-red focus:outline-none"
+                            className="rounded-sm border border-border-default bg-bg-elevated px-2 py-1 text-sm text-text-primary focus:border-accent focus:outline-none"
                             value={editForm.damage_level}
                             onChange={(e) =>
                               setEditForm((f) => ({
@@ -643,7 +641,7 @@ export default function AdminPage() {
                       {editing ? (
                         <dd className="mt-1">
                           <textarea
-                            className="w-full rounded border border-border-default bg-bg-elevated px-3 py-2 text-sm text-text-primary leading-relaxed focus:border-accent-red focus:outline-none scrollbar-none"
+                            className="w-full rounded-sm border border-border-default bg-bg-elevated px-3 py-2 text-sm text-text-primary leading-relaxed focus:border-accent focus:outline-none scrollbar-none"
                             rows={6}
                             value={editForm.outcome}
                             onChange={(e) =>
@@ -694,7 +692,7 @@ export default function AdminPage() {
                       <button
                         onClick={() => handleAction(selected.id, "rejected")}
                         disabled={actionLoading}
-                        className="flex-1 rounded border border-border-default px-4 py-2 text-sm text-accent-red transition-colors hover:bg-accent-red/5 disabled:opacity-50"
+                        className="flex-1 rounded-sm border border-border-default px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/5 disabled:opacity-50"
                       >
                         {actionLoading ? "…" : "Reject"}
                       </button>
@@ -706,7 +704,7 @@ export default function AdminPage() {
                       <button
                         onClick={() => handleResendToken(selected.id)}
                         disabled={actionLoading}
-                        className="rounded border border-border-default px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red disabled:opacity-50"
+                        className="rounded-sm border border-border-default px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
                       >
                         Resend Edit Link
                       </button>
@@ -724,7 +722,7 @@ export default function AdminPage() {
                   )}
                 </div>
               ) : (
-                <div className="flex h-48 items-center justify-center rounded border border-dashed border-border-default">
+                <div className="flex h-48 items-center justify-center rounded-sm border border-dashed border-border-default">
                   <p className="font-mono text-sm text-text-tertiary">
                     Select a case to review
                   </p>

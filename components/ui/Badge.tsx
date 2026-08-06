@@ -11,7 +11,7 @@ interface BadgeProps {
 const variantClasses: Record<BadgeVariant, string> = {
   default: "border-border-default bg-bg-elevated text-text-tertiary",
   success: "border-green-800 bg-green-950 text-green-400",
-  danger: "border-accent-red bg-accent-red-soft text-accent-red-muted",
+  danger: "border-accent bg-accent-soft text-accent-strong",
   warning: "border-yellow-800 bg-yellow-950 text-yellow-400",
 };
 
@@ -23,7 +23,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded border px-2 py-0.5 font-mono text-xs",
+        "inline-flex items-center rounded-sm border px-2 py-0.5 font-mono text-xs",
         variantClasses[variant],
         className,
       )}

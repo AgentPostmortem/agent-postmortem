@@ -153,7 +153,7 @@ export function Footer() {
         <div className="mb-10">
           <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent-red">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
                 Agent operating suite
               </p>
               <p className="mt-1 text-sm text-text-secondary">
@@ -169,13 +169,13 @@ export function Footer() {
                 href={product.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex min-w-0 items-center gap-3 rounded-md border border-border-default bg-bg-surface p-3 transition-colors hover:border-border-strong hover:bg-bg-elevated"
+                className="group flex min-w-0 items-center gap-3 rounded-sm border border-border-default bg-bg-surface p-3 transition-colors hover:border-border-strong hover:bg-bg-elevated"
               >
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-border-strong bg-bg-elevated font-mono text-xs font-bold text-accent-red-muted transition-colors group-hover:border-accent-red/50">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-sm border border-border-strong bg-bg-elevated font-mono text-xs font-bold text-accent-strong transition-colors group-hover:border-accent/50">
                   {product.mark}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate font-mono text-xs text-text-primary transition-colors group-hover:text-accent-red">
+                  <span className="block truncate font-mono text-xs text-text-primary transition-colors group-hover:text-accent">
                     {product.label}
                   </span>
                   <span className="mt-0.5 block truncate font-mono text-[9px] text-text-tertiary">
@@ -191,7 +191,7 @@ export function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-sm bg-accent-red" />
+              <div className="h-1.5 w-1.5 rounded-sm bg-accent" />
               <span className="font-serif text-sm text-text-primary">
                 AgentPostmortem
               </span>
