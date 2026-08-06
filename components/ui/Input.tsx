@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useId } from "react";
 import { cn } from "@/lib/utils/cn";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -8,13 +8,22 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { error, prefix, suffix, className, ...props },
+  { error, prefix, suffix, className, id: propsId, ...props },
   ref,
 ) {
+  const generatedId = useId();
+  const id = propsId ?? generatedId;
+  const errorId = `${id}-error`;
+  const describedBy =
+    [error && errorId, props["aria-describedby"]].filter(Boolean).join(" ") ||
+    undefined;
   return (
     <div className="relative">
       {prefix && (
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-mono text-sm text-text-tertiary">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-mono text-sm text-text-tertiary"
+        >
           {prefix}
         </span>
       )}
@@ -30,13 +39,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           className,
         )}
         {...props}
+        id={id}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={describedBy}
       />
       {suffix && (
-        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-sm text-text-tertiary">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-sm text-text-tertiary"
+        >
           {suffix}
         </span>
       )}
-      {error && <p className="mt-1 text-xs text-accent">{error}</p>}
+      {error && (
+        <p id={errorId} role="alert" className="mt-1 text-xs text-accent">
+          {error}
+        </p>
+      )}
     </div>
   );
 });
