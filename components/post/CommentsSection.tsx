@@ -192,6 +192,7 @@ export function CommentsSection({ postId }: { postId: string }) {
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
+          aria-label="Your comment"
           placeholder="Add context, a related incident, or a correction…"
           rows={4}
           className="w-full resize-none rounded-sm border border-border-default bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none"
@@ -215,6 +216,7 @@ export function CommentsSection({ postId }: { postId: string }) {
               type="text"
               value={handle}
               onChange={(e) => setHandle(e.target.value)}
+              aria-label="Your handle (optional)"
               placeholder="Your handle (optional)"
               className="rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-xs text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none"
             />

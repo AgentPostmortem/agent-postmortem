@@ -97,9 +97,9 @@ function CounterStrip({ data }: { data: RegistryOverview }) {
   const figure = damage ? splitFigure(damage) : null;
 
   return (
-    <dl className="grid gap-px overflow-hidden rounded-sm border border-border-strong bg-border-default lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+    <div className="grid gap-px overflow-hidden rounded-sm border border-border-strong bg-border-default lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
       {figure && (
-        <div className="plate-deep relative flex min-w-0 flex-col justify-center px-6 py-9 sm:px-9 sm:py-11">
+        <dl className="plate-deep relative flex min-w-0 flex-col justify-center px-6 py-9 sm:px-9 sm:py-11">
           <div
             aria-hidden="true"
             className="aura left-2 top-2 h-40 w-64 sm:h-52 sm:w-96"
@@ -120,10 +120,10 @@ function CounterStrip({ data }: { data: RegistryOverview }) {
               Damage across {data.quantifiedCases} quantified cases
             </span>
           </dd>
-        </div>
+        </dl>
       )}
 
-      <div className="plate grid min-w-0 grid-cols-1 gap-px bg-border-default sm:grid-cols-3 lg:grid-cols-1">
+      <dl className="plate grid min-w-0 grid-cols-1 gap-px bg-border-default sm:grid-cols-3 lg:grid-cols-1">
         {items.map((item) => (
           <div
             key={item.label}
@@ -143,8 +143,8 @@ function CounterStrip({ data }: { data: RegistryOverview }) {
             </dd>
           </div>
         ))}
-      </div>
-    </dl>
+      </dl>
+    </div>
   );
 }
 

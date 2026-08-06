@@ -120,6 +120,7 @@ const SUITE_LINKS = [
 
 const LINK_GROUPS = [
   {
+    label: "Organisation",
     links: [
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
@@ -127,6 +128,7 @@ const LINK_GROUPS = [
     ],
   },
   {
+    label: "Registry",
     links: [
       { href: "/hall-of-fame", label: "Hall of Fame" },
       { href: "/stats", label: "Stats" },
@@ -139,6 +141,7 @@ const LINK_GROUPS = [
     ],
   },
   {
+    label: "Legal",
     links: [
       { href: "/privacy", label: "Privacy" },
       { href: "/terms", label: "Terms" },
@@ -210,7 +213,11 @@ export function Footer() {
           {/* Link groups */}
           <div className="flex flex-wrap gap-x-8 gap-y-6 sm:gap-x-10">
             {LINK_GROUPS.map((group, i) => (
-              <nav key={i} className="flex flex-col gap-2.5">
+              <nav
+                key={i}
+                aria-label={group.label}
+                className="flex flex-col gap-2.5"
+              >
                 {group.links.map((link) => (
                   <Link
                     key={link.href}

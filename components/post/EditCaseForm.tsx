@@ -113,10 +113,14 @@ export function EditCaseForm({
         <div className="space-y-4 p-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+              <label
+                htmlFor="edit-agent"
+                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              >
                 Agent
               </label>
               <select
+                id="edit-agent"
                 value={form.agentSlug}
                 onChange={(event) => set("agentSlug", event.target.value)}
                 className={cn(inputBase, "appearance-none")}
@@ -136,10 +140,14 @@ export function EditCaseForm({
             </div>
 
             <div>
-              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+              <label
+                htmlFor="edit-severity"
+                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              >
                 Severity
               </label>
               <input
+                id="edit-severity"
                 type="range"
                 min={1}
                 max={5}
@@ -162,10 +170,14 @@ export function EditCaseForm({
           </div>
 
           <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+            <label
+              htmlFor="edit-title"
+              className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+            >
               Title
             </label>
             <input
+              id="edit-title"
               type="text"
               value={form.title}
               onChange={(event) => set("title", event.target.value)}
@@ -179,10 +191,14 @@ export function EditCaseForm({
           </div>
 
           <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+            <label
+              htmlFor="edit-prompt"
+              className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+            >
               Prompt / Instruction
             </label>
             <textarea
+              id="edit-prompt"
               value={form.prompt ?? ""}
               onChange={(event) => set("prompt", event.target.value)}
               rows={4}
@@ -191,10 +207,14 @@ export function EditCaseForm({
           </div>
 
           <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+            <label
+              htmlFor="edit-outcome"
+              className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+            >
               What happened
             </label>
             <textarea
+              id="edit-outcome"
               value={form.outcome}
               onChange={(event) => set("outcome", event.target.value)}
               rows={8}
@@ -208,10 +228,14 @@ export function EditCaseForm({
           </div>
 
           <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+            <label
+              htmlFor="edit-cost"
+              className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+            >
               Estimated Damage (USD)
             </label>
             <input
+              id="edit-cost"
               type="number"
               min={0}
               value={form.estimatedCostUsd ?? ""}
@@ -281,10 +305,14 @@ export function EditCaseForm({
 
           {!form.isAnonymous ? (
             <div>
-              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+              <label
+                htmlFor="edit-handle"
+                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              >
                 Handle or Company
               </label>
               <input
+                id="edit-handle"
                 type="text"
                 value={form.authorHandle ?? ""}
                 onChange={(event) => set("authorHandle", event.target.value)}

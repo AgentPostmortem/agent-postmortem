@@ -43,7 +43,7 @@ const config: Config = {
         "bg-elevated": "#1c1917",
         "text-primary": "#f2ede4",
         "text-secondary": "#a8a096",
-        "text-tertiary": "#7f776c",
+        "text-tertiary": "#8f8779",
         "border-default": "rgba(242,237,228,0.10)",
         "border-strong": "rgba(242,237,228,0.19)",
         // Signal amber: the one brand accent

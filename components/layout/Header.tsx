@@ -31,7 +31,7 @@ export function Header() {
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-6 md:flex">
           {NAV.slice(0, 5).map((link) => (
             <Link
               key={link.href}
@@ -67,7 +67,10 @@ export function Header() {
               <span className="h-px w-5 bg-text-secondary" />
               <span className="h-px w-5 bg-text-secondary" />
             </summary>
-            <nav className="absolute right-0 top-11 w-52 divide-y divide-border-default rounded-sm border border-border-default bg-bg-canvas shadow-xl">
+            <nav
+              aria-label="Mobile"
+              className="absolute right-0 top-11 w-52 divide-y divide-border-default rounded-sm border border-border-default bg-bg-canvas shadow-xl"
+            >
               <Link
                 href="/"
                 className="block px-4 py-3.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary hover:text-accent"
