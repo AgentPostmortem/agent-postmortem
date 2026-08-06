@@ -19,12 +19,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         // Grotesk for headlines and display text
-        serif: [
-          "var(--font-display)",
-          "ui-sans-serif",
-          "system-ui",
-          "sans-serif",
-        ],
+        // Editorial serif carries display type and section headings
+        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
         sans: [
           "var(--font-display)",
           "ui-sans-serif",

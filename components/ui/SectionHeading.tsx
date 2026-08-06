@@ -20,7 +20,7 @@ export function SectionHeading({
     <div className="mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-border-default pb-3">
       <h2
         id={id}
-        className="font-serif text-[1.375rem] font-medium leading-none tracking-[-0.015em] text-text-primary sm:text-[1.625rem]"
+        className="font-serif text-[1.625rem] font-semibold leading-none tracking-[-0.02em] text-text-primary sm:text-[2.125rem]"
       >
         {title}
       </h2>
