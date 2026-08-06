@@ -99,7 +99,7 @@ export function SearchResults({
   }, [query, agentFilter, minSeverity, maxSeverity]);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="shell py-12 sm:py-16">
       {/* Breadcrumb */}
       <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
         <Link href="/" className="hover:text-text-secondary">

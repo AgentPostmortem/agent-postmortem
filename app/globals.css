@@ -76,6 +76,17 @@
 }
 
 @layer components {
+  /* The one page container. Every section, on every page, uses this so the
+     left and right edges line up exactly from masthead to footer. */
+  .shell {
+    @apply mx-auto w-full max-w-[84rem] px-5 sm:px-8 lg:px-10;
+  }
+
+  /* Uniform vertical rhythm between top-level sections */
+  .section-gap {
+    @apply mt-14 sm:mt-16;
+  }
+
   /* Stamped label, e.g. PUBLIC REGISTRY, CASE FILE */
   .stamp {
     @apply inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em];

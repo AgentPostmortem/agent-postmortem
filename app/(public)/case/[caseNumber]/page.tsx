@@ -162,311 +162,313 @@ export default async function CasePage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        {/* Breadcrumb */}
-        <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
-          <Link href="/" className="hover:text-text-secondary">
-            Registry
-          </Link>
-          <span>/</span>
-          <span>{post.caseNumber}</span>
-        </div>
-
-        {/* Case file header: the story leads, metadata follows */}
-        <header className="mb-6">
-          <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span className="stamp stamp-red">{post.caseNumber}</span>
-            <SeverityPill level={post.damageLevel} />
-            <span className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
-              Filed {formattedDate}
-            </span>
+      <div className="shell py-12 sm:py-16">
+        <article className="max-w-[52rem]">
+          {/* Breadcrumb */}
+          <div className="mb-8 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-text-tertiary">
+            <Link href="/" className="hover:text-text-secondary">
+              Registry
+            </Link>
+            <span>/</span>
+            <span>{post.caseNumber}</span>
           </div>
 
-          <h1 className="font-serif text-2xl font-medium leading-tight tracking-tight text-text-primary sm:text-[2.25rem]">
-            {post.title}
-          </h1>
+          {/* Case file header: the story leads, metadata follows */}
+          <header className="mb-10">
+            <div className="mb-5 flex flex-wrap items-center gap-2">
+              <span className="stamp stamp-red">{post.caseNumber}</span>
+              <SeverityPill level={post.damageLevel} />
+              <span className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
+                Filed {formattedDate}
+              </span>
+            </div>
 
-          {post.tags.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {post.tags.map((tag) => (
-                <TagBadge key={tag} tag={tag} />
-              ))}
-            </div>
-          )}
-        </header>
+            <h1 className="font-serif text-[2rem] font-medium leading-[1.05] tracking-[-0.03em] text-text-primary sm:text-[3rem]">
+              {post.title}
+            </h1>
 
-        {/* Summary block: what happened, how bad, who, at a glance */}
-        <section className="mb-6" aria-labelledby="summary-heading">
-          <h2 id="summary-heading" className="section-label">
-            At a Glance
-          </h2>
-          <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-border-default bg-border-default sm:grid-cols-3">
-            <div className="bg-bg-surface px-4 py-3">
-              <dt className="meta-key">Agent Involved</dt>
-              <dd className="mt-1">
-                <Link
-                  href={`/agent/${post.agentSlug}`}
-                  className="meta-val transition-colors hover:text-accent"
-                >
-                  {post.agentName}
-                </Link>
-              </dd>
-            </div>
-            <div className="bg-bg-surface px-4 py-3">
-              <dt className="meta-key">Estimated Damage</dt>
-              <dd className="meta-val mt-1">
-                {cost ? (
-                  <span className="text-accent">~{cost}</span>
-                ) : (
-                  <span className="text-text-tertiary">Not quantified</span>
-                )}
-              </dd>
-            </div>
-            <div className={`px-4 py-3 ${s.bg}`}>
-              <dt className="meta-key">Severity</dt>
-              <dd className={`meta-val mt-1 ${s.text}`}>
-                {post.damageLevel} / 5 {severityLabel}
-              </dd>
-            </div>
-            <div className="bg-bg-surface px-4 py-3 sm:col-span-3">
-              <dt className="meta-key">Impact Band</dt>
-              <dd className="mt-1 text-sm leading-6 text-text-secondary">
-                {SEVERITY_DESCRIPTIONS[post.damageLevel]}
-              </dd>
-            </div>
-          </dl>
-          {/* Severity bar, redundant with the printed level above */}
-          <div className="mt-px h-1 bg-bg-elevated" aria-hidden="true">
-            <div className={`h-1 ${s.fill} ${s.bar}`} />
-          </div>
-        </section>
-
-        {/* Source / accuracy disclaimer */}
-        <p className="mb-6 font-mono text-[10px] leading-relaxed text-text-tertiary">
-          Independent project · aggregated from public reports and may be
-          unverified — see the primary source below · not affiliated with or
-          endorsed by any company or product named.
-        </p>
-
-        {/* Instruction */}
-        {post.prompt && (
-          <section className="mb-6">
-            <h2 className="section-label">Instruction Given to Agent</h2>
-            <div className="rounded-sm border border-border-default bg-bg-surface">
-              <div className="border-b border-border-default px-4 py-2">
-                <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                  Prompt
-                </span>
+            {post.tags.length > 0 && (
+              <div className="mt-5 flex flex-wrap gap-1.5">
+                {post.tags.map((tag) => (
+                  <TagBadge key={tag} tag={tag} />
+                ))}
               </div>
-              <blockquote className="px-5 py-4">
-                <p className="font-mono text-sm leading-relaxed text-text-secondary">
-                  &ldquo;{post.prompt}&rdquo;
-                </p>
-              </blockquote>
-            </div>
-          </section>
-        )}
+            )}
+          </header>
 
-        {/* Findings */}
-        <section className="mb-6">
-          <h2 className="section-label">What Happened</h2>
-          <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-5">
-            <p className="text-[0.95rem] leading-7 text-text-primary">
-              {post.outcome}
-            </p>
-          </div>
-        </section>
-
-        {(post.verifiedFacts.length > 0 ||
-          post.unknowns.length > 0 ||
-          post.lessons.length > 0) && (
-          <section className="mb-6">
-            <h2 className="section-label">Case Analysis</h2>
-            <div className="divide-y divide-border-default rounded-sm border border-border-default bg-bg-surface">
-              {post.verifiedFacts.length > 0 && (
-                <div className="px-5 py-5">
-                  <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
-                    Verified Facts
-                  </h3>
-                  <ul className="mt-3 space-y-2">
-                    {post.verifiedFacts.map((fact) => (
-                      <li
-                        key={fact}
-                        className="flex gap-3 text-sm leading-6 text-text-primary"
-                      >
-                        <span className="mt-[9px] h-px w-2.5 shrink-0 bg-accent" />
-                        <span>{fact}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {post.unknowns.length > 0 && (
-                <div className="px-5 py-5">
-                  <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
-                    Not Publicly Confirmed
-                  </h3>
-                  <ul className="mt-3 space-y-2">
-                    {post.unknowns.map((unknown) => (
-                      <li
-                        key={unknown}
-                        className="flex gap-3 text-sm leading-6 text-text-secondary"
-                      >
-                        <span className="mt-[9px] h-px w-2.5 shrink-0 bg-border-strong" />
-                        <span>{unknown}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {post.lessons.length > 0 && (
-                <div className="px-5 py-5">
-                  <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
-                    Operational Lessons
-                  </h3>
-                  <ul className="mt-3 space-y-2">
-                    {post.lessons.map((lesson) => (
-                      <li
-                        key={lesson}
-                        className="flex gap-3 text-sm leading-6 text-text-primary"
-                      >
-                        <span className="mt-1 shrink-0 text-accent">
-                          <ArrowRightIcon size={11} />
-                        </span>
-                        <span>{lesson}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
-
-        {post.sourceUrl && (
-          <section className="mb-6">
-            <h2 className="section-label">Primary Source</h2>
-            <a
-              href={post.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-sm border border-border-default bg-bg-surface px-5 py-4 transition-colors hover:border-border-strong"
-            >
-              <span className="block text-sm leading-6 text-text-primary">
-                {post.sourceTitle ?? "Read the source report"}
-              </span>
-              <span className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
-                {sourceDomain} ↗
-              </span>
-            </a>
-          </section>
-        )}
-
-        {/* Evidence */}
-        {post.screenshots && post.screenshots.length > 0 && (
-          <section className="mb-6">
-            <h2 className="section-label">
-              Evidence — {post.screenshots.length} Exhibit
-              {post.screenshots.length > 1 ? "s" : ""}
+          {/* Summary block: what happened, how bad, who, at a glance */}
+          <section className="mb-10" aria-labelledby="summary-heading">
+            <h2 id="summary-heading" className="section-label">
+              At a Glance
             </h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {post.screenshots.map((src, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  key={i}
-                  src={src}
-                  alt={`Exhibit ${i + 1}`}
-                  className="rounded-sm border border-border-default"
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Case record: provenance and voting, deliberately after the story */}
-        <section className="mb-6" aria-labelledby="record-heading">
-          <h2 id="record-heading" className="section-label">
-            Case Record
-          </h2>
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-sm border border-border-default bg-bg-surface px-5 py-4">
-            <dl className="flex flex-wrap gap-x-8 gap-y-3">
-              <div>
-                <dt className="meta-key">Case No.</dt>
-                <dd className="meta-val mt-0.5 tracking-[0.1em] text-accent">
-                  {post.caseNumber}
+            <dl className="grid grid-cols-1 gap-px bg-border-default sm:grid-cols-3">
+              <div className="bg-bg-canvas px-4 py-3.5">
+                <dt className="meta-key">Agent Involved</dt>
+                <dd className="mt-1">
+                  <Link
+                    href={`/agent/${post.agentSlug}`}
+                    className="meta-val transition-colors hover:text-accent"
+                  >
+                    {post.agentName}
+                  </Link>
                 </dd>
               </div>
-              <div>
-                <dt className="meta-key">Filed</dt>
-                <dd className="meta-val mt-0.5">{formattedDate}</dd>
+              <div className="bg-bg-canvas px-4 py-3.5">
+                <dt className="meta-key">Estimated Damage</dt>
+                <dd className="meta-val mt-1">
+                  {cost ? (
+                    <span className="text-accent">~{cost}</span>
+                  ) : (
+                    <span className="text-text-tertiary">Not quantified</span>
+                  )}
+                </dd>
               </div>
-              <div>
-                <dt className="meta-key">Attribution</dt>
-                <dd className="meta-val mt-0.5 text-text-secondary">
-                  {post.isAnonymous
-                    ? "Anonymous"
-                    : post.authorHandle
-                      ? `@${post.authorHandle}`
-                      : "Practitioner"}
+              <div className={`px-4 py-3.5 ${s.bg}`}>
+                <dt className="meta-key">Severity</dt>
+                <dd className={`meta-val mt-1 ${s.text}`}>
+                  {post.damageLevel} / 5 {severityLabel}
+                </dd>
+              </div>
+              <div className="bg-bg-canvas px-4 py-3.5 sm:col-span-3">
+                <dt className="meta-key">Impact Band</dt>
+                <dd className="mt-1 text-sm leading-6 text-text-secondary">
+                  {SEVERITY_DESCRIPTIONS[post.damageLevel]}
                 </dd>
               </div>
             </dl>
-            <VoteButtons postId={post.id} initialScore={post.voteScore} />
-          </div>
-        </section>
+            {/* Severity bar, redundant with the printed level above */}
+            <div className="mt-px h-1 bg-bg-elevated" aria-hidden="true">
+              <div className={`h-1 ${s.fill} ${s.bar}`} />
+            </div>
+          </section>
 
-        {/* Comments */}
-        <CommentsSection postId={post.id} />
+          {/* Source / accuracy disclaimer */}
+          <p className="mb-10 font-mono text-[10px] leading-relaxed text-text-tertiary">
+            Independent project · aggregated from public reports and may be
+            unverified — see the primary source below · not affiliated with or
+            endorsed by any company or product named.
+          </p>
 
-        {/* Related cases */}
-        {related.length > 0 && (
-          <div className="mt-10 border-t border-border-default pt-8">
-            <h2 className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
-              More Cases
+          {/* Instruction */}
+          {post.prompt && (
+            <section className="mb-10">
+              <h2 className="section-label">Instruction Given to Agent</h2>
+              <div className="border border-border-default">
+                <div className="border-b border-border-default px-5 py-2.5">
+                  <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+                    Prompt
+                  </span>
+                </div>
+                <blockquote className="px-5 py-5">
+                  <p className="font-mono text-sm leading-[1.75] text-text-secondary">
+                    &ldquo;{post.prompt}&rdquo;
+                  </p>
+                </blockquote>
+              </div>
+            </section>
+          )}
+
+          {/* Findings */}
+          <section className="mb-10">
+            <h2 className="section-label">What Happened</h2>
+            <div className="border-t border-border-default pt-5">
+              <p className="max-w-[68ch] text-[1.0625rem] leading-[1.75] text-text-primary">
+                {post.outcome}
+              </p>
+            </div>
+          </section>
+
+          {(post.verifiedFacts.length > 0 ||
+            post.unknowns.length > 0 ||
+            post.lessons.length > 0) && (
+            <section className="mb-10">
+              <h2 className="section-label">Case Analysis</h2>
+              <div className="divide-y divide-border-default border-y border-border-default">
+                {post.verifiedFacts.length > 0 && (
+                  <div className="py-6">
+                    <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                      Verified Facts
+                    </h3>
+                    <ul className="mt-4 space-y-2.5">
+                      {post.verifiedFacts.map((fact) => (
+                        <li
+                          key={fact}
+                          className="flex max-w-[68ch] gap-3 text-[0.95rem] leading-[1.7] text-text-primary"
+                        >
+                          <span className="mt-[13px] h-px w-2.5 shrink-0 bg-text-tertiary" />
+                          <span>{fact}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {post.unknowns.length > 0 && (
+                  <div className="py-6">
+                    <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                      Not Publicly Confirmed
+                    </h3>
+                    <ul className="mt-4 space-y-2.5">
+                      {post.unknowns.map((unknown) => (
+                        <li
+                          key={unknown}
+                          className="flex max-w-[68ch] gap-3 text-[0.95rem] leading-[1.7] text-text-secondary"
+                        >
+                          <span className="mt-[13px] h-px w-2.5 shrink-0 bg-border-strong" />
+                          <span>{unknown}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {post.lessons.length > 0 && (
+                  <div className="py-6">
+                    <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                      Operational Lessons
+                    </h3>
+                    <ul className="mt-4 space-y-2.5">
+                      {post.lessons.map((lesson) => (
+                        <li
+                          key={lesson}
+                          className="flex max-w-[68ch] gap-3 text-[0.95rem] leading-[1.7] text-text-primary"
+                        >
+                          <span className="mt-1 shrink-0 text-accent">
+                            <ArrowRightIcon size={11} />
+                          </span>
+                          <span>{lesson}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+
+          {post.sourceUrl && (
+            <section className="mb-10">
+              <h2 className="section-label">Primary Source</h2>
+              <a
+                href={post.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block border border-border-default px-5 py-4 transition-colors hover:border-border-strong"
+              >
+                <span className="block text-sm leading-6 text-text-primary">
+                  {post.sourceTitle ?? "Read the source report"}
+                </span>
+                <span className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
+                  {sourceDomain} ↗
+                </span>
+              </a>
+            </section>
+          )}
+
+          {/* Evidence */}
+          {post.screenshots && post.screenshots.length > 0 && (
+            <section className="mb-10">
+              <h2 className="section-label">
+                Evidence — {post.screenshots.length} Exhibit
+                {post.screenshots.length > 1 ? "s" : ""}
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {post.screenshots.map((src, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={src}
+                    alt={`Exhibit ${i + 1}`}
+                    className="border border-border-default"
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Case record: provenance and voting, deliberately after the story */}
+          <section className="mb-10" aria-labelledby="record-heading">
+            <h2 id="record-heading" className="section-label">
+              Case Record
             </h2>
-            <div className="space-y-2">
-              {related.map((r) => (
-                <PostCard key={r.id} post={r} />
-              ))}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-y border-border-default py-5">
+              <dl className="flex flex-wrap gap-x-8 gap-y-3">
+                <div>
+                  <dt className="meta-key">Case No.</dt>
+                  <dd className="meta-val mt-0.5 tracking-[0.1em]">
+                    {post.caseNumber}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="meta-key">Filed</dt>
+                  <dd className="meta-val mt-0.5">{formattedDate}</dd>
+                </div>
+                <div>
+                  <dt className="meta-key">Attribution</dt>
+                  <dd className="meta-val mt-0.5 text-text-secondary">
+                    {post.isAnonymous
+                      ? "Anonymous"
+                      : post.authorHandle
+                        ? `@${post.authorHandle}`
+                        : "Practitioner"}
+                  </dd>
+                </div>
+              </dl>
+              <VoteButtons postId={post.id} initialScore={post.voteScore} />
+            </div>
+          </section>
+
+          {/* Comments */}
+          <CommentsSection postId={post.id} />
+
+          {/* Related cases */}
+          {related.length > 0 && (
+            <div className="mt-14 border-t border-border-default pt-8">
+              <h2 className="mb-5 font-mono text-[10px] uppercase tracking-[0.2em] text-text-tertiary">
+                More Cases
+              </h2>
+              <div className="space-y-2">
+                {related.map((r) => (
+                  <PostCard key={r.id} post={r} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Footer */}
+          <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-border-default pt-6">
+            <div className="flex gap-5">
+              <Link
+                href="/"
+                className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+              >
+                <span className="inline-flex items-center gap-1.5">
+                  <ArrowLeftIcon size={10} /> All Cases
+                </span>
+              </Link>
+              <Link
+                href={`/agent/${post.agentSlug}`}
+                className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+              >
+                <span className="inline-flex items-center gap-1.5">
+                  More {post.agentName} <ArrowRightIcon size={10} />
+                </span>
+              </Link>
+            </div>
+            {/* Share */}
+            <div className="flex items-center gap-3">
+              <a
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${post.title}" — AI agent failure case ${post.caseNumber}`)}&url=${encodeURIComponent(`${getSiteUrl()}/case/${post.caseNumber}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+              >
+                <span className="inline-flex items-center gap-1.5">
+                  Share on X <ArrowRightIcon size={10} />
+                </span>
+              </a>
+              <CopyLinkButton caseNumber={post.caseNumber} />
             </div>
           </div>
-        )}
-
-        {/* Footer */}
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border-default pt-5">
-          <div className="flex gap-5">
-            <Link
-              href="/"
-              className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
-            >
-              <span className="inline-flex items-center gap-1.5">
-                <ArrowLeftIcon size={10} /> All Cases
-              </span>
-            </Link>
-            <Link
-              href={`/agent/${post.agentSlug}`}
-              className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
-            >
-              <span className="inline-flex items-center gap-1.5">
-                More {post.agentName} <ArrowRightIcon size={10} />
-              </span>
-            </Link>
-          </div>
-          {/* Share */}
-          <div className="flex items-center gap-3">
-            <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${post.title}" — AI agent failure case ${post.caseNumber}`)}&url=${encodeURIComponent(`${getSiteUrl()}/case/${post.caseNumber}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
-            >
-              <span className="inline-flex items-center gap-1.5">
-                Share on X <ArrowRightIcon size={10} />
-              </span>
-            </a>
-            <CopyLinkButton caseNumber={post.caseNumber} />
-          </div>
-        </div>
+        </article>
       </div>
     </>
   );

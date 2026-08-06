@@ -87,7 +87,7 @@ export default async function EditSubmissionPage({ params }: PageProps) {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <div className="shell max-w-3xl py-12 sm:py-16">
       <div className="mb-8 border-b border-border-default pb-6">
         <p className="font-mono text-xs uppercase tracking-widest text-accent">
           Private Edit Link

@@ -44,7 +44,7 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="shell py-12 sm:py-16">
       <div className="mb-8">
         <div className="mb-3 flex items-center gap-2">
           <span className="stamp stamp-red">Hall of Fame</span>
