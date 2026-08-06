@@ -5,6 +5,7 @@ import { PostCard } from "@/components/post/PostCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { AGENTS } from "@/lib/constants/agents";
 import { fetchPostsByAgent } from "@/lib/db/posts";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 export const revalidate = 60;
 
@@ -17,8 +18,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const agent = AGENTS.find((a) => a.slug === params.slug);
   if (!agent) return { title: "Agent Not Found" };
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://agentpostmortem.com";
+  const siteUrl = getSiteUrl();
   const ogImageUrl = `${siteUrl}/api/og/agent/${params.slug}`;
   return {
     title: `${agent.name} Failure Cases`,
