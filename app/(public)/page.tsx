@@ -23,6 +23,12 @@ import {
 } from "@/lib/db/posts";
 import { formatUsd, monthLabel, percentOf } from "@/lib/utils/format";
 import { incidentMonth } from "@/lib/utils/incident-date";
+import {
+  ALL_YEARS,
+  resolveYear,
+  totalAcrossYears,
+  type YearBucket,
+} from "@/lib/utils/feed-year";
 import type { Post } from "@/types";
 
 // Both the overview and the taxonomy index read the same aggregate; memoise it
@@ -69,7 +75,31 @@ interface PageProps {
     page?: string;
     agent?: string;
     severity?: string;
+    year?: string;
   };
+}
+
+interface FeedQuery {
+  tab: FeedTab;
+  agent: string;
+  severity: string;
+  /** Raw query value: undefined means "default to the newest year" */
+  year?: string;
+  page?: number;
+}
+
+/**
+ * One place that builds feed URLs, so every tab, chip and page link carries
+ * the rest of the current selection instead of silently resetting it.
+ */
+function feedHref(q: FeedQuery): string {
+  const params = new URLSearchParams();
+  params.set("tab", q.tab);
+  if (q.agent) params.set("agent", q.agent);
+  if (q.severity) params.set("severity", q.severity);
+  if (q.year) params.set("year", q.year);
+  if (q.page && q.page > 1) params.set("page", String(q.page));
+  return `/?${params.toString()}`;
 }
 
 /* ---------------------------------------------------------------- overview */
@@ -246,22 +276,105 @@ function groupPosts(posts: Post[], tab: FeedTab): FeedGroup[] {
   }).filter((g) => g.posts.length > 0);
 }
 
+/**
+ * Year chips. Server rendered from real counts and driven entirely by the
+ * `year` query parameter, so they work with JavaScript disabled exactly like
+ * the agent and severity chips above them.
+ */
+function YearChips({
+  buckets,
+  activeYear,
+  query,
+}: {
+  buckets: YearBucket[];
+  activeYear: string | null;
+  query: Omit<FeedQuery, "year">;
+}) {
+  if (buckets.length === 0) return null;
+  const total = totalAcrossYears(buckets);
+
+  const options: { label: string; value: string; count: number }[] = [
+    { label: "All years", value: ALL_YEARS, count: total },
+    ...buckets.map((b) => ({ label: b.year, value: b.year, count: b.count })),
+  ];
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+        Year
+      </span>
+      <div className="flex flex-wrap gap-1">
+        {options.map((opt) => {
+          const isActive =
+            opt.value === ALL_YEARS
+              ? activeYear === null
+              : activeYear === opt.value;
+          return (
+            <Link
+              key={opt.value}
+              href={feedHref({ ...query, year: opt.value })}
+              aria-current={isActive ? "true" : undefined}
+              className={[
+                "rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors",
+                isActive
+                  ? "border-accent bg-accent-soft text-accent"
+                  : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
+              ].join(" ")}
+            >
+              {opt.label} ({opt.count})
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+async function YearFilter({
+  activeTab,
+  activeAgent,
+  activeSeverity,
+  yearParam,
+}: {
+  activeTab: FeedTab;
+  activeAgent: string;
+  activeSeverity: string;
+  yearParam?: string;
+}) {
+  const overview = await getOverview();
+  const activeYear = resolveYear(yearParam, overview.byYear);
+  return (
+    <YearChips
+      buckets={overview.byYear}
+      activeYear={activeYear}
+      query={{ tab: activeTab, agent: activeAgent, severity: activeSeverity }}
+    />
+  );
+}
+
 async function PostsFeed({
   activeTab,
   currentPage,
   activeAgent,
   activeSeverity,
+  yearParam,
 }: {
   activeTab: FeedTab;
   currentPage: number;
   activeAgent: string;
   activeSeverity: string;
+  yearParam?: string;
 }) {
+  const overview = await getOverview();
+  const activeYear = resolveYear(yearParam, overview.byYear);
+  const archiveTotal = totalAcrossYears(overview.byYear);
+
   const { posts, total } = await fetchFeedPosts(
     activeTab,
     currentPage,
     activeAgent || undefined,
     activeSeverity ? parseInt(activeSeverity) : undefined,
+    activeYear ?? undefined,
   );
 
   const commentCounts = await fetchCommentCountsByPostIds(
@@ -269,19 +382,51 @@ async function PostsFeed({
   );
 
   const totalPages = Math.ceil(total / 20);
-  if (posts.length === 0) return <EmptyFeed />;
+  if (posts.length === 0) {
+    return (
+      <EmptyFeed
+        archiveHref={
+          activeYear
+            ? feedHref({
+                tab: activeTab,
+                agent: activeAgent,
+                severity: activeSeverity,
+                year: ALL_YEARS,
+              })
+            : undefined
+        }
+      />
+    );
+  }
 
   const groups = groupPosts(posts, activeTab);
 
   return (
     <>
-      <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.14em] text-text-tertiary">
-        Showing {posts.length} of {total.toLocaleString()} cases, grouped by{" "}
-        {activeTab === "new" || activeTab === "week"
-          ? "filing month"
-          : "severity band"}
-        .
-      </p>
+      <div className="mb-5 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-tertiary">
+          Showing {posts.length} of {total.toLocaleString()}{" "}
+          {activeYear ? `${activeYear} ` : ""}cases, grouped by{" "}
+          {activeTab === "new" || activeTab === "week"
+            ? "filing month"
+            : "severity band"}
+          .
+        </p>
+        {activeYear && archiveTotal > total && (
+          <Link
+            href={feedHref({
+              tab: activeTab,
+              agent: activeAgent,
+              severity: activeSeverity,
+              year: ALL_YEARS,
+            })}
+            className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent transition-colors hover:text-text-primary"
+          >
+            Browse all {archiveTotal.toLocaleString()} cases in the archive{" "}
+            <ArrowRightIcon size={9} />
+          </Link>
+        )}
+      </div>
 
       <div className="space-y-10">
         {groups.map((group) => (
@@ -320,14 +465,15 @@ async function PostsFeed({
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          hrefForPage={(p) => {
-            const params = new URLSearchParams();
-            params.set("tab", activeTab);
-            if (p > 1) params.set("page", String(p));
-            if (activeAgent) params.set("agent", activeAgent);
-            if (activeSeverity) params.set("severity", activeSeverity);
-            return `/?${params.toString()}`;
-          }}
+          hrefForPage={(p) =>
+            feedHref({
+              tab: activeTab,
+              agent: activeAgent,
+              severity: activeSeverity,
+              year: yearParam,
+              page: p,
+            })
+          }
         />
       )}
     </>
@@ -446,6 +592,7 @@ export default function HomePage({ searchParams }: PageProps) {
   const currentPage = Math.max(1, parseInt(searchParams.page ?? "1") || 1);
   const activeAgent = searchParams.agent ?? "";
   const activeSeverity = searchParams.severity ?? "";
+  const yearParam = searchParams.year;
 
   return (
     <div className="shell py-12 sm:py-16">
@@ -562,7 +709,12 @@ export default function HomePage({ searchParams }: PageProps) {
                   href={
                     tab.value === "hof"
                       ? "/hall-of-fame"
-                      : `/?tab=${tab.value}${activeAgent ? `&agent=${activeAgent}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`
+                      : feedHref({
+                          tab: tab.value,
+                          agent: activeAgent,
+                          severity: activeSeverity,
+                          year: yearParam,
+                        })
                   }
                   className={[
                     "relative pb-3 pl-6 font-mono text-[11px] uppercase tracking-wider transition-colors",
@@ -587,7 +739,12 @@ export default function HomePage({ searchParams }: PageProps) {
             <div className="flex flex-wrap gap-1">
               {AGENT_FILTERS.map((f) => {
                 const isActive = activeAgent === f.value;
-                const href = `/?tab=${activeTab}${f.value ? `&agent=${f.value}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`;
+                const href = feedHref({
+                  tab: activeTab,
+                  agent: f.value,
+                  severity: activeSeverity,
+                  year: yearParam,
+                });
                 return (
                   <Link
                     key={f.value || "all-agent"}
@@ -606,7 +763,12 @@ export default function HomePage({ searchParams }: PageProps) {
               })}
               {activeAgent && (
                 <Link
-                  href={`/?tab=${activeTab}${activeSeverity ? `&severity=${activeSeverity}` : ""}`}
+                  href={feedHref({
+                    tab: activeTab,
+                    agent: "",
+                    severity: activeSeverity,
+                    year: yearParam,
+                  })}
                   className="rounded-sm border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent hover:text-accent"
                   title="Clear agent filter"
                 >
@@ -623,7 +785,12 @@ export default function HomePage({ searchParams }: PageProps) {
             <div className="flex flex-wrap gap-1">
               {SEVERITY_FILTERS.map((f) => {
                 const isActive = activeSeverity === f.value;
-                const href = `/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}${f.value ? `&severity=${f.value}` : ""}`;
+                const href = feedHref({
+                  tab: activeTab,
+                  agent: activeAgent,
+                  severity: f.value,
+                  year: yearParam,
+                });
                 return (
                   <Link
                     key={f.value || "all-severity"}
@@ -642,7 +809,12 @@ export default function HomePage({ searchParams }: PageProps) {
               })}
               {activeSeverity && (
                 <Link
-                  href={`/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}`}
+                  href={feedHref({
+                    tab: activeTab,
+                    agent: activeAgent,
+                    severity: "",
+                    year: yearParam,
+                  })}
                   className="rounded-sm border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent hover:text-accent"
                   title="Clear severity filter"
                 >
@@ -651,6 +823,15 @@ export default function HomePage({ searchParams }: PageProps) {
               )}
             </div>
           </div>
+
+          <Suspense fallback={null}>
+            <YearFilter
+              activeTab={activeTab}
+              activeAgent={activeAgent}
+              activeSeverity={activeSeverity}
+              yearParam={yearParam}
+            />
+          </Suspense>
         </div>
 
         <Suspense fallback={<PostsSkeleton />}>
@@ -659,6 +840,7 @@ export default function HomePage({ searchParams }: PageProps) {
             currentPage={currentPage}
             activeAgent={activeAgent}
             activeSeverity={activeSeverity}
+            yearParam={yearParam}
           />
         </Suspense>
       </section>
@@ -687,7 +869,7 @@ export default function HomePage({ searchParams }: PageProps) {
   );
 }
 
-function EmptyFeed() {
+function EmptyFeed({ archiveHref }: { archiveHref?: string }) {
   return (
     <div className="border border-dashed border-border-default py-20 text-center">
       <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-border-strong">
@@ -699,11 +881,23 @@ function EmptyFeed() {
         No cases on file yet.
       </p>
       <p className="mt-2 text-sm text-text-tertiary">
-        Connect Supabase or{" "}
-        <Link href="/submit" className="text-accent hover:underline">
-          file the first report
-        </Link>
-        .
+        {archiveHref ? (
+          <>
+            Nothing matches this filter.{" "}
+            <Link href={archiveHref} className="text-accent hover:underline">
+              Browse the full archive
+            </Link>
+            .
+          </>
+        ) : (
+          <>
+            Connect Supabase or{" "}
+            <Link href="/submit" className="text-accent hover:underline">
+              file the first report
+            </Link>
+            .
+          </>
+        )}
       </p>
     </div>
   );
