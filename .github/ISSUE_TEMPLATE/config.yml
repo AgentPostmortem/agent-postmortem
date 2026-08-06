@@ -1,0 +1,15 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Browse the case registry
+    url: https://www.agentpostmortem.com/
+    about: Read documented AI agent failures before filing anything here.
+  - name: Submit an agent failure case
+    url: https://www.agentpostmortem.com/submit
+    about: Reporting a real-world AI agent failure? Use the submit flow, not a GitHub issue.
+  - name: Report a security vulnerability
+    url: https://github.com/AgentPostmortem/agent-postmortem/blob/main/SECURITY.md
+    about: Please disclose vulnerabilities privately by email, not in a public issue.
+  - name: Contact the maintainers
+    url: https://www.agentpostmortem.com/contact
+    about: Corrections, takedown requests, and anything about a specific published case.
