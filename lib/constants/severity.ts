@@ -15,3 +15,71 @@ export const SEVERITY_DESCRIPTIONS: Record<1 | 2 | 3 | 4 | 5, string> = {
 } as const;
 
 export type SeverityLevel = 1 | 2 | 3 | 4 | 5;
+
+/**
+ * Visual encoding for each severity level. Severity is core content, so it gets
+ * its own semantic scale, separate from the amber brand accent. Every consumer
+ * must also render the label or the tick count, never colour alone.
+ */
+export interface SeverityStyle {
+  /** Short registry label used in dense listings */
+  short: string;
+  text: string;
+  bg: string;
+  border: string;
+  fill: string;
+  stripe: string;
+  bar: string;
+}
+
+export const SEVERITY_STYLES: Record<SeverityLevel, SeverityStyle> = {
+  1: {
+    short: "MINIMAL",
+    text: "text-sev-low",
+    bg: "bg-sev-low-soft",
+    border: "border-sev-low/40",
+    fill: "bg-sev-low",
+    stripe: "bg-sev-low/60",
+    bar: "w-1/5",
+  },
+  2: {
+    short: "LOW",
+    text: "text-sev-low",
+    bg: "bg-sev-low-soft",
+    border: "border-sev-low/40",
+    fill: "bg-sev-low",
+    stripe: "bg-sev-low",
+    bar: "w-2/5",
+  },
+  3: {
+    short: "MODERATE",
+    text: "text-sev-medium",
+    bg: "bg-sev-medium-soft",
+    border: "border-sev-medium/40",
+    fill: "bg-sev-medium",
+    stripe: "bg-sev-medium",
+    bar: "w-3/5",
+  },
+  4: {
+    short: "SEVERE",
+    text: "text-sev-high",
+    bg: "bg-sev-high-soft",
+    border: "border-sev-high/45",
+    fill: "bg-sev-high",
+    stripe: "bg-sev-high",
+    bar: "w-4/5",
+  },
+  5: {
+    short: "CRITICAL",
+    text: "text-sev-critical",
+    bg: "bg-sev-critical-soft",
+    border: "border-sev-critical/50",
+    fill: "bg-sev-critical",
+    stripe: "bg-sev-critical",
+    bar: "w-full",
+  },
+};
+
+export function severityStyle(level: number): SeverityStyle {
+  return SEVERITY_STYLES[(level as SeverityLevel) ?? 1] ?? SEVERITY_STYLES[1];
+}

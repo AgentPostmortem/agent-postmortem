@@ -146,7 +146,7 @@ export default function TeamsPage() {
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Hero */}
       <div className="mb-16 max-w-2xl">
-        <p className="font-mono text-xs uppercase tracking-widest text-accent-red">
+        <p className="font-mono text-xs uppercase tracking-widest text-accent">
           For Teams
         </p>
         <h1 className="mt-3 font-serif text-4xl font-normal leading-tight text-text-primary">
@@ -163,9 +163,9 @@ export default function TeamsPage() {
         {FEATURES.map((feature) => (
           <div
             key={feature.title}
-            className="rounded border border-border-default bg-bg-surface p-5"
+            className="rounded-sm border border-border-default bg-bg-surface p-5"
           >
-            <span className="font-mono text-lg text-accent-red">
+            <span className="font-mono text-lg text-accent">
               {feature.icon}
             </span>
             <h3 className="mt-3 font-serif text-base text-text-primary">
@@ -191,8 +191,8 @@ export default function TeamsPage() {
         </div>
 
         {status === "success" ? (
-          <div className="rounded border border-border-default bg-bg-surface p-6 text-center">
-            <p className="font-mono text-xs uppercase tracking-widest text-accent-red">
+          <div className="rounded-sm border border-border-default bg-bg-surface p-6 text-center">
+            <p className="font-mono text-xs uppercase tracking-widest text-accent">
               Confirmed
             </p>
             <p className="mt-2 text-text-primary">
@@ -211,11 +211,11 @@ export default function TeamsPage() {
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, email: e.target.value }))
                 }
-                className="w-full rounded border border-border-default bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-accent-red focus:outline-none"
+                className="w-full rounded-sm border border-border-default bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-accent focus:outline-none"
                 placeholder="you@company.com"
               />
               {errors.email && (
-                <p className="mt-1 text-xs text-accent-red">{errors.email}</p>
+                <p className="mt-1 text-xs text-accent">{errors.email}</p>
               )}
             </div>
 
@@ -229,11 +229,11 @@ export default function TeamsPage() {
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, company: e.target.value }))
                 }
-                className="w-full rounded border border-border-default bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-accent-red focus:outline-none"
+                className="w-full rounded-sm border border-border-default bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-accent focus:outline-none"
                 placeholder="Acme Corp"
               />
               {errors.company && (
-                <p className="mt-1 text-xs text-accent-red">{errors.company}</p>
+                <p className="mt-1 text-xs text-accent">{errors.company}</p>
               )}
             </div>
 
@@ -247,11 +247,11 @@ export default function TeamsPage() {
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, role: e.target.value }))
                 }
-                className="w-full rounded border border-border-default bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-accent-red focus:outline-none"
+                className="w-full rounded-sm border border-border-default bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-accent focus:outline-none"
                 placeholder="CTO, Security Lead, AI Engineer…"
               />
               {errors.role && (
-                <p className="mt-1 text-xs text-accent-red">{errors.role}</p>
+                <p className="mt-1 text-xs text-accent">{errors.role}</p>
               )}
             </div>
 
@@ -265,19 +265,19 @@ export default function TeamsPage() {
                   setFormData((prev) => ({ ...prev, useCase: e.target.value }))
                 }
                 rows={3}
-                className="w-full rounded border border-border-default bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-accent-red focus:outline-none"
+                className="w-full rounded-sm border border-border-default bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-accent focus:outline-none"
                 placeholder="Describe how you're currently tracking AI agent incidents…"
               />
             </div>
 
             {status === "error" && (
-              <p className="text-sm text-accent-red">{submitError}</p>
+              <p className="text-sm text-accent">{submitError}</p>
             )}
 
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="w-full rounded-full border border-accent-red/60 bg-accent-red-soft py-2.5 font-mono text-sm uppercase tracking-widest text-accent-red-muted transition-colors hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas disabled:opacity-50"
+              className="w-full rounded-sm border border-accent/60 bg-accent-soft py-2.5 font-mono text-sm uppercase tracking-widest text-accent-strong transition-colors hover:border-accent-strong hover:bg-accent hover:text-bg-canvas disabled:opacity-50"
             >
               {status === "submitting" ? "Submitting…" : "Request Access"}
             </button>

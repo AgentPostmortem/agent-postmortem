@@ -81,7 +81,7 @@ export default async function AgentPage({ params }: PageProps) {
       </div>
 
       {/* Agent header */}
-      <div className="mb-8 overflow-hidden rounded border border-border-default bg-bg-surface">
+      <div className="mb-8 overflow-hidden rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-5 py-2.5">
           <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
             Agent Profile
@@ -102,7 +102,7 @@ export default async function AgentPage({ params }: PageProps) {
             </div>
 
             {/* Stats */}
-            <div className="flex shrink-0 gap-px overflow-hidden rounded border border-border-default bg-border-default">
+            <div className="flex shrink-0 gap-px overflow-hidden rounded-sm border border-border-default bg-border-default">
               {[
                 { value: posts.length.toString(), label: "Cases" },
                 ...(formattedDamage
@@ -117,7 +117,7 @@ export default async function AgentPage({ params }: PageProps) {
                   className="bg-bg-surface px-3 py-2.5 sm:px-4 sm:py-3"
                 >
                   <div
-                    className={`font-mono text-lg font-semibold tabular-nums sm:text-xl ${s.red ? "text-accent-red" : "text-text-primary"}`}
+                    className={`font-mono text-lg font-semibold tabular-nums sm:text-xl ${s.red ? "text-accent" : "text-text-primary"}`}
                   >
                     {s.value}
                   </div>

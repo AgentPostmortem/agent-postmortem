@@ -21,9 +21,9 @@ const SEVERITY_LABEL: Record<number, string> = {
 const SEVERITY_COLOR: Record<number, string> = {
   1: "bg-text-tertiary/40",
   2: "bg-text-tertiary/60",
-  3: "bg-accent-red/40",
-  4: "bg-accent-red/70",
-  5: "bg-accent-red",
+  3: "bg-accent/40",
+  4: "bg-accent/70",
+  5: "bg-accent",
 };
 
 function formatUsd(n: number): string {
@@ -73,7 +73,7 @@ export default async function StatsPage() {
 
       {/* Top-line numbers */}
       <div className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <div className="rounded border border-border-default bg-bg-surface px-5 py-4">
+        <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
           <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
             Cases Filed
           </div>
@@ -81,15 +81,15 @@ export default async function StatsPage() {
             {stats.totalCases}
           </div>
         </div>
-        <div className="rounded border border-border-default bg-bg-surface px-5 py-4">
+        <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
           <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
             Est. Total Damage
           </div>
-          <div className="font-serif text-3xl text-accent-red">
+          <div className="font-serif text-3xl text-accent">
             {stats.totalDamageUsd > 0 ? formatUsd(stats.totalDamageUsd) : "—"}
           </div>
         </div>
-        <div className="rounded border border-border-default bg-bg-surface px-5 py-4">
+        <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
           <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
             Agents Implicated
           </div>
@@ -105,7 +105,7 @@ export default async function StatsPage() {
           <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
             By Severity
           </div>
-          <div className="rounded border border-border-default bg-bg-surface px-5 py-4">
+          <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
             <div className="space-y-3">
               {[5, 4, 3, 2, 1].map((lvl) => {
                 const count = stats.bySeverity[lvl] ?? 0;
@@ -139,7 +139,7 @@ export default async function StatsPage() {
           <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
             Top Agents by Case Count
           </div>
-          <div className="rounded border border-border-default bg-bg-surface px-5 py-4">
+          <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
             {stats.byAgent.length === 0 ? (
               <p className="text-sm text-text-tertiary">No data yet.</p>
             ) : (
@@ -159,7 +159,7 @@ export default async function StatsPage() {
                     </div>
                     <div className="h-1.5 w-full rounded-full bg-bg-elevated">
                       <div
-                        className="h-1.5 rounded-full bg-accent-red/60 transition-all"
+                        className="h-1.5 rounded-full bg-accent/60 transition-all"
                         style={{
                           width: `${(agent.count / maxAgentCount) * 100}%`,
                         }}
@@ -178,7 +178,7 @@ export default async function StatsPage() {
             <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
               Cases Filed — Last 12 Months
             </div>
-            <div className="rounded border border-border-default bg-bg-surface px-5 py-5">
+            <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-5">
               <div
                 className="flex items-end gap-1.5"
                 style={{ height: "120px" }}
@@ -190,7 +190,7 @@ export default async function StatsPage() {
                     style={{ height: "100%" }}
                   >
                     <div
-                      className="w-full rounded-t bg-accent-red/60 transition-all group-hover:bg-accent-red"
+                      className="w-full rounded-t bg-accent/60 transition-all group-hover:bg-accent"
                       style={{
                         height: `${Math.max((count / maxMonthCount) * 100, 2)}%`,
                       }}
@@ -215,7 +215,7 @@ export default async function StatsPage() {
               <Link
                 key={tag.slug}
                 href={`/tag/${tag.slug}`}
-                className="flex items-center gap-2 rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+                className="flex items-center gap-2 rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
               >
                 <span>{tag.label}</span>
                 <span className="rounded bg-bg-elevated px-1.5 py-0.5 text-[9px] text-text-tertiary">

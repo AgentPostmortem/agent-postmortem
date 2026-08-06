@@ -9,6 +9,8 @@ import { fetchPostByCase, fetchRelatedPosts } from "@/lib/db/posts";
 import { CopyLinkButton } from "@/components/post/CopyLinkButton";
 import { CommentsSection } from "@/components/post/CommentsSection";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/ui/icons";
+import { SeverityPill } from "@/components/post/SeverityPill";
+import { SEVERITY_LABELS, severityStyle } from "@/lib/constants/severity";
 import { getSiteUrl } from "@/lib/utils/urls";
 
 export const revalidate = 60;
@@ -67,42 +69,6 @@ export async function generateMetadata({
   };
 }
 
-const SEVERITY_META: Record<
-  number,
-  { label: string; color: string; bg: string; bar: string }
-> = {
-  1: {
-    label: "MINIMAL",
-    color: "text-text-tertiary",
-    bg: "bg-bg-elevated",
-    bar: "w-1/5",
-  },
-  2: {
-    label: "LOW",
-    color: "text-text-secondary",
-    bg: "bg-bg-elevated",
-    bar: "w-2/5",
-  },
-  3: {
-    label: "MODERATE",
-    color: "text-text-secondary",
-    bg: "bg-bg-elevated",
-    bar: "w-3/5",
-  },
-  4: {
-    label: "SEVERE",
-    color: "text-accent-red",
-    bg: "bg-accent-red-soft",
-    bar: "w-4/5",
-  },
-  5: {
-    label: "CRITICAL",
-    color: "text-accent-red",
-    bg: "bg-accent-red-soft",
-    bar: "w-full",
-  },
-};
-
 export default async function CasePage({ params }: PageProps) {
   const post = await getCachedCase(params.caseNumber);
   if (!post) notFound();
@@ -113,7 +79,8 @@ export default async function CasePage({ params }: PageProps) {
     post.tags,
   );
 
-  const s = SEVERITY_META[post.damageLevel];
+  const s = severityStyle(post.damageLevel);
+  const severityLabel = SEVERITY_LABELS[post.damageLevel as 1 | 2 | 3 | 4 | 5];
 
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -202,54 +169,54 @@ export default async function CasePage({ params }: PageProps) {
         </div>
 
         {/* Case file header block */}
-        <div className="mb-8 overflow-hidden rounded border border-border-default bg-bg-surface">
+        <div className="mb-8 overflow-hidden rounded-sm border border-border-default bg-bg-surface">
           {/* Metadata row */}
           <div className="grid grid-cols-2 divide-y divide-border-default border-b border-border-default sm:flex sm:divide-y-0 sm:divide-x sm:divide-border-default [&>*:last-child]:col-span-2 sm:[&>*:last-child]:col-span-1 sm:[&>*:last-child]:ml-auto">
             <div className="px-4 py-3">
-              <div className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                Case No.
-              </div>
-              <div className="mt-0.5 font-mono text-sm font-semibold text-text-primary">
+              <div className="meta-key">Case No.</div>
+              <div className="meta-val mt-0.5 font-semibold tracking-[0.1em] text-accent">
                 {post.caseNumber}
               </div>
             </div>
             <div className="px-4 py-3">
-              <div className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                Subject
-              </div>
+              <div className="meta-key">Subject</div>
               <Link
                 href={`/agent/${post.agentSlug}`}
-                className="mt-0.5 block font-mono text-sm text-text-primary transition-colors hover:text-accent-red"
+                className="meta-val mt-0.5 block transition-colors hover:text-accent"
               >
                 {post.agentName}
               </Link>
             </div>
             <div className="px-4 py-3">
-              <div className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                Filed
-              </div>
-              <div className="mt-0.5 font-mono text-sm text-text-primary">
-                {formattedDate}
-              </div>
+              <div className="meta-key">Filed</div>
+              <div className="meta-val mt-0.5">{formattedDate}</div>
             </div>
-            <div className={`px-5 py-3 ${s.bg}`}>
-              <div className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                Severity
-              </div>
-              <div className={`mt-0.5 font-mono text-sm font-bold ${s.color}`}>
-                {post.damageLevel} / 5 · {s.label}
+            <div className={`px-4 py-3 ${s.bg}`}>
+              <div className="meta-key">Severity</div>
+              <div className="mt-1 flex items-center gap-2">
+                <SeverityPill level={post.damageLevel} compact />
+                <span
+                  className={`font-mono text-sm font-bold tabular-nums ${s.text}`}
+                >
+                  {post.damageLevel} / 5
+                </span>
+                <span
+                  className={`font-mono text-[10px] uppercase tracking-[0.16em] ${s.text}`}
+                >
+                  {severityLabel}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Severity progress bar */}
-          <div className="h-1 bg-bg-elevated">
-            <div className={`h-1 bg-accent-red transition-all ${s.bar}`} />
+          <div className="h-1 bg-bg-elevated" aria-hidden="true">
+            <div className={`h-1 ${s.fill} ${s.bar}`} />
           </div>
 
           {/* Title */}
           <div className="px-5 py-5">
-            <h1 className="font-serif text-2xl font-normal leading-snug text-text-primary sm:text-3xl">
+            <h1 className="font-serif text-2xl font-medium leading-snug tracking-tight text-text-primary sm:text-[2rem]">
               {post.title}
             </h1>
             {post.tags.length > 0 && (
@@ -269,7 +236,7 @@ export default async function CasePage({ params }: PageProps) {
                   <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
                     Est. Damage{" "}
                   </span>
-                  <span className="font-mono text-sm font-semibold text-accent-red">
+                  <span className="font-mono text-sm font-semibold tabular-nums text-accent">
                     ~{cost}
                   </span>
                 </div>
@@ -302,7 +269,7 @@ export default async function CasePage({ params }: PageProps) {
         {post.prompt && (
           <section className="mb-6">
             <div className="section-label">Instruction Given to Agent</div>
-            <div className="rounded border border-border-default bg-bg-surface">
+            <div className="rounded-sm border border-border-default bg-bg-surface">
               <div className="border-b border-border-default px-4 py-2">
                 <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
                   Prompt
@@ -320,7 +287,7 @@ export default async function CasePage({ params }: PageProps) {
         {/* Findings */}
         <section className="mb-6">
           <div className="section-label">Incident Summary</div>
-          <div className="rounded border border-border-default bg-bg-surface px-5 py-5">
+          <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-5">
             <p className="text-[0.95rem] leading-7 text-text-primary">
               {post.outcome}
             </p>
@@ -332,7 +299,7 @@ export default async function CasePage({ params }: PageProps) {
           post.lessons.length > 0) && (
           <section className="mb-6">
             <div className="section-label">Case Analysis</div>
-            <div className="divide-y divide-border-default rounded border border-border-default bg-bg-surface">
+            <div className="divide-y divide-border-default rounded-sm border border-border-default bg-bg-surface">
               {post.verifiedFacts.length > 0 && (
                 <div className="px-5 py-5">
                   <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
@@ -344,7 +311,7 @@ export default async function CasePage({ params }: PageProps) {
                         key={fact}
                         className="flex gap-3 text-sm leading-6 text-text-primary"
                       >
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-red" />
+                        <span className="mt-[9px] h-px w-2.5 shrink-0 bg-accent" />
                         <span>{fact}</span>
                       </li>
                     ))}
@@ -362,7 +329,7 @@ export default async function CasePage({ params }: PageProps) {
                         key={unknown}
                         className="flex gap-3 text-sm leading-6 text-text-secondary"
                       >
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-border-strong" />
+                        <span className="mt-[9px] h-px w-2.5 shrink-0 bg-border-strong" />
                         <span>{unknown}</span>
                       </li>
                     ))}
@@ -380,7 +347,7 @@ export default async function CasePage({ params }: PageProps) {
                         key={lesson}
                         className="flex gap-3 text-sm leading-6 text-text-primary"
                       >
-                        <span className="mt-1 shrink-0 text-accent-red">
+                        <span className="mt-1 shrink-0 text-accent">
                           <ArrowRightIcon size={11} />
                         </span>
                         <span>{lesson}</span>
@@ -400,7 +367,7 @@ export default async function CasePage({ params }: PageProps) {
               href={post.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded border border-border-default bg-bg-surface px-5 py-4 transition-colors hover:border-border-strong"
+              className="block rounded-sm border border-border-default bg-bg-surface px-5 py-4 transition-colors hover:border-border-strong"
             >
               <span className="block text-sm leading-6 text-text-primary">
                 {post.sourceTitle ?? "Read the source report"}
@@ -426,7 +393,7 @@ export default async function CasePage({ params }: PageProps) {
                   key={i}
                   src={src}
                   alt={`Exhibit ${i + 1}`}
-                  className="rounded border border-border-default"
+                  className="rounded-sm border border-border-default"
                 />
               ))}
             </div>

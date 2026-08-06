@@ -127,7 +127,7 @@ export function SearchResults({
           onChange={(e) => setQuery(e.target.value)}
           placeholder="deleted production database, hallucination, Claude…"
           autoFocus
-          className="w-full rounded border border-border-default bg-bg-surface px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent-red focus:outline-none"
+          className="w-full rounded-sm border border-border-default bg-bg-surface px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none"
         />
       </div>
 
@@ -147,7 +147,7 @@ export function SearchResults({
           </span>
           <span>Filters</span>
           {hasActiveFilters && (
-            <span className="ml-1 rounded bg-accent-red/20 px-1 py-px text-accent-red">
+            <span className="ml-1 rounded bg-accent/20 px-1 py-px text-accent">
               active
             </span>
           )}
@@ -160,7 +160,7 @@ export function SearchResults({
               setMinSeverity(1);
               setMaxSeverity(5);
             }}
-            className="font-mono text-[10px] text-text-tertiary hover:text-accent-red"
+            className="font-mono text-[10px] text-text-tertiary hover:text-accent"
           >
             Clear filters
           </button>
@@ -169,7 +169,7 @@ export function SearchResults({
 
       {/* Filter panel */}
       {filtersOpen && (
-        <div className="mb-6 rounded border border-border-default bg-bg-surface px-5 py-4">
+        <div className="mb-6 rounded-sm border border-border-default bg-bg-surface px-5 py-4">
           <div className="grid gap-5 sm:grid-cols-2">
             {/* Agent filter */}
             <div>
@@ -179,7 +179,7 @@ export function SearchResults({
               <select
                 value={agentFilter}
                 onChange={(e) => setAgentFilter(e.target.value)}
-                className="w-full rounded border border-border-default bg-bg-elevated px-3 py-2 font-mono text-xs text-text-primary focus:border-accent-red focus:outline-none"
+                className="w-full rounded-sm border border-border-default bg-bg-elevated px-3 py-2 font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
               >
                 <option value="">All agents</option>
                 {AGENTS.map((a) => (
@@ -227,9 +227,9 @@ export function SearchResults({
                           }
                         }}
                         className={[
-                          "flex h-8 w-8 items-center justify-center rounded border font-mono text-xs transition-colors",
+                          "flex h-8 w-8 items-center justify-center rounded-sm border font-mono text-xs transition-colors",
                           inRange
-                            ? "border-accent-red bg-accent-red/10 text-accent-red-muted"
+                            ? "border-accent bg-accent/10 text-accent-strong"
                             : "border-border-default bg-bg-elevated text-text-tertiary hover:border-border-strong",
                         ].join(" ")}
                       >
@@ -246,7 +246,7 @@ export function SearchResults({
 
       {/* Results */}
       {query.length < 2 ? (
-        <div className="rounded border border-dashed border-border-default py-16 text-center">
+        <div className="rounded-sm border border-dashed border-border-default py-16 text-center">
           <p className="text-sm text-text-tertiary">
             Start typing to search cases…
           </p>
@@ -269,12 +269,12 @@ export function SearchResults({
           </div>
         </div>
       ) : (
-        <div className="rounded border border-dashed border-border-default py-16 text-center">
+        <div className="rounded-sm border border-dashed border-border-default py-16 text-center">
           <p className="font-serif text-lg text-text-secondary">
             No cases found for &ldquo;{query}&rdquo;.
           </p>
           <p className="mt-2 text-sm text-text-tertiary">
-            <Link href="/submit" className="text-accent-red hover:underline">
+            <Link href="/submit" className="text-accent hover:underline">
               File a report
             </Link>{" "}
             if you witnessed this failure.

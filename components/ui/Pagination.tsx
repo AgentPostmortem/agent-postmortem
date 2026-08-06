@@ -35,12 +35,12 @@ export function Pagination({
       {currentPage > 1 ? (
         <Link
           href={hrefForPage(currentPage - 1)}
-          className="inline-flex items-center gap-1.5 rounded border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+          className="inline-flex items-center gap-1.5 rounded-sm border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
         >
           <ArrowLeftIcon size={10} /> Prev
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1.5 rounded border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
+        <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
           <ArrowLeftIcon size={10} /> Prev
         </span>
       )}
@@ -55,9 +55,9 @@ export function Pagination({
             key={p}
             href={hrefForPage(p)}
             className={[
-              "rounded border px-2.5 py-1.5 transition-colors",
+              "rounded-sm border px-2.5 py-1.5 transition-colors",
               p === currentPage
-                ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
+                ? "border-accent bg-accent-soft text-accent-strong"
                 : "border-border-default text-text-secondary hover:border-border-strong hover:text-text-primary",
             ].join(" ")}
           >
@@ -69,12 +69,12 @@ export function Pagination({
       {currentPage < totalPages ? (
         <Link
           href={hrefForPage(currentPage + 1)}
-          className="inline-flex items-center gap-1.5 rounded border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+          className="inline-flex items-center gap-1.5 rounded-sm border border-border-default px-2.5 py-1.5 text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
         >
           Next <ArrowRightIcon size={10} />
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1.5 rounded border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
+        <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
           Next <ArrowRightIcon size={10} />
         </span>
       )}

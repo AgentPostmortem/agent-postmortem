@@ -124,7 +124,7 @@ export function CommentsSection({ postId }: { postId: string }) {
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="rounded border border-border-default bg-bg-surface px-4 py-3"
+              className="rounded-sm border border-border-default bg-bg-surface px-4 py-3"
             >
               <div className="mb-2 flex gap-2">
                 <div className="h-3 w-20 animate-pulse rounded bg-bg-elevated" />
@@ -149,9 +149,9 @@ export function CommentsSection({ postId }: { postId: string }) {
                 key={c.id}
                 id={`c-${c.id}`}
                 className={[
-                  "group rounded border bg-bg-surface px-4 py-3 transition-colors",
+                  "group rounded-sm border bg-bg-surface px-4 py-3 transition-colors",
                   isHighlighted
-                    ? "border-accent-red/40 bg-accent-red/5"
+                    ? "border-accent/40 bg-accent/5"
                     : "border-border-default",
                 ].join(" ")}
               >
@@ -194,7 +194,7 @@ export function CommentsSection({ postId }: { postId: string }) {
           onChange={(e) => setBody(e.target.value)}
           placeholder="Add context, a related incident, or a correction…"
           rows={4}
-          className="w-full resize-none rounded border border-border-default bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent-red focus:outline-none"
+          className="w-full resize-none rounded-sm border border-border-default bg-bg-surface px-4 py-3 text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none"
         />
 
         <div className="flex flex-wrap items-center gap-4">
@@ -203,7 +203,7 @@ export function CommentsSection({ postId }: { postId: string }) {
               type="checkbox"
               checked={isAnonymous}
               onChange={(e) => setIsAnonymous(e.target.checked)}
-              className="accent-accent-red"
+              className="accent-accent"
             />
             <span className="font-mono text-xs text-text-secondary">
               Post anonymously
@@ -216,12 +216,12 @@ export function CommentsSection({ postId }: { postId: string }) {
               value={handle}
               onChange={(e) => setHandle(e.target.value)}
               placeholder="Your handle (optional)"
-              className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-xs text-text-primary placeholder:text-text-tertiary focus:border-accent-red focus:outline-none"
+              className="rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-xs text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none"
             />
           )}
         </div>
 
-        {error && <p className="font-mono text-xs text-accent-red">{error}</p>}
+        {error && <p className="font-mono text-xs text-accent">{error}</p>}
         {success && (
           <p className="font-mono text-xs text-green-400">Comment posted.</p>
         )}
@@ -229,7 +229,7 @@ export function CommentsSection({ postId }: { postId: string }) {
         <button
           type="submit"
           disabled={submitting || body.trim().length < 3}
-          className="rounded border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
         >
           {submitting ? "Posting…" : "Post Comment"}
         </button>
