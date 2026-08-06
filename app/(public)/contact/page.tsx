@@ -72,7 +72,7 @@ export default function ContactPage() {
         <p>
           For technical issues with the site, please open an issue on{" "}
           <a
-            href="https://github.com/AgentPostmortem/agent-postmortem"
+            href="https://github.com/AgentPostmortem/agentpostmortem"
             target="_blank"
             rel="noopener noreferrer"
           >

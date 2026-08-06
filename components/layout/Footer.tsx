@@ -132,7 +132,7 @@ const LINK_GROUPS = [
       { href: "/stats", label: "Stats" },
       { href: "/submit", label: "File a Report" },
       {
-        href: "https://github.com/AgentPostmortem/agent-postmortem",
+        href: "https://github.com/AgentPostmortem/agentpostmortem",
         label: "GitHub",
         external: true,
       },
