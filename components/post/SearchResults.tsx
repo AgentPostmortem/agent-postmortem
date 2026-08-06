@@ -117,7 +117,11 @@ export function SearchResults({
 
       {/* Search input */}
       <div className="mb-3">
+        <label className="sr-only" htmlFor="case-search">
+          Search cases
+        </label>
         <input
+          id="case-search"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
