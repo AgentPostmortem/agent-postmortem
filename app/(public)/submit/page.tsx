@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function SubmitPage() {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+    <div className="shell max-w-2xl py-12 sm:py-16">
       {/* Header */}
       <div className="mb-8">
         <div className="mb-3 flex items-center gap-3">

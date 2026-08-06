@@ -26,10 +26,10 @@ export function CaseRow({
   }).format(new Date(post.createdAt));
 
   return (
-    <article className="group relative grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 px-3 py-3 transition-colors hover:bg-bg-elevated sm:grid-cols-[7.5rem_minmax(0,1fr)_6.5rem_5rem_4.5rem] sm:items-center sm:gap-x-4 sm:px-4">
+    <article className="group relative grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 px-3 py-4 transition-colors hover:bg-bg-surface sm:grid-cols-[7.5rem_minmax(0,1fr)_9rem_7rem_6rem] sm:items-center sm:gap-x-6 sm:px-4">
       {/* Severity + case number */}
       <div className="flex items-center gap-2 sm:flex-col sm:items-start sm:gap-1">
-        <span className="font-mono text-[10px] font-medium tracking-[0.12em] text-accent">
+        <span className="font-mono text-[10px] font-medium tracking-[0.12em] text-text-tertiary">
           {post.caseNumber}
         </span>
         <span className="flex items-center gap-1.5">
@@ -56,7 +56,7 @@ export function CaseRow({
 
       {/* Title + supporting line */}
       <div className="col-span-2 min-w-0 sm:col-span-1">
-        <h3 className="text-[0.95rem] font-medium leading-snug tracking-tight text-text-primary">
+        <h3 className="max-w-[70ch] text-[1.0625rem] font-medium leading-snug tracking-[-0.01em] text-text-primary">
           <Link
             href={`/case/${post.caseNumber.toLowerCase()}`}
             className="transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent"
@@ -64,7 +64,7 @@ export function CaseRow({
             {post.title}
           </Link>
         </h3>
-        <p className="mt-1 line-clamp-1 text-[0.8rem] leading-relaxed text-text-tertiary">
+        <p className="mt-1 line-clamp-1 max-w-[80ch] text-[0.8rem] leading-relaxed text-text-tertiary">
           {post.outcome}
         </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] text-text-tertiary">

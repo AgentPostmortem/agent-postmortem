@@ -229,7 +229,7 @@ function ToolCard({ tool }: { tool: Tool }) {
 
 export default function ToolsPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+    <div className="shell max-w-5xl py-12 sm:py-16">
       <div className="mb-10 border-b border-border-default pb-6">
         <p className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
           Agent operating suite

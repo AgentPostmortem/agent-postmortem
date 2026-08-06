@@ -14,8 +14,8 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-sm border border-border-default bg-bg-surface">
-      <div className="flex items-baseline justify-between gap-3 border-b border-border-default px-4 py-2.5">
+    <section className="min-w-0 bg-bg-canvas">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-border-default px-5 py-3">
         <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-secondary">
           {title}
         </h3>
@@ -25,7 +25,7 @@ function Panel({
           </span>
         )}
       </div>
-      <div className="px-4 py-3.5">{children}</div>
+      <div className="px-5 py-4">{children}</div>
     </section>
   );
 }
@@ -37,7 +37,7 @@ function BarRow({
   max,
   pct,
   href,
-  fillClass = "bg-accent/70",
+  fillClass = "bg-text-tertiary/70",
   trailing,
 }: {
   label: React.ReactNode;
@@ -67,11 +67,8 @@ function BarRow({
           )}
         </span>
       </div>
-      <div className="mt-1 h-1 w-full rounded-[1px] bg-bg-elevated">
-        <div
-          className={`h-1 rounded-[1px] ${fillClass}`}
-          style={{ width: `${width}%` }}
-        />
+      <div className="mt-1.5 h-1 w-full bg-bg-elevated">
+        <div className={`h-1 ${fillClass}`} style={{ width: `${width}%` }} />
       </div>
     </>
   );
@@ -163,7 +160,7 @@ export function FailureModePanel({ data }: { data: RegistryOverview }) {
             count={tag.count}
             max={max}
             href={`/tag/${tag.slug}`}
-            fillClass="bg-accent/60"
+            fillClass="bg-text-tertiary/70"
           />
         ))}
       </ul>
@@ -196,7 +193,7 @@ export function TimelinePanel({ data }: { data: RegistryOverview }) {
               {m.count}
             </span>
             <div
-              className="w-full rounded-[1px] bg-accent/60"
+              className="w-full bg-text-tertiary/70"
               style={{
                 height: `${Math.max(4, Math.round((m.count / max) * 100))}%`,
               }}
