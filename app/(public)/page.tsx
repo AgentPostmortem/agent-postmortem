@@ -1,16 +1,30 @@
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PostCard } from "@/components/post/PostCard";
+import { CaseRow } from "@/components/post/CaseRow";
 import { Pagination } from "@/components/ui/Pagination";
-import { SeverityPill } from "@/components/post/SeverityPill";
+import { FeaturedCase } from "@/components/home/FeaturedCase";
+import {
+  AgentPanel,
+  FailureModePanel,
+  SeverityPanel,
+  TimelinePanel,
+} from "@/components/home/OverviewPanels";
 import { ArrowRightIcon, CloseIcon, PlusIcon } from "@/components/ui/icons";
 import {
   fetchFeedPosts,
-  fetchSiteStats,
+  fetchRegistryOverview,
+  fetchWorstCase,
   fetchCommentCountsByPostIds,
   type FeedTab,
+  type RegistryOverview,
 } from "@/lib/db/posts";
+import { formatUsd, monthLabel, percentOf } from "@/lib/utils/format";
+import type { Post } from "@/types";
+
+// Both the overview and the taxonomy index read the same aggregate; memoise it
+// per request so the page issues one query, not two.
+const getOverview = cache(() => fetchRegistryOverview());
 
 export const revalidate = 30;
 
@@ -55,72 +69,153 @@ interface PageProps {
   };
 }
 
-// Async component: fetches site-wide stats and renders the counter strip.
-async function HomepageStats() {
-  const stats = await fetchSiteStats();
-  const formattedDamage =
-    stats.totalDamage >= 1_000_000
-      ? `$${(stats.totalDamage / 1_000_000).toFixed(1)}M`
-      : stats.totalDamage >= 1_000
-        ? `$${(stats.totalDamage / 1_000).toFixed(0)}k`
-        : stats.totalDamage > 0
-          ? `$${stats.totalDamage}`
-          : null;
+/* ---------------------------------------------------------------- overview */
 
-  if (!stats.totalPosts && !formattedDamage) return null;
+function CounterStrip({ data }: { data: RegistryOverview }) {
+  const damage = formatUsd(data.totalDamageUsd);
+  const severe = (data.bySeverity[5] ?? 0) + (data.bySeverity[4] ?? 0);
 
-  const statItems = [
-    { value: stats.totalPosts.toLocaleString(), label: "Cases Filed" },
-    ...(formattedDamage
+  const items = [
+    { value: data.totalCases.toLocaleString(), label: "Cases on file" },
+    {
+      value: `${severe.toLocaleString()}`,
+      label: `Severe or worse (${percentOf(severe, data.totalCases)}%)`,
+    },
+    { value: data.byAgent.length.toString(), label: "Agents implicated" },
+    ...(damage
       ? [
           {
-            value: formattedDamage,
-            label: "Estimated Damage",
-            red: true,
+            value: damage,
+            label: `Damage across ${data.quantifiedCases} quantified cases`,
+            accent: true,
           },
         ]
       : []),
-    { value: stats.totalAgents.toString(), label: "Agents Implicated" },
   ];
-  const statsGridClass = statItems.length === 2 ? "grid-cols-2" : "grid-cols-3";
 
   return (
-    <div
-      className={`mt-7 grid ${statsGridClass} gap-px overflow-hidden rounded-sm border border-border-default bg-border-default`}
-    >
-      {statItems.map((stat) => (
-        <div
-          key={stat.label}
-          className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5"
+    <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border-default bg-border-default sm:grid-cols-4">
+      {items.map((item) => (
+        <div key={item.label} className="bg-bg-surface px-3 py-3 sm:px-4">
+          <dt className="sr-only">{item.label}</dt>
+          <dd>
+            <span
+              className={`block font-mono text-xl font-bold tabular-nums sm:text-2xl ${
+                item.accent ? "text-accent" : "text-text-primary"
+              }`}
+            >
+              {item.value}
+            </span>
+            <span
+              aria-hidden="true"
+              className="mt-1 block font-mono text-[8px] uppercase leading-relaxed tracking-[0.16em] text-text-tertiary sm:text-[9px]"
+            >
+              {item.label}
+            </span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+async function RegistryOverviewSection() {
+  const data = await getOverview();
+  if (data.totalCases === 0) return null;
+
+  return (
+    <section aria-labelledby="overview-heading" className="mt-8">
+      <CounterStrip data={data} />
+
+      <div className="mt-6 flex items-baseline justify-between gap-4 border-b border-border-default pb-2">
+        <h2
+          id="overview-heading"
+          className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-secondary"
         >
-          <div
-            className={`font-mono text-lg font-bold tabular-nums sm:text-2xl ${stat.red ? "text-accent" : "text-text-primary"}`}
-          >
-            {stat.value}
-          </div>
-          <div className="mt-1 font-mono text-[8px] uppercase tracking-[0.18em] text-text-tertiary sm:text-[9px]">
-            {stat.label}
-          </div>
-        </div>
-      ))}
-    </div>
+          What the registry shows
+        </h2>
+        <Link
+          href="/stats"
+          className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent"
+        >
+          <span className="inline-flex items-center gap-1.5">
+            Full stats <ArrowRightIcon size={9} />
+          </span>
+        </Link>
+      </div>
+
+      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <SeverityPanel data={data} />
+        <FailureModePanel data={data} />
+        <AgentPanel data={data} />
+        <TimelinePanel data={data} />
+      </div>
+    </section>
   );
 }
 
-function StatsSkeleton() {
+function OverviewSkeleton() {
   return (
-    <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded-sm border border-border-default bg-border-default">
-      {[0, 1, 2].map((i) => (
-        <div key={i} className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5">
-          <div className="h-6 w-16 animate-pulse rounded bg-border-strong sm:h-8" />
-          <div className="mt-1.5 h-2 w-20 animate-pulse rounded bg-border-default" />
-        </div>
-      ))}
+    <div className="mt-8 space-y-4">
+      <div className="h-[74px] animate-pulse rounded-sm border border-border-default bg-bg-surface" />
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="h-48 animate-pulse rounded-sm border border-border-default bg-bg-surface"
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
-// Async component: fetches posts + comment counts for the current filters.
+/* ------------------------------------------------------------------ feed */
+
+interface FeedGroup {
+  key: string;
+  title: string;
+  note: string;
+  posts: Post[];
+}
+
+const SEVERITY_BANDS: { key: string; title: string; levels: number[] }[] = [
+  { key: "critical", title: "Critical and severe", levels: [5, 4] },
+  { key: "significant", title: "Significant", levels: [3] },
+  { key: "contained", title: "Contained", levels: [2, 1] },
+];
+
+/**
+ * The feed is clustered rather than flat. New cases group by filing month,
+ * everything else groups by severity band, so a visitor can see the shape of
+ * the page before reading a single title.
+ */
+function groupPosts(posts: Post[], tab: FeedTab): FeedGroup[] {
+  if (tab === "new" || tab === "week") {
+    const byMonth = new Map<string, Post[]>();
+    for (const post of posts) {
+      const month = post.createdAt.slice(0, 7);
+      byMonth.set(month, [...(byMonth.get(month) ?? []), post]);
+    }
+    return Array.from(byMonth.entries()).map(([month, group]) => ({
+      key: month,
+      title: monthLabel(month),
+      note: `${group.length} filed`,
+      posts: group,
+    }));
+  }
+
+  return SEVERITY_BANDS.map((band) => {
+    const group = posts.filter((p) => band.levels.includes(p.damageLevel));
+    return {
+      key: band.key,
+      title: band.title,
+      note: `severity ${band.levels.slice().sort().join("–")}`,
+      posts: group,
+    };
+  }).filter((g) => g.posts.length > 0);
+}
+
 async function PostsFeed({
   activeTab,
   currentPage,
@@ -132,34 +227,65 @@ async function PostsFeed({
   activeAgent: string;
   activeSeverity: string;
 }) {
-  const [{ posts, total }] = await Promise.all([
-    fetchFeedPosts(
-      activeTab,
-      currentPage,
-      activeAgent || undefined,
-      activeSeverity ? parseInt(activeSeverity) : undefined,
-    ),
-  ]);
+  const { posts, total } = await fetchFeedPosts(
+    activeTab,
+    currentPage,
+    activeAgent || undefined,
+    activeSeverity ? parseInt(activeSeverity) : undefined,
+  );
 
   const commentCounts = await fetchCommentCountsByPostIds(
     posts.map((p) => p.id),
   );
 
   const totalPages = Math.ceil(total / 20);
-
   if (posts.length === 0) return <EmptyFeed />;
+
+  const groups = groupPosts(posts, activeTab);
 
   return (
     <>
-      <div className="divide-y divide-border-default overflow-hidden rounded-sm border border-border-default [&>article]:rounded-none [&>article]:border-0">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            commentCount={commentCounts[post.id]}
-          />
+      <p className="mb-3 font-mono text-[10px] text-text-tertiary">
+        Showing {posts.length} of {total.toLocaleString()} cases, grouped by{" "}
+        {activeTab === "new" || activeTab === "week"
+          ? "filing month"
+          : "severity band"}
+        .
+      </p>
+
+      <div className="space-y-5">
+        {groups.map((group) => (
+          <section key={group.key} aria-label={group.title}>
+            <div className="flex items-baseline justify-between gap-3 border-b border-border-strong pb-1.5">
+              <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-text-primary">
+                {group.title}
+              </h3>
+              <span className="font-mono text-[9px] uppercase tracking-wider text-text-tertiary">
+                {group.posts.length} case{group.posts.length === 1 ? "" : "s"} ·{" "}
+                {group.note}
+              </span>
+            </div>
+            {/* Column headers make the rows comparable, not just readable */}
+            <div className="hidden grid-cols-[7.5rem_minmax(0,1fr)_6.5rem_5rem_4.5rem] gap-x-4 border-b border-border-default px-4 py-1.5 font-mono text-[9px] uppercase tracking-widest text-text-tertiary sm:grid">
+              <span>Case / severity</span>
+              <span>Incident</span>
+              <span>Agent</span>
+              <span className="text-right">Damage</span>
+              <span className="text-right">Filed</span>
+            </div>
+            <div className="divide-y divide-border-default border-b border-border-default">
+              {group.posts.map((post) => (
+                <CaseRow
+                  key={post.id}
+                  post={post}
+                  commentCount={commentCounts[post.id]}
+                />
+              ))}
+            </div>
+          </section>
         ))}
       </div>
+
       {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
@@ -181,18 +307,128 @@ async function PostsFeed({
 function PostsSkeleton() {
   return (
     <div className="space-y-2">
-      {[0, 1, 2, 3, 4].map((i) => (
+      {[0, 1, 2, 3, 4, 5].map((i) => (
         <div
           key={i}
-          className="h-28 animate-pulse rounded-sm border border-border-default bg-bg-surface"
+          className="h-16 animate-pulse rounded-sm border border-border-default bg-bg-surface"
         />
       ))}
     </div>
   );
 }
 
-// Page shell is synchronous — h1, filters, and sidebar render immediately.
-// DB-dependent sections (stats, posts) are Suspense boundaries that stream in.
+async function FeaturedCaseSection() {
+  const post = await fetchWorstCase();
+  if (!post) return null;
+  return (
+    <section aria-labelledby="featured-heading" className="mt-10">
+      <div className="mb-3 border-b border-border-default pb-2">
+        <h2
+          id="featured-heading"
+          className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-secondary"
+        >
+          Featured case
+        </h2>
+      </div>
+      <FeaturedCase post={post} />
+    </section>
+  );
+}
+
+function FeaturedSkeleton() {
+  return (
+    <div className="mt-10 h-56 animate-pulse rounded-sm border border-border-default bg-bg-surface" />
+  );
+}
+
+/* -------------------------------------------------------------- taxonomy */
+
+async function TaxonomySection() {
+  const data = await getOverview();
+  if (data.totalCases === 0) return null;
+
+  const maxTag = Math.max(...data.byTag.map((t) => t.count), 1);
+
+  return (
+    <section aria-labelledby="taxonomy-heading" className="mt-12">
+      <div className="mb-4 flex items-baseline justify-between gap-4 border-b border-border-default pb-2">
+        <h2
+          id="taxonomy-heading"
+          className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-secondary"
+        >
+          Browse the taxonomy
+        </h2>
+        <span className="font-mono text-[9px] uppercase tracking-wider text-text-tertiary">
+          {data.byTag.length} failure modes · {data.byAgent.length} agents
+        </span>
+      </div>
+
+      <h3 className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-text-tertiary">
+        Failure modes
+      </h3>
+      <ul className="grid gap-px overflow-hidden rounded-sm border border-border-default bg-border-default sm:grid-cols-2 lg:grid-cols-3">
+        {data.byTag.map((tag) => (
+          <li key={tag.slug}>
+            <Link
+              href={`/tag/${tag.slug}`}
+              className="block bg-bg-surface px-4 py-3 transition-colors hover:bg-bg-elevated"
+            >
+              <span className="flex items-baseline justify-between gap-3">
+                <span className="truncate font-mono text-xs text-text-secondary">
+                  #{tag.label}
+                </span>
+                <span className="font-mono text-xs tabular-nums text-text-primary">
+                  {tag.count}
+                </span>
+              </span>
+              <span className="mt-1.5 block h-1 w-full rounded-[1px] bg-bg-elevated">
+                <span
+                  className="block h-1 rounded-[1px] bg-accent/60"
+                  style={{
+                    width: `${Math.max(2, Math.round((tag.count / maxTag) * 100))}%`,
+                  }}
+                />
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="mb-2 mt-6 font-mono text-[10px] uppercase tracking-[0.18em] text-text-tertiary">
+        Agents
+      </h3>
+      <ul className="grid gap-px overflow-hidden rounded-sm border border-border-default bg-border-default sm:grid-cols-2 lg:grid-cols-4">
+        {data.byAgent.map((agent) => {
+          const damage = formatUsd(agent.damageUsd);
+          return (
+            <li key={agent.slug}>
+              <Link
+                href={`/agent/${agent.slug}`}
+                className="block bg-bg-surface px-4 py-3 transition-colors hover:bg-bg-elevated"
+              >
+                <span className="flex items-baseline justify-between gap-3">
+                  <span className="truncate font-mono text-xs text-text-primary">
+                    {agent.label}
+                  </span>
+                  <span className="font-mono text-xs tabular-nums text-text-primary">
+                    {agent.count}
+                  </span>
+                </span>
+                <span className="mt-1 block font-mono text-[9px] uppercase tracking-wider text-text-tertiary">
+                  {agent.severeCount} severe+
+                  {damage ? ` · ${damage}` : ""}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ page */
+
 export default function HomePage({ searchParams }: PageProps) {
   const activeTab = (searchParams.tab as FeedTab) ?? "hot";
   const currentPage = Math.max(1, parseInt(searchParams.page ?? "1") || 1);
@@ -200,344 +436,224 @@ export default function HomePage({ searchParams }: PageProps) {
   const activeSeverity = searchParams.severity ?? "";
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      {/* Hero — streams immediately, no DB dependency */}
-      <div className="mb-10 border-b border-border-default pb-10">
-        <div className="mb-4 flex items-center gap-2">
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Masthead: compact, so the data starts above the fold */}
+      <header className="border-b border-border-default pb-8">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
           <span className="stamp stamp-red">Unrestricted</span>
           <span className="stamp stamp-muted">Public Registry</span>
         </div>
 
-        <h1 className="font-serif text-4xl font-medium leading-[1.05] tracking-[-0.02em] text-text-primary sm:text-5xl lg:text-[3.75rem]">
-          Every AI Agent
-          <br />
-          <span className="text-text-secondary">Failure,</span>{" "}
-          <span className="relative text-accent">
-            Documented.
-            <span
-              aria-hidden="true"
-              className="absolute -bottom-1 left-0 h-px w-full bg-accent/60"
-            />
-          </span>
-        </h1>
-
-        <p className="mt-5 max-w-lg text-[0.95rem] leading-relaxed text-text-secondary">
-          A structured public ledger for AI agent incidents. Submit anonymously.
-          Every case numbered, tagged, and searchable. Built so the next team
-          doesn&apos;t make the same mistake.
-        </p>
-
-        {/* Stats counter strip — streams in after fetchSiteStats */}
-        <Suspense fallback={<StatsSkeleton />}>
-          <HomepageStats />
-        </Suspense>
-
-        {/* Search bar */}
-        <form method="GET" action="/search" className="mt-6">
-          <div className="flex max-w-lg gap-2">
-            <input
-              type="text"
-              name="q"
-              placeholder="Search cases… deleted database, hallucination, OpenAI"
-              className="flex-1 rounded-sm border border-border-default bg-bg-surface px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent"
-            >
-              Search
-            </button>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
+          <div>
+            <h1 className="font-serif text-3xl font-medium leading-[1.05] tracking-[-0.02em] text-text-primary sm:text-5xl">
+              Every AI Agent{" "}
+              <span className="text-text-secondary">Failure,</span>{" "}
+              <span className="relative text-accent">
+                Documented.
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-1 left-0 h-px w-full bg-accent/60"
+                />
+              </span>
+            </h1>
+            <p className="mt-4 max-w-xl text-[0.95rem] leading-relaxed text-text-secondary">
+              A structured public ledger for AI agent incidents. Submit
+              anonymously. Every case numbered, tagged, and searchable. Built so
+              the next team doesn&apos;t make the same mistake.
+            </p>
           </div>
-        </form>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Link
-            href="/submit"
-            className="inline-flex items-center gap-2 rounded-sm border border-accent/60 bg-accent-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas"
-          >
-            <PlusIcon size={10} /> File a Case Report
-          </Link>
-          <Link
-            href="/about"
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-text-primary"
-          >
-            How it works <ArrowRightIcon size={10} />
-          </Link>
+          <div className="lg:justify-self-end lg:text-right">
+            <form method="GET" action="/search">
+              <label htmlFor="registry-search" className="sr-only">
+                Search cases
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="registry-search"
+                  type="text"
+                  name="q"
+                  placeholder="Search cases…"
+                  className="min-w-0 flex-1 rounded-sm border border-border-default bg-bg-surface px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="rounded-sm border border-border-default bg-bg-elevated px-3 py-2.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+            <div className="mt-3 flex flex-wrap items-center gap-3 lg:justify-end">
+              <Link
+                href="/submit"
+                className="inline-flex items-center gap-2 rounded-sm border border-accent/60 bg-accent-soft px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas"
+              >
+                <PlusIcon size={10} /> File a Case Report
+              </Link>
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-text-primary"
+              >
+                How it works <ArrowRightIcon size={10} />
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Feed layout */}
-      <div className="flex gap-8">
-        {/* Main feed */}
-        <div className="min-w-0 flex-1">
-          {/* Tabs */}
-          <div className="mb-3 border-b border-border-default">
-            <nav className="flex overflow-x-auto scrollbar-none">
-              {TABS.map((tab) => {
-                const isActive = activeTab === tab.value;
+      {/* Data overview leads the page, ahead of any individual case */}
+      <Suspense fallback={<OverviewSkeleton />}>
+        <RegistryOverviewSection />
+      </Suspense>
+
+      <Suspense fallback={<FeaturedSkeleton />}>
+        <FeaturedCaseSection />
+      </Suspense>
+
+      {/* Clustered case feed */}
+      <section aria-labelledby="feed-heading" className="mt-12">
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3 border-b border-border-default">
+          <h2
+            id="feed-heading"
+            className="pb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-text-secondary"
+          >
+            Case feed
+          </h2>
+          <nav
+            aria-label="Feed sort"
+            className="flex overflow-x-auto scrollbar-none"
+          >
+            {TABS.map((tab) => {
+              const isActive = activeTab === tab.value;
+              return (
+                <Link
+                  key={tab.value}
+                  href={
+                    tab.value === "hof"
+                      ? "/hall-of-fame"
+                      : `/?tab=${tab.value}${activeAgent ? `&agent=${activeAgent}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`
+                  }
+                  className={[
+                    "relative pb-3 pl-5 font-mono text-[11px] uppercase tracking-wider transition-colors",
+                    isActive
+                      ? "text-text-primary after:absolute after:bottom-0 after:left-5 after:right-0 after:h-0.5 after:bg-accent"
+                      : "text-text-tertiary hover:text-text-secondary",
+                  ].join(" ")}
+                >
+                  {tab.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Filter bar */}
+        <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex items-center gap-1.5">
+            <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+              Agent
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {AGENT_FILTERS.map((f) => {
+                const isActive = activeAgent === f.value;
+                const href = `/?tab=${activeTab}${f.value ? `&agent=${f.value}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`;
                 return (
                   <Link
-                    key={tab.value}
-                    href={
-                      tab.value === "hof"
-                        ? "/hall-of-fame"
-                        : `/?tab=${tab.value}${activeAgent ? `&agent=${activeAgent}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`
-                    }
+                    key={f.value || "all-agent"}
+                    href={href}
+                    aria-current={isActive ? "true" : undefined}
                     className={[
-                      "relative pb-3 pr-5 font-mono text-[11px] uppercase tracking-wider transition-colors",
+                      "rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors",
                       isActive
-                        ? "text-text-primary after:absolute after:bottom-0 after:left-0 after:right-5 after:h-0.5 after:bg-accent"
-                        : "text-text-tertiary hover:text-text-secondary",
+                        ? "border-accent bg-accent-soft text-accent"
+                        : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                     ].join(" ")}
                   >
-                    {tab.label}
+                    {f.label}
                   </Link>
                 );
               })}
-            </nav>
-          </div>
-
-          {/* Filter bar */}
-          <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2">
-            {/* Agent filter */}
-            <div className="flex items-center gap-1.5">
-              <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                Agent
-              </span>
-              <div className="flex flex-wrap gap-1">
-                {AGENT_FILTERS.map((f) => {
-                  const isActive = activeAgent === f.value;
-                  const href = `/?tab=${activeTab}${f.value ? `&agent=${f.value}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`;
-                  return (
-                    <Link
-                      key={f.value || "all-agent"}
-                      href={href}
-                      className={[
-                        "rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors",
-                        isActive
-                          ? "border-accent bg-accent-soft text-accent"
-                          : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
-                      ].join(" ")}
-                    >
-                      {f.label}
-                    </Link>
-                  );
-                })}
-                {activeAgent && (
-                  <Link
-                    href={`/?tab=${activeTab}${activeSeverity ? `&severity=${activeSeverity}` : ""}`}
-                    className="rounded-sm border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent hover:text-accent"
-                    title="Clear agent filter"
-                  >
-                    <CloseIcon size={9} />
-                  </Link>
-                )}
-              </div>
-            </div>
-
-            {/* Severity filter */}
-            <div className="flex items-center gap-1.5">
-              <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                Severity
-              </span>
-              <div className="flex flex-wrap gap-1">
-                {SEVERITY_FILTERS.map((f) => {
-                  const isActive = activeSeverity === f.value;
-                  const href = `/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}${f.value ? `&severity=${f.value}` : ""}`;
-                  return (
-                    <Link
-                      key={f.value || "all-severity"}
-                      href={href}
-                      className={[
-                        "rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors",
-                        isActive
-                          ? "border-accent bg-accent-soft text-accent"
-                          : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
-                      ].join(" ")}
-                    >
-                      {f.label}
-                    </Link>
-                  );
-                })}
-                {activeSeverity && (
-                  <Link
-                    href={`/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}`}
-                    className="rounded-sm border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent hover:text-accent"
-                    title="Clear severity filter"
-                  >
-                    <CloseIcon size={9} />
-                  </Link>
-                )}
-              </div>
+              {activeAgent && (
+                <Link
+                  href={`/?tab=${activeTab}${activeSeverity ? `&severity=${activeSeverity}` : ""}`}
+                  className="rounded-sm border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent hover:text-accent"
+                  title="Clear agent filter"
+                >
+                  <CloseIcon size={9} />
+                </Link>
+              )}
             </div>
           </div>
 
-          {/* Severity legend: ticks and labels, so colour is never the only cue */}
-          <div className="mb-3 flex flex-wrap items-center gap-2 border-y border-border-default py-2">
+          <div className="flex items-center gap-1.5">
             <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-              Legend
+              Severity
             </span>
-            {[5, 4, 3, 2, 1].map((lvl) => (
-              <SeverityPill key={lvl} level={lvl} />
-            ))}
-          </div>
-
-          {/* Posts — streams in after fetchFeedPosts resolves */}
-          <Suspense fallback={<PostsSkeleton />}>
-            <PostsFeed
-              activeTab={activeTab}
-              currentPage={currentPage}
-              activeAgent={activeAgent}
-              activeSeverity={activeSeverity}
-            />
-          </Suspense>
-
-          {/* Mobile browse strip — hidden on desktop where sidebar handles this */}
-          <div className="mt-8 border-t border-border-default pt-6 lg:hidden">
-            <div className="mb-3 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
-              Browse by Agent
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {[
-                { name: "Claude", slug: "claude" },
-                { name: "OpenAI", slug: "openai" },
-                { name: "Devin", slug: "devin" },
-                { name: "Cursor", slug: "cursor" },
-                { name: "Gemini", slug: "gemini" },
-              ].map(({ name, slug }) => (
+            <div className="flex flex-wrap gap-1">
+              {SEVERITY_FILTERS.map((f) => {
+                const isActive = activeSeverity === f.value;
+                const href = `/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}${f.value ? `&severity=${f.value}` : ""}`;
+                return (
+                  <Link
+                    key={f.value || "all-severity"}
+                    href={href}
+                    aria-current={isActive ? "true" : undefined}
+                    className={[
+                      "rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors",
+                      isActive
+                        ? "border-accent bg-accent-soft text-accent"
+                        : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
+                    ].join(" ")}
+                  >
+                    {f.label}
+                  </Link>
+                );
+              })}
+              {activeSeverity && (
                 <Link
-                  key={slug}
-                  href={`/agent/${slug}`}
-                  className="rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+                  href={`/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}`}
+                  className="rounded-sm border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent hover:text-accent"
+                  title="Clear severity filter"
                 >
-                  {name}
+                  <CloseIcon size={9} />
                 </Link>
-              ))}
-              <Link
-                href="/agent"
-                className="inline-flex items-center gap-1.5 rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent"
-              >
-                All <ArrowRightIcon size={10} />
-              </Link>
-            </div>
-            <div className="mb-3 mt-5 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
-              Browse by Tag
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {[
-                "hallucination",
-                "deleted-data",
-                "security-fail",
-                "wrong-recipient",
-                "expensive-mistake",
-              ].map((slug) => (
-                <Link
-                  key={slug}
-                  href={`/tag/${slug}`}
-                  className="rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-accent"
-                >
-                  #{slug}
-                </Link>
-              ))}
-              <Link
-                href="/tag"
-                className="inline-flex items-center gap-1.5 rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent"
-              >
-                All <ArrowRightIcon size={10} />
-              </Link>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Sidebar */}
-        <aside className="hidden w-56 shrink-0 lg:block">
-          <div className="sticky top-20 space-y-5">
-            <SidebarCard title="By Agent">
-              {[
-                { name: "Claude", slug: "claude" },
-                { name: "OpenAI", slug: "openai" },
-                { name: "Devin", slug: "devin" },
-                { name: "Cursor", slug: "cursor" },
-                { name: "Gemini", slug: "gemini" },
-              ].map(({ name, slug }) => (
-                <Link
-                  key={slug}
-                  href={`/agent/${slug}`}
-                  className="flex items-center justify-between py-3 font-mono text-xs text-text-secondary transition-colors hover:text-text-primary"
-                >
-                  <span>{name}</span>
-                  <span className="text-text-tertiary">
-                    <ArrowRightIcon size={10} />
-                  </span>
-                </Link>
-              ))}
-              <Link
-                href="/agent"
-                className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent"
-              >
-                <span className="inline-flex items-center gap-1.5">
-                  All agents <ArrowRightIcon size={9} />
-                </span>
-              </Link>
-            </SidebarCard>
+        <Suspense fallback={<PostsSkeleton />}>
+          <PostsFeed
+            activeTab={activeTab}
+            currentPage={currentPage}
+            activeAgent={activeAgent}
+            activeSeverity={activeSeverity}
+          />
+        </Suspense>
+      </section>
 
-            <SidebarCard title="Browse Tags">
-              {[
-                "hallucination",
-                "deleted-data",
-                "security-fail",
-                "wrong-recipient",
-                "expensive-mistake",
-              ].map((slug) => (
-                <Link
-                  key={slug}
-                  href={`/tag/${slug}`}
-                  className="block py-3 font-mono text-xs text-text-secondary transition-colors hover:text-accent"
-                >
-                  #{slug}
-                </Link>
-              ))}
-              <Link
-                href="/tag"
-                className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent"
-              >
-                <span className="inline-flex items-center gap-1.5">
-                  All tags <ArrowRightIcon size={9} />
-                </span>
-              </Link>
-            </SidebarCard>
+      {/* Taxonomy promoted from sidebar chips to a full browsable index */}
+      <Suspense fallback={null}>
+        <TaxonomySection />
+      </Suspense>
 
-            <SidebarCard title="Submit">
-              <p className="mb-3 text-xs leading-relaxed text-text-tertiary">
-                Witnessed an AI agent go wrong? File an anonymous case report.
-              </p>
-              <Link
-                href="/submit"
-                className="flex items-center justify-center gap-1.5 rounded-sm border border-accent/60 bg-accent-soft px-3 py-2 text-center font-mono text-[10px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas"
-              >
-                <PlusIcon size={9} /> File Report
-              </Link>
-            </SidebarCard>
-          </div>
-        </aside>
-      </div>
-    </div>
-  );
-}
-
-function SidebarCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-sm border border-border-default bg-bg-surface p-4">
-      <div className="mb-3 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
-        {title}
-      </div>
-      {children}
+      <section className="mt-12 rounded-sm border border-border-default bg-bg-surface px-5 py-5">
+        <h2 className="font-serif text-lg font-medium text-text-primary">
+          Witnessed an AI agent go wrong?
+        </h2>
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-text-secondary">
+          File an anonymous case report. Every submission is reviewed, numbered,
+          and added to the public record.
+        </p>
+        <Link
+          href="/submit"
+          className="mt-4 inline-flex items-center gap-2 rounded-sm border border-accent/60 bg-accent-soft px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas"
+        >
+          <PlusIcon size={10} /> File Report
+        </Link>
+      </section>
     </div>
   );
 }

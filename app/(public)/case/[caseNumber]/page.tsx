@@ -10,7 +10,11 @@ import { CopyLinkButton } from "@/components/post/CopyLinkButton";
 import { CommentsSection } from "@/components/post/CommentsSection";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/ui/icons";
 import { SeverityPill } from "@/components/post/SeverityPill";
-import { SEVERITY_LABELS, severityStyle } from "@/lib/constants/severity";
+import {
+  SEVERITY_DESCRIPTIONS,
+  SEVERITY_LABELS,
+  severityStyle,
+} from "@/lib/constants/severity";
 import { getSiteUrl } from "@/lib/utils/urls";
 
 export const revalidate = 60;
@@ -170,95 +174,74 @@ export default async function CasePage({ params }: PageProps) {
           <span>{post.caseNumber}</span>
         </div>
 
-        {/* Case file header block */}
-        <div className="mb-8 overflow-hidden rounded-sm border border-border-default bg-bg-surface">
-          {/* Metadata row */}
-          <div className="grid grid-cols-2 divide-y divide-border-default border-b border-border-default sm:flex sm:divide-y-0 sm:divide-x sm:divide-border-default [&>*:last-child]:col-span-2 sm:[&>*:last-child]:col-span-1 sm:[&>*:last-child]:ml-auto">
-            <div className="px-4 py-3">
-              <div className="meta-key">Case No.</div>
-              <div className="meta-val mt-0.5 font-semibold tracking-[0.1em] text-accent">
-                {post.caseNumber}
-              </div>
+        {/* Case file header: the story leads, metadata follows */}
+        <header className="mb-6">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <span className="stamp stamp-red">{post.caseNumber}</span>
+            <SeverityPill level={post.damageLevel} />
+            <span className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
+              Filed {formattedDate}
+            </span>
+          </div>
+
+          <h1 className="font-serif text-2xl font-medium leading-tight tracking-tight text-text-primary sm:text-[2.25rem]">
+            {post.title}
+          </h1>
+
+          {post.tags.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {post.tags.map((tag) => (
+                <TagBadge key={tag} tag={tag} />
+              ))}
             </div>
-            <div className="px-4 py-3">
-              <div className="meta-key">Subject</div>
-              <Link
-                href={`/agent/${post.agentSlug}`}
-                className="meta-val mt-0.5 block transition-colors hover:text-accent"
-              >
-                {post.agentName}
-              </Link>
+          )}
+        </header>
+
+        {/* Summary block: what happened, how bad, who, at a glance */}
+        <section className="mb-6" aria-labelledby="summary-heading">
+          <h2 id="summary-heading" className="section-label">
+            At a Glance
+          </h2>
+          <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-border-default bg-border-default sm:grid-cols-3">
+            <div className="bg-bg-surface px-4 py-3">
+              <dt className="meta-key">Agent Involved</dt>
+              <dd className="mt-1">
+                <Link
+                  href={`/agent/${post.agentSlug}`}
+                  className="meta-val transition-colors hover:text-accent"
+                >
+                  {post.agentName}
+                </Link>
+              </dd>
             </div>
-            <div className="px-4 py-3">
-              <div className="meta-key">Filed</div>
-              <div className="meta-val mt-0.5">{formattedDate}</div>
+            <div className="bg-bg-surface px-4 py-3">
+              <dt className="meta-key">Estimated Damage</dt>
+              <dd className="meta-val mt-1">
+                {cost ? (
+                  <span className="text-accent">~{cost}</span>
+                ) : (
+                  <span className="text-text-tertiary">Not quantified</span>
+                )}
+              </dd>
             </div>
             <div className={`px-4 py-3 ${s.bg}`}>
-              <div className="meta-key">Severity</div>
-              <div className="mt-1 flex items-center gap-2">
-                <SeverityPill level={post.damageLevel} compact />
-                <span
-                  className={`font-mono text-sm font-bold tabular-nums ${s.text}`}
-                >
-                  {post.damageLevel} / 5
-                </span>
-                <span
-                  className={`font-mono text-[10px] uppercase tracking-[0.16em] ${s.text}`}
-                >
-                  {severityLabel}
-                </span>
-              </div>
+              <dt className="meta-key">Severity</dt>
+              <dd className={`meta-val mt-1 ${s.text}`}>
+                {post.damageLevel} / 5 {severityLabel}
+              </dd>
             </div>
-          </div>
-
-          {/* Severity progress bar */}
-          <div className="h-1 bg-bg-elevated" aria-hidden="true">
+            <div className="bg-bg-surface px-4 py-3 sm:col-span-3">
+              <dt className="meta-key">Impact Band</dt>
+              <dd className="mt-1 text-sm leading-6 text-text-secondary">
+                {SEVERITY_DESCRIPTIONS[post.damageLevel]}
+              </dd>
+            </div>
+          </dl>
+          {/* Severity bar, redundant with the printed level above */}
+          <div className="mt-px h-1 bg-bg-elevated" aria-hidden="true">
             <div className={`h-1 ${s.fill} ${s.bar}`} />
           </div>
-
-          {/* Title */}
-          <div className="px-5 py-5">
-            <h1 className="font-serif text-2xl font-medium leading-snug tracking-tight text-text-primary sm:text-[2rem]">
-              {post.title}
-            </h1>
-            {post.tags.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {post.tags.map((tag) => (
-                  <TagBadge key={tag} tag={tag} />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Damage + vote row */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border-default px-5 py-3">
-            <div className="flex flex-wrap gap-5">
-              {cost && (
-                <div>
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                    Est. Damage{" "}
-                  </span>
-                  <span className="font-mono text-sm font-semibold tabular-nums text-accent">
-                    ~{cost}
-                  </span>
-                </div>
-              )}
-              <div>
-                <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
-                  Attribution{" "}
-                </span>
-                <span className="font-mono text-sm text-text-secondary">
-                  {post.isAnonymous
-                    ? "Anonymous"
-                    : post.authorHandle
-                      ? `@${post.authorHandle}`
-                      : "Practitioner"}
-                </span>
-              </div>
-            </div>
-            <VoteButtons postId={post.id} initialScore={post.voteScore} />
-          </div>
-        </div>
+        </section>
 
         {/* Source / accuracy disclaimer */}
         <p className="mb-6 font-mono text-[10px] leading-relaxed text-text-tertiary">
@@ -270,7 +253,7 @@ export default async function CasePage({ params }: PageProps) {
         {/* Instruction */}
         {post.prompt && (
           <section className="mb-6">
-            <div className="section-label">Instruction Given to Agent</div>
+            <h2 className="section-label">Instruction Given to Agent</h2>
             <div className="rounded-sm border border-border-default bg-bg-surface">
               <div className="border-b border-border-default px-4 py-2">
                 <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
@@ -288,7 +271,7 @@ export default async function CasePage({ params }: PageProps) {
 
         {/* Findings */}
         <section className="mb-6">
-          <div className="section-label">Incident Summary</div>
+          <h2 className="section-label">What Happened</h2>
           <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-5">
             <p className="text-[0.95rem] leading-7 text-text-primary">
               {post.outcome}
@@ -300,13 +283,13 @@ export default async function CasePage({ params }: PageProps) {
           post.unknowns.length > 0 ||
           post.lessons.length > 0) && (
           <section className="mb-6">
-            <div className="section-label">Case Analysis</div>
+            <h2 className="section-label">Case Analysis</h2>
             <div className="divide-y divide-border-default rounded-sm border border-border-default bg-bg-surface">
               {post.verifiedFacts.length > 0 && (
                 <div className="px-5 py-5">
-                  <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
+                  <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
                     Verified Facts
-                  </h2>
+                  </h3>
                   <ul className="mt-3 space-y-2">
                     {post.verifiedFacts.map((fact) => (
                       <li
@@ -322,9 +305,9 @@ export default async function CasePage({ params }: PageProps) {
               )}
               {post.unknowns.length > 0 && (
                 <div className="px-5 py-5">
-                  <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
+                  <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
                     Not Publicly Confirmed
-                  </h2>
+                  </h3>
                   <ul className="mt-3 space-y-2">
                     {post.unknowns.map((unknown) => (
                       <li
@@ -340,9 +323,9 @@ export default async function CasePage({ params }: PageProps) {
               )}
               {post.lessons.length > 0 && (
                 <div className="px-5 py-5">
-                  <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
+                  <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-secondary">
                     Operational Lessons
-                  </h2>
+                  </h3>
                   <ul className="mt-3 space-y-2">
                     {post.lessons.map((lesson) => (
                       <li
@@ -364,7 +347,7 @@ export default async function CasePage({ params }: PageProps) {
 
         {post.sourceUrl && (
           <section className="mb-6">
-            <div className="section-label">Primary Source</div>
+            <h2 className="section-label">Primary Source</h2>
             <a
               href={post.sourceUrl}
               target="_blank"
@@ -384,10 +367,10 @@ export default async function CasePage({ params }: PageProps) {
         {/* Evidence */}
         {post.screenshots && post.screenshots.length > 0 && (
           <section className="mb-6">
-            <div className="section-label">
+            <h2 className="section-label">
               Evidence — {post.screenshots.length} Exhibit
               {post.screenshots.length > 1 ? "s" : ""}
-            </div>
+            </h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {post.screenshots.map((src, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -402,15 +385,47 @@ export default async function CasePage({ params }: PageProps) {
           </section>
         )}
 
+        {/* Case record: provenance and voting, deliberately after the story */}
+        <section className="mb-6" aria-labelledby="record-heading">
+          <h2 id="record-heading" className="section-label">
+            Case Record
+          </h2>
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-sm border border-border-default bg-bg-surface px-5 py-4">
+            <dl className="flex flex-wrap gap-x-8 gap-y-3">
+              <div>
+                <dt className="meta-key">Case No.</dt>
+                <dd className="meta-val mt-0.5 tracking-[0.1em] text-accent">
+                  {post.caseNumber}
+                </dd>
+              </div>
+              <div>
+                <dt className="meta-key">Filed</dt>
+                <dd className="meta-val mt-0.5">{formattedDate}</dd>
+              </div>
+              <div>
+                <dt className="meta-key">Attribution</dt>
+                <dd className="meta-val mt-0.5 text-text-secondary">
+                  {post.isAnonymous
+                    ? "Anonymous"
+                    : post.authorHandle
+                      ? `@${post.authorHandle}`
+                      : "Practitioner"}
+                </dd>
+              </div>
+            </dl>
+            <VoteButtons postId={post.id} initialScore={post.voteScore} />
+          </div>
+        </section>
+
         {/* Comments */}
         <CommentsSection postId={post.id} />
 
         {/* Related cases */}
         {related.length > 0 && (
           <div className="mt-10 border-t border-border-default pt-8">
-            <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+            <h2 className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
               More Cases
-            </div>
+            </h2>
             <div className="space-y-2">
               {related.map((r) => (
                 <PostCard key={r.id} post={r} />
