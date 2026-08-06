@@ -26,13 +26,7 @@ Copy the environment template and fill in your own values:
 cp .env.example .env.local
 ```
 
-Run the database migration in your Supabase project (paste into the SQL editor or use the CLI):
-
-```bash
-# Via Supabase CLI
-npx supabase link --project-ref <your-ref>
-npx supabase db push
-```
+Schema migrations are managed outside this repository. The expected table shapes are documented by the TypeScript definitions in `types/supabase.ts`, which track the deployed Supabase schema. Once your tables exist, seed sample data with the scripts in `scripts/`.
 
 Start the dev server:
 
@@ -47,12 +41,76 @@ npm run dev
 Before pushing, run:
 
 ```bash
-npm run lint        # ESLint
-npm run format      # Prettier
-npx tsc --noEmit    # TypeScript
+npx prettier --write .   # Prettier
+npm run lint             # ESLint
+npx tsc --noEmit         # TypeScript
+npx vitest run           # Tests
+npm run build            # Production build
 ```
 
-CI runs all three on every PR — failing any of them will block merge.
+CI runs all of these on every PR, and failing any of them will block merge.
+
+---
+
+## Commit and PR title convention
+
+This repository follows [Conventional Commits](https://www.conventionalcommits.org/). Pull requests are squash-merged, so **the PR title becomes the commit message** and is validated in CI by `.github/workflows/pr-title.yml`. A PR with a non-conforming title will fail its check.
+
+Format:
+
+```
+<type>(<optional scope>): <description>
+```
+
+Allowed types:
+
+| Type       | Use for                                     |
+| ---------- | ------------------------------------------- |
+| `feat`     | A new user-facing capability                |
+| `fix`      | A bug fix                                   |
+| `docs`     | Documentation only                          |
+| `chore`    | Maintenance that does not change behaviour  |
+| `refactor` | Code restructuring with no behaviour change |
+| `test`     | Adding or fixing tests                      |
+| `perf`     | Performance improvements                    |
+| `ci`       | CI and workflow changes                     |
+| `build`    | Build config or dependency changes          |
+| `style`    | Formatting only                             |
+| `revert`   | Reverting a previous commit                 |
+
+Examples:
+
+```
+feat: add severity filter to the case feed
+fix: prevent duplicate case numbers on concurrent approval
+docs: document the edit-token flow in the README
+chore: bump wrangler to 4.98
+refactor: extract severity styling into a shared helper
+test: cover rate limiting in the submit route
+perf: cache tag counts on the tag index page
+ci: run vitest in the CI workflow
+```
+
+Scopes are optional and lowercase, naming the area touched:
+
+```
+fix(admin): stop the approve button double-firing
+feat(api): expose damage totals from /api/export
+```
+
+Breaking changes use a `!` before the colon, and explain the break in the PR body:
+
+```
+feat(api)!: drop the legacy /api/posts response shape
+```
+
+Local commit messages are checked with the same ruleset if you want to run it yourself:
+
+```bash
+npx commitlint --from HEAD~1
+```
+
+There are no git hooks in this repo on purpose, so nothing is installed behind your back and outside contributors get the same experience as maintainers.
 
 ---
 
@@ -91,9 +149,12 @@ Open an issue first to discuss before building. Large PRs without prior discussi
 
 ## Pull request checklist
 
+- [ ] PR title follows Conventional Commits
+- [ ] `npx prettier --check .` passes
 - [ ] `npm run lint` passes
 - [ ] `npx tsc --noEmit` passes
-- [ ] `npm run format` applied
+- [ ] `npx vitest run` passes
+- [ ] `npm run build` passes
 - [ ] Tested locally on dev server
 - [ ] PR description explains what changed and why
 
