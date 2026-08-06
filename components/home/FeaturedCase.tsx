@@ -4,6 +4,7 @@ import { TagBadge } from "@/components/post/TagBadge";
 import { ArrowRightIcon } from "@/components/ui/icons";
 import { SEVERITY_DESCRIPTIONS } from "@/lib/constants/severity";
 import { formatUsd } from "@/lib/utils/format";
+import { incidentDate } from "@/lib/utils/incident-date";
 import type { Post } from "@/types";
 
 /**
@@ -17,7 +18,7 @@ export function FeaturedCase({ post }: { post: Post }) {
     day: "numeric",
     year: "numeric",
     timeZone: "UTC",
-  }).format(new Date(post.createdAt));
+  }).format(new Date(incidentDate(post)));
 
   return (
     <article className="plate relative rounded-sm border border-border-strong bg-bg-surface/40 px-5 sm:px-7">

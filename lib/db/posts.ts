@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Post } from "@/types";
 import type { SeverityLevel } from "@/lib/constants/severity";
+import { incidentDate, incidentMonth } from "@/lib/utils/incident-date";
 
 export type FeedTab = "hot" | "new" | "week" | "hof";
 
@@ -59,7 +60,11 @@ export async function fetchFeedPosts(
     if (severity != null) query = query.eq("damage_level", severity);
 
     if (tab === "new") {
-      query = query.order("created_at", { ascending: false });
+      // Newest incident first, falling back to the record date for the
+      // handful of cases with no known source publication date.
+      query = query
+        .order("source_published_at", { ascending: false, nullsFirst: false })
+        .order("created_at", { ascending: false });
     } else if (tab === "week") {
       const weekAgo = new Date(
         Date.now() - 7 * 24 * 60 * 60 * 1000,
@@ -72,6 +77,7 @@ export async function fetchFeedPosts(
     } else {
       query = query
         .order("vote_score", { ascending: false })
+        .order("source_published_at", { ascending: false, nullsFirst: false })
         .order("created_at", { ascending: false });
     }
 
@@ -390,7 +396,7 @@ export async function fetchStatsData(): Promise<StatsData> {
     const { data: posts } = await supabase
       .from("posts")
       .select(
-        "damage_level, estimated_cost_usd, created_at, agents(slug, name), post_tags(tags(slug, label))",
+        "damage_level, estimated_cost_usd, created_at, source_published_at, agents(slug, name), post_tags(tags(slug, label))",
       )
       .eq("status", "approved")
       .order("created_at", { ascending: false });
@@ -399,6 +405,7 @@ export async function fetchStatsData(): Promise<StatsData> {
       damage_level: number;
       estimated_cost_usd: number | null;
       created_at: string;
+      source_published_at: string | null;
       agents: { slug: string; name: string } | null;
       post_tags: Array<{ tags: { slug: string; label: string } | null }>;
     }>;
@@ -434,8 +441,8 @@ export async function fetchStatsData(): Promise<StatsData> {
         }
       }
 
-      const month = row.created_at.slice(0, 7); // "YYYY-MM"
-      monthMap.set(month, (monthMap.get(month) ?? 0) + 1);
+      const month = incidentMonth(row); // "YYYY-MM", source date preferred
+      if (month) monthMap.set(month, (monthMap.get(month) ?? 0) + 1);
     }
 
     const byAgent = Array.from(agentMap.entries())
@@ -507,7 +514,7 @@ export interface RegistryOverview {
   byTag: OverviewBucket[];
   byMonth: MonthBucket[];
   /** Newest case timestamp on file, ISO string */
-  latestFiledAt: string | null;
+  latestIncidentAt: string | null;
 }
 
 const EMPTY_OVERVIEW: RegistryOverview = {
@@ -518,7 +525,7 @@ const EMPTY_OVERVIEW: RegistryOverview = {
   byAgent: [],
   byTag: [],
   byMonth: [],
-  latestFiledAt: null,
+  latestIncidentAt: null,
 };
 
 export async function fetchRegistryOverview(): Promise<RegistryOverview> {
@@ -527,7 +534,7 @@ export async function fetchRegistryOverview(): Promise<RegistryOverview> {
     const { data } = await supabase
       .from("posts")
       .select(
-        "damage_level, estimated_cost_usd, created_at, agents(slug, name), post_tags(tags(slug, label))",
+        "damage_level, estimated_cost_usd, created_at, source_published_at, agents(slug, name), post_tags(tags(slug, label))",
       )
       .eq("status", "approved")
       .order("created_at", { ascending: false });
@@ -536,6 +543,7 @@ export async function fetchRegistryOverview(): Promise<RegistryOverview> {
       damage_level: number;
       estimated_cost_usd: number | null;
       created_at: string;
+      source_published_at: string | null;
       agents: { slug: string; name: string } | null;
       post_tags: Array<{ tags: { slug: string; label: string } | null }>;
     }>;
@@ -589,7 +597,7 @@ export async function fetchRegistryOverview(): Promise<RegistryOverview> {
         tagMap.set(pt.tags.slug, bucket);
       }
 
-      const month = row.created_at.slice(0, 7);
+      const month = incidentMonth(row) ?? row.created_at.slice(0, 7);
       const mb = monthMap.get(month) ?? { month, count: 0, damageUsd: 0 };
       mb.count += 1;
       mb.damageUsd += cost;
@@ -606,7 +614,10 @@ export async function fetchRegistryOverview(): Promise<RegistryOverview> {
       byMonth: Array.from(monthMap.values())
         .sort((a, b) => a.month.localeCompare(b.month))
         .slice(-12),
-      latestFiledAt: rows[0]?.created_at ?? null,
+      latestIncidentAt: rows.reduce<string | null>((latest, row) => {
+        const date = incidentDate(row);
+        return latest == null || date > latest ? date : latest;
+      }, null),
     };
   } catch {
     return EMPTY_OVERVIEW;

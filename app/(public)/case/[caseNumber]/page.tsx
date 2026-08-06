@@ -16,6 +16,7 @@ import {
   severityStyle,
 } from "@/lib/constants/severity";
 import { getSiteUrl } from "@/lib/utils/urls";
+import { incidentDate } from "@/lib/utils/incident-date";
 
 export const revalidate = 60;
 
@@ -91,7 +92,7 @@ export default async function CasePage({ params }: PageProps) {
     month: "long",
     day: "numeric",
     timeZone: "UTC",
-  }).format(new Date(post.createdAt));
+  }).format(new Date(incidentDate(post)));
 
   const cost =
     post.estimatedCostUsd != null
@@ -109,7 +110,7 @@ export default async function CasePage({ params }: PageProps) {
     "@type": "Article",
     headline: post.title,
     description: post.outcome.slice(0, 160),
-    datePublished: post.createdAt,
+    datePublished: incidentDate(post),
     dateModified: post.createdAt,
     author: {
       "@type": "Organization",
@@ -179,7 +180,7 @@ export default async function CasePage({ params }: PageProps) {
               <span className="stamp stamp-red">{post.caseNumber}</span>
               <SeverityPill level={post.damageLevel} />
               <span className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
-                Filed {formattedDate}
+                Reported {formattedDate}
               </span>
             </div>
 
@@ -398,7 +399,7 @@ export default async function CasePage({ params }: PageProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="meta-key">Filed</dt>
+                  <dt className="meta-key">Reported</dt>
                   <dd className="meta-val mt-0.5">{formattedDate}</dd>
                 </div>
                 <div>

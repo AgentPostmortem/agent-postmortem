@@ -169,7 +169,7 @@ export function FailureModePanel({ data }: { data: RegistryOverview }) {
 }
 
 /**
- * Cases filed per month, hand-built as CSS columns. No charting dependency,
+ * Cases per month reported, hand-built as CSS columns. No charting dependency,
  * no client JavaScript. Every bar is a real month count.
  */
 export function TimelinePanel({ data }: { data: RegistryOverview }) {
@@ -180,7 +180,7 @@ export function TimelinePanel({ data }: { data: RegistryOverview }) {
 
   return (
     <Panel
-      title="Cases filed by month"
+      title="Cases by month reported"
       note={totalDamage ? `${totalDamage} logged damage` : undefined}
     >
       <ol className="flex h-24 items-end gap-1.5">
