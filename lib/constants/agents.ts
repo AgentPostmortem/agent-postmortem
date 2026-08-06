@@ -237,6 +237,27 @@ export const AGENTS: AgentMeta[] = [
       "Amazon's agentic AI coding assistant, used internally and by AWS customers for autonomous development tasks.",
   },
   {
+    slug: "workday",
+    name: "Workday AI Screening",
+    company: "Workday",
+    description:
+      "Workday's AI-powered recruiting and applicant screening tools, used by employers to filter job applications at scale.",
+  },
+  {
+    slug: "semantic-kernel",
+    name: "Microsoft Semantic Kernel",
+    company: "Microsoft",
+    description:
+      "Microsoft's open-source agent framework for orchestrating LLM tool use across .NET, Python and Java.",
+  },
+  {
+    slug: "mcp",
+    name: "Model Context Protocol (MCP)",
+    company: "Anthropic",
+    description:
+      "Open protocol and SDKs connecting AI agents to external tools, data sources and servers.",
+  },
+  {
     slug: "grok",
     name: "Grok",
     company: "xAI",
