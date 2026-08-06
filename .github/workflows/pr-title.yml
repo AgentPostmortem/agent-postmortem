@@ -1,0 +1,46 @@
+name: PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  conventional-commit:
+    name: Conventional Commit title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title ?? "";
+            const pattern =
+              /^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9][a-z0-9._\/-]*\))?!?: .{1,}$/;
+
+            if (!pattern.test(title)) {
+              core.setFailed(
+                [
+                  `PR title does not follow Conventional Commits: "${title}"`,
+                  "",
+                  "This repository squash-merges, so the PR title becomes the commit message.",
+                  "Expected: <type>(<optional scope>): <description>",
+                  "Types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test",
+                  "",
+                  "Examples:",
+                  "  feat: add severity filter to the case feed",
+                  "  fix(admin): stop duplicate case numbers on approval",
+                  "  docs: document the edit-token flow",
+                  "  feat(api)!: drop the legacy /api/posts response shape",
+                ].join("\n"),
+              );
+              return;
+            }
+
+            if (title.length > 100) {
+              core.setFailed(
+                `PR title is ${title.length} characters; keep it to 100 or fewer.`,
+              );
+            }

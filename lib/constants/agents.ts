@@ -223,6 +223,26 @@ export const AGENTS: AgentMeta[] = [
       "Custom agents built directly on the OpenAI API without a named product wrapper.",
   },
   {
+    slug: "microsoft-365-copilot",
+    name: "Microsoft 365 Copilot",
+    company: "Microsoft",
+    description:
+      "Microsoft's AI assistant embedded across Microsoft 365 apps, with access to Outlook, OneDrive, SharePoint and Teams content.",
+  },
+  {
+    slug: "kiro",
+    name: "Kiro",
+    company: "Amazon",
+    description:
+      "Amazon's agentic AI coding assistant, used internally and by AWS customers for autonomous development tasks.",
+  },
+  {
+    slug: "grok",
+    name: "Grok",
+    company: "xAI",
+    description: "xAI's conversational model, deployed on X and via API.",
+  },
+  {
     slug: "other",
     name: "Other / Unknown",
     company: "Unknown",
