@@ -9,6 +9,7 @@ import { fetchPostByCase, fetchRelatedPosts } from "@/lib/db/posts";
 import { CopyLinkButton } from "@/components/post/CopyLinkButton";
 import { CommentsSection } from "@/components/post/CommentsSection";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/ui/icons";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 export const revalidate = 60;
 
@@ -474,7 +475,7 @@ export default async function CasePage({ params }: PageProps) {
           {/* Share */}
           <div className="flex items-center gap-3">
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${post.title}" — AI agent failure case ${post.caseNumber}`)}&url=${encodeURIComponent(`https://agentpostmortem.com/case/${post.caseNumber}`)}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${post.title}" — AI agent failure case ${post.caseNumber}`)}&url=${encodeURIComponent(`${getSiteUrl()}/case/${post.caseNumber}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
