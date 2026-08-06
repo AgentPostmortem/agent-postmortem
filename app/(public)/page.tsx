@@ -11,6 +11,7 @@ import {
   TimelinePanel,
 } from "@/components/home/OverviewPanels";
 import { ArrowRightIcon, CloseIcon, PlusIcon } from "@/components/ui/icons";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   fetchFeedPosts,
   fetchRegistryOverview,
@@ -94,13 +95,13 @@ function CounterStrip({ data }: { data: RegistryOverview }) {
   ];
 
   return (
-    <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border-default bg-border-default sm:grid-cols-4">
+    <dl className="grid grid-cols-2 gap-x-8 gap-y-8 border-y border-border-default py-8 sm:grid-cols-4">
       {items.map((item) => (
-        <div key={item.label} className="bg-bg-surface px-3 py-3 sm:px-4">
+        <div key={item.label} className="min-w-0">
           <dt className="sr-only">{item.label}</dt>
           <dd>
             <span
-              className={`block font-mono text-xl font-bold tabular-nums sm:text-2xl ${
+              className={`block font-mono text-[1.75rem] font-medium leading-none tabular-nums sm:text-[2.25rem] ${
                 item.accent ? "text-accent" : "text-text-primary"
               }`}
             >
@@ -108,7 +109,7 @@ function CounterStrip({ data }: { data: RegistryOverview }) {
             </span>
             <span
               aria-hidden="true"
-              className="mt-1 block font-mono text-[8px] uppercase leading-relaxed tracking-[0.16em] text-text-tertiary sm:text-[9px]"
+              className="mt-2.5 block font-mono text-[9px] uppercase leading-relaxed tracking-[0.16em] text-text-tertiary"
             >
               {item.label}
             </span>
@@ -124,27 +125,25 @@ async function RegistryOverviewSection() {
   if (data.totalCases === 0) return null;
 
   return (
-    <section aria-labelledby="overview-heading" className="mt-8">
+    <section aria-labelledby="overview-heading" className="mt-10">
       <CounterStrip data={data} />
 
-      <div className="mt-6 flex items-baseline justify-between gap-4 border-b border-border-default pb-2">
-        <h2
+      <div className="section-gap">
+        <SectionHeading
           id="overview-heading"
-          className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-secondary"
-        >
-          What the registry shows
-        </h2>
-        <Link
-          href="/stats"
-          className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent"
-        >
-          <span className="inline-flex items-center gap-1.5">
-            Full stats <ArrowRightIcon size={9} />
-          </span>
-        </Link>
+          title="What the registry shows"
+          meta={
+            <Link
+              href="/stats"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-accent"
+            >
+              Full stats <ArrowRightIcon size={9} />
+            </Link>
+          }
+        />
       </div>
 
-      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-px bg-border-default md:grid-cols-2 xl:grid-cols-4">
         <SeverityPanel data={data} />
         <FailureModePanel data={data} />
         <AgentPanel data={data} />
@@ -156,14 +155,11 @@ async function RegistryOverviewSection() {
 
 function OverviewSkeleton() {
   return (
-    <div className="mt-8 space-y-4">
-      <div className="h-[74px] animate-pulse rounded-sm border border-border-default bg-bg-surface" />
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+    <div className="mt-10 space-y-6">
+      <div className="h-[96px] animate-pulse bg-bg-surface" />
+      <div className="grid gap-px bg-border-default md:grid-cols-2 xl:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="h-48 animate-pulse rounded-sm border border-border-default bg-bg-surface"
-          />
+          <div key={i} className="h-48 animate-pulse bg-bg-surface" />
         ))}
       </div>
     </div>
@@ -245,7 +241,7 @@ async function PostsFeed({
 
   return (
     <>
-      <p className="mb-3 font-mono text-[10px] text-text-tertiary">
+      <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.14em] text-text-tertiary">
         Showing {posts.length} of {total.toLocaleString()} cases, grouped by{" "}
         {activeTab === "new" || activeTab === "week"
           ? "filing month"
@@ -253,10 +249,10 @@ async function PostsFeed({
         .
       </p>
 
-      <div className="space-y-5">
+      <div className="space-y-10">
         {groups.map((group) => (
           <section key={group.key} aria-label={group.title}>
-            <div className="flex items-baseline justify-between gap-3 border-b border-border-strong pb-1.5">
+            <div className="flex items-baseline justify-between gap-3 border-b border-border-strong pb-2">
               <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-text-primary">
                 {group.title}
               </h3>
@@ -266,7 +262,7 @@ async function PostsFeed({
               </span>
             </div>
             {/* Column headers make the rows comparable, not just readable */}
-            <div className="hidden grid-cols-[7.5rem_minmax(0,1fr)_6.5rem_5rem_4.5rem] gap-x-4 border-b border-border-default px-4 py-1.5 font-mono text-[9px] uppercase tracking-widest text-text-tertiary sm:grid">
+            <div className="hidden grid-cols-[7.5rem_minmax(0,1fr)_9rem_7rem_6rem] gap-x-6 border-b border-border-default px-4 py-2 font-mono text-[9px] uppercase tracking-widest text-text-tertiary sm:grid">
               <span>Case / severity</span>
               <span>Incident</span>
               <span>Agent</span>
@@ -308,10 +304,7 @@ function PostsSkeleton() {
   return (
     <div className="space-y-2">
       {[0, 1, 2, 3, 4, 5].map((i) => (
-        <div
-          key={i}
-          className="h-16 animate-pulse rounded-sm border border-border-default bg-bg-surface"
-        />
+        <div key={i} className="h-16 animate-pulse bg-bg-surface" />
       ))}
     </div>
   );
@@ -321,24 +314,15 @@ async function FeaturedCaseSection() {
   const post = await fetchWorstCase();
   if (!post) return null;
   return (
-    <section aria-labelledby="featured-heading" className="mt-10">
-      <div className="mb-3 border-b border-border-default pb-2">
-        <h2
-          id="featured-heading"
-          className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-secondary"
-        >
-          Featured case
-        </h2>
-      </div>
+    <section aria-labelledby="featured-heading" className="section-gap">
+      <SectionHeading id="featured-heading" title="Featured case" />
       <FeaturedCase post={post} />
     </section>
   );
 }
 
 function FeaturedSkeleton() {
-  return (
-    <div className="mt-10 h-56 animate-pulse rounded-sm border border-border-default bg-bg-surface" />
-  );
+  return <div className="section-gap h-56 animate-pulse bg-bg-surface" />;
 }
 
 /* -------------------------------------------------------------- taxonomy */
@@ -350,28 +334,22 @@ async function TaxonomySection() {
   const maxTag = Math.max(...data.byTag.map((t) => t.count), 1);
 
   return (
-    <section aria-labelledby="taxonomy-heading" className="mt-12">
-      <div className="mb-4 flex items-baseline justify-between gap-4 border-b border-border-default pb-2">
-        <h2
-          id="taxonomy-heading"
-          className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-secondary"
-        >
-          Browse the taxonomy
-        </h2>
-        <span className="font-mono text-[9px] uppercase tracking-wider text-text-tertiary">
-          {data.byTag.length} failure modes · {data.byAgent.length} agents
-        </span>
-      </div>
+    <section aria-labelledby="taxonomy-heading" className="section-gap">
+      <SectionHeading
+        id="taxonomy-heading"
+        title="Browse the taxonomy"
+        meta={`${data.byTag.length} failure modes · ${data.byAgent.length} agents`}
+      />
 
-      <h3 className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-text-tertiary">
+      <h3 className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-text-tertiary">
         Failure modes
       </h3>
-      <ul className="grid gap-px overflow-hidden rounded-sm border border-border-default bg-border-default sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-px bg-border-default sm:grid-cols-2 lg:grid-cols-3">
         {data.byTag.map((tag) => (
           <li key={tag.slug}>
             <Link
               href={`/tag/${tag.slug}`}
-              className="block bg-bg-surface px-4 py-3 transition-colors hover:bg-bg-elevated"
+              className="block bg-bg-canvas px-4 py-3.5 transition-colors hover:bg-bg-surface"
             >
               <span className="flex items-baseline justify-between gap-3">
                 <span className="truncate font-mono text-xs text-text-secondary">
@@ -381,9 +359,9 @@ async function TaxonomySection() {
                   {tag.count}
                 </span>
               </span>
-              <span className="mt-1.5 block h-1 w-full rounded-[1px] bg-bg-elevated">
+              <span className="mt-2 block h-px w-full bg-border-default">
                 <span
-                  className="block h-1 rounded-[1px] bg-accent/60"
+                  className="block h-px bg-text-tertiary"
                   style={{
                     width: `${Math.max(2, Math.round((tag.count / maxTag) * 100))}%`,
                   }}
@@ -394,17 +372,17 @@ async function TaxonomySection() {
         ))}
       </ul>
 
-      <h3 className="mb-2 mt-6 font-mono text-[10px] uppercase tracking-[0.18em] text-text-tertiary">
+      <h3 className="mb-3 mt-10 font-mono text-[10px] uppercase tracking-[0.18em] text-text-tertiary">
         Agents
       </h3>
-      <ul className="grid gap-px overflow-hidden rounded-sm border border-border-default bg-border-default sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid gap-px bg-border-default sm:grid-cols-2 lg:grid-cols-4">
         {data.byAgent.map((agent) => {
           const damage = formatUsd(agent.damageUsd);
           return (
             <li key={agent.slug}>
               <Link
                 href={`/agent/${agent.slug}`}
-                className="block bg-bg-surface px-4 py-3 transition-colors hover:bg-bg-elevated"
+                className="block bg-bg-canvas px-4 py-3.5 transition-colors hover:bg-bg-surface"
               >
                 <span className="flex items-baseline justify-between gap-3">
                   <span className="truncate font-mono text-xs text-text-primary">
@@ -436,17 +414,17 @@ export default function HomePage({ searchParams }: PageProps) {
   const activeSeverity = searchParams.severity ?? "";
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="shell py-12 sm:py-16">
       {/* Masthead: compact, so the data starts above the fold */}
-      <header className="border-b border-border-default pb-8">
-        <div className="mb-4 flex flex-wrap items-center gap-2">
+      <header className="border-b border-border-default pb-12">
+        <div className="mb-6 flex flex-wrap items-center gap-2">
           <span className="stamp stamp-red">Unrestricted</span>
           <span className="stamp stamp-muted">Public Registry</span>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end">
           <div>
-            <h1 className="font-serif text-3xl font-medium leading-[1.05] tracking-[-0.02em] text-text-primary sm:text-5xl">
+            <h1 className="max-w-[16ch] font-serif text-[2.5rem] font-medium leading-[0.98] tracking-[-0.03em] text-text-primary sm:text-6xl lg:text-[4.25rem]">
               Every AI Agent{" "}
               <span className="text-text-secondary">Failure,</span>{" "}
               <span className="relative text-accent">
@@ -457,7 +435,7 @@ export default function HomePage({ searchParams }: PageProps) {
                 />
               </span>
             </h1>
-            <p className="mt-4 max-w-xl text-[0.95rem] leading-relaxed text-text-secondary">
+            <p className="mt-6 max-w-[52ch] text-base leading-[1.7] text-text-secondary sm:text-[1.0625rem]">
               A structured public ledger for AI agent incidents. Submit
               anonymously. Every case numbered, tagged, and searchable. Built so
               the next team doesn&apos;t make the same mistake.
@@ -513,11 +491,11 @@ export default function HomePage({ searchParams }: PageProps) {
       </Suspense>
 
       {/* Clustered case feed */}
-      <section aria-labelledby="feed-heading" className="mt-12">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3 border-b border-border-default">
+      <section aria-labelledby="feed-heading" className="section-gap">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-border-default">
           <h2
             id="feed-heading"
-            className="pb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-text-secondary"
+            className="pb-3 font-serif text-[1.375rem] font-medium leading-none tracking-[-0.015em] text-text-primary sm:text-[1.625rem]"
           >
             Case feed
           </h2>
@@ -536,9 +514,9 @@ export default function HomePage({ searchParams }: PageProps) {
                       : `/?tab=${tab.value}${activeAgent ? `&agent=${activeAgent}` : ""}${activeSeverity ? `&severity=${activeSeverity}` : ""}`
                   }
                   className={[
-                    "relative pb-3 pl-5 font-mono text-[11px] uppercase tracking-wider transition-colors",
+                    "relative pb-3 pl-6 font-mono text-[11px] uppercase tracking-wider transition-colors",
                     isActive
-                      ? "text-text-primary after:absolute after:bottom-0 after:left-5 after:right-0 after:h-0.5 after:bg-accent"
+                      ? "text-text-primary after:absolute after:bottom-0 after:left-6 after:right-0 after:h-0.5 after:bg-accent"
                       : "text-text-tertiary hover:text-text-secondary",
                   ].join(" ")}
                 >
@@ -550,7 +528,7 @@ export default function HomePage({ searchParams }: PageProps) {
         </div>
 
         {/* Filter bar */}
-        <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-2">
           <div className="flex items-center gap-1.5">
             <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
               Agent
@@ -639,17 +617,17 @@ export default function HomePage({ searchParams }: PageProps) {
         <TaxonomySection />
       </Suspense>
 
-      <section className="mt-12 rounded-sm border border-border-default bg-bg-surface px-5 py-5">
-        <h2 className="font-serif text-lg font-medium text-text-primary">
+      <section className="section-gap border-t border-border-default pt-10">
+        <h2 className="font-serif text-2xl font-medium tracking-[-0.015em] text-text-primary">
           Witnessed an AI agent go wrong?
         </h2>
-        <p className="mt-2 max-w-xl text-sm leading-relaxed text-text-secondary">
+        <p className="mt-3 max-w-[52ch] text-[0.95rem] leading-relaxed text-text-secondary">
           File an anonymous case report. Every submission is reviewed, numbered,
           and added to the public record.
         </p>
         <Link
           href="/submit"
-          className="mt-4 inline-flex items-center gap-2 rounded-sm border border-accent/60 bg-accent-soft px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas"
+          className="mt-6 inline-flex items-center gap-2 rounded-sm border border-accent/60 bg-accent-soft px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas"
         >
           <PlusIcon size={10} /> File Report
         </Link>
@@ -660,7 +638,7 @@ export default function HomePage({ searchParams }: PageProps) {
 
 function EmptyFeed() {
   return (
-    <div className="rounded-sm border border-dashed border-border-default py-16 text-center">
+    <div className="border border-dashed border-border-default py-20 text-center">
       <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-border-strong">
         <span className="text-text-tertiary">
           <CloseIcon size={14} />

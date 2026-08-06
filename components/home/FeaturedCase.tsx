@@ -20,10 +20,10 @@ export function FeaturedCase({ post }: { post: Post }) {
   }).format(new Date(post.createdAt));
 
   return (
-    <article className="overflow-hidden rounded-sm border border-border-strong bg-bg-surface">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border-default px-5 py-2.5">
+    <article className="border-y border-border-default">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border-default py-3">
         <span className="stamp stamp-red">Worst on file</span>
-        <span className="font-mono text-[10px] tracking-[0.12em] text-accent">
+        <span className="font-mono text-[10px] tracking-[0.12em] text-text-tertiary">
           {post.caseNumber}
         </span>
         <SeverityPill level={post.damageLevel} />
@@ -32,9 +32,9 @@ export function FeaturedCase({ post }: { post: Post }) {
         </span>
       </div>
 
-      <div className="grid gap-5 px-5 py-5 lg:grid-cols-[minmax(0,1fr)_13rem]">
+      <div className="grid gap-8 py-7 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <div className="min-w-0">
-          <h3 className="font-serif text-xl font-medium leading-snug tracking-tight text-text-primary sm:text-2xl">
+          <h3 className="max-w-[24ch] font-serif text-2xl font-medium leading-[1.15] tracking-[-0.02em] text-text-primary sm:text-[2rem]">
             <Link
               href={`/case/${post.caseNumber.toLowerCase()}`}
               className="transition-colors hover:text-accent"
@@ -42,7 +42,7 @@ export function FeaturedCase({ post }: { post: Post }) {
               {post.title}
             </Link>
           </h3>
-          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-text-secondary">
+          <p className="mt-4 line-clamp-3 max-w-[62ch] text-[0.95rem] leading-[1.7] text-text-secondary">
             {post.outcome}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-1.5">
@@ -58,20 +58,20 @@ export function FeaturedCase({ post }: { post: Post }) {
           </Link>
         </div>
 
-        <dl className="grid grid-cols-2 gap-px self-start overflow-hidden rounded-sm border border-border-default bg-border-default lg:grid-cols-1">
-          <div className="bg-bg-elevated px-3 py-2.5">
+        <dl className="grid grid-cols-2 gap-px self-start bg-border-default lg:grid-cols-1">
+          <div className="bg-bg-canvas px-4 py-3">
             <dt className="meta-key">Agent</dt>
             <dd className="meta-val mt-0.5 truncate">{post.agentName}</dd>
           </div>
-          <div className="bg-bg-elevated px-3 py-2.5">
+          <div className="bg-bg-canvas px-4 py-3">
             <dt className="meta-key">Est. damage</dt>
             <dd className="meta-val mt-0.5">
               {cost ? `~${cost}` : "Not quantified"}
             </dd>
           </div>
-          <div className="col-span-2 bg-bg-elevated px-3 py-2.5 lg:col-span-1">
+          <div className="col-span-2 bg-bg-canvas px-4 py-3 lg:col-span-1">
             <dt className="meta-key">Impact</dt>
-            <dd className="mt-0.5 text-[0.72rem] leading-relaxed text-text-secondary">
+            <dd className="mt-1 text-[0.75rem] leading-relaxed text-text-secondary">
               {SEVERITY_DESCRIPTIONS[post.damageLevel]}
             </dd>
           </div>
