@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Post } from "@/types";
+import type { SeverityLevel } from "@/lib/constants/severity";
 
 export type FeedTab = "hot" | "new" | "week" | "hof";
 
@@ -469,5 +470,168 @@ export async function fetchStatsData(): Promise<StatsData> {
       byTag: [],
       recentByMonth: [],
     };
+  }
+}
+
+export interface OverviewBucket {
+  slug: string;
+  label: string;
+  count: number;
+}
+
+export interface AgentBucket extends OverviewBucket {
+  /** Cases at damage level 4 or 5 */
+  severeCount: number;
+  /** Sum of estimated_cost_usd for this agent, 0 when nothing is quantified */
+  damageUsd: number;
+}
+
+export interface MonthBucket {
+  month: string;
+  count: number;
+  damageUsd: number;
+}
+
+/**
+ * Read-only homepage aggregate. One query over approved posts, folded into the
+ * counts the registry overview renders. Every number here is computed from real
+ * rows; nothing is estimated or filled in.
+ */
+export interface RegistryOverview {
+  totalCases: number;
+  totalDamageUsd: number;
+  /** Cases that carry an estimated_cost_usd value */
+  quantifiedCases: number;
+  bySeverity: Record<SeverityLevel, number>;
+  byAgent: AgentBucket[];
+  byTag: OverviewBucket[];
+  byMonth: MonthBucket[];
+  /** Newest case timestamp on file, ISO string */
+  latestFiledAt: string | null;
+}
+
+const EMPTY_OVERVIEW: RegistryOverview = {
+  totalCases: 0,
+  totalDamageUsd: 0,
+  quantifiedCases: 0,
+  bySeverity: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+  byAgent: [],
+  byTag: [],
+  byMonth: [],
+  latestFiledAt: null,
+};
+
+export async function fetchRegistryOverview(): Promise<RegistryOverview> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data } = await supabase
+      .from("posts")
+      .select(
+        "damage_level, estimated_cost_usd, created_at, agents(slug, name), post_tags(tags(slug, label))",
+      )
+      .eq("status", "approved")
+      .order("created_at", { ascending: false });
+
+    const rows = (data ?? []) as Array<{
+      damage_level: number;
+      estimated_cost_usd: number | null;
+      created_at: string;
+      agents: { slug: string; name: string } | null;
+      post_tags: Array<{ tags: { slug: string; label: string } | null }>;
+    }>;
+
+    if (rows.length === 0) return EMPTY_OVERVIEW;
+
+    const bySeverity: Record<SeverityLevel, number> = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    };
+    const agentMap = new Map<string, AgentBucket>();
+    const tagMap = new Map<string, OverviewBucket>();
+    const monthMap = new Map<string, MonthBucket>();
+
+    let totalDamageUsd = 0;
+    let quantifiedCases = 0;
+
+    for (const row of rows) {
+      const level = (row.damage_level ?? 1) as SeverityLevel;
+      bySeverity[level] = (bySeverity[level] ?? 0) + 1;
+
+      const cost = row.estimated_cost_usd ?? 0;
+      totalDamageUsd += cost;
+      if (row.estimated_cost_usd != null) quantifiedCases += 1;
+
+      if (row.agents) {
+        const bucket = agentMap.get(row.agents.slug) ?? {
+          slug: row.agents.slug,
+          label: row.agents.name,
+          count: 0,
+          severeCount: 0,
+          damageUsd: 0,
+        };
+        bucket.count += 1;
+        if (level >= 4) bucket.severeCount += 1;
+        bucket.damageUsd += cost;
+        agentMap.set(row.agents.slug, bucket);
+      }
+
+      for (const pt of row.post_tags ?? []) {
+        if (!pt.tags) continue;
+        const bucket = tagMap.get(pt.tags.slug) ?? {
+          slug: pt.tags.slug,
+          label: pt.tags.label,
+          count: 0,
+        };
+        bucket.count += 1;
+        tagMap.set(pt.tags.slug, bucket);
+      }
+
+      const month = row.created_at.slice(0, 7);
+      const mb = monthMap.get(month) ?? { month, count: 0, damageUsd: 0 };
+      mb.count += 1;
+      mb.damageUsd += cost;
+      monthMap.set(month, mb);
+    }
+
+    return {
+      totalCases: rows.length,
+      totalDamageUsd,
+      quantifiedCases,
+      bySeverity,
+      byAgent: Array.from(agentMap.values()).sort((a, b) => b.count - a.count),
+      byTag: Array.from(tagMap.values()).sort((a, b) => b.count - a.count),
+      byMonth: Array.from(monthMap.values())
+        .sort((a, b) => a.month.localeCompare(b.month))
+        .slice(-12),
+      latestFiledAt: rows[0]?.created_at ?? null,
+    };
+  } catch {
+    return EMPTY_OVERVIEW;
+  }
+}
+
+/**
+ * The single worst case on file: highest severity, then highest quantified
+ * damage, then most recent. Read-only, used for the featured slot.
+ */
+export async function fetchWorstCase(): Promise<Post | null> {
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`*, agents(slug, name, company), post_tags(tags(slug, label))`)
+      .eq("status", "approved")
+      .order("damage_level", { ascending: false })
+      .order("estimated_cost_usd", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (error || !data || data.length === 0) return null;
+    return rowToPost(data[0] as Record<string, unknown>);
+  } catch {
+    return null;
   }
 }
