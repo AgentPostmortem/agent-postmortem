@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { severityStyle } from "@/lib/constants/severity";
 import { formatUsd } from "@/lib/utils/format";
+import { incidentDate } from "@/lib/utils/incident-date";
 import type { Post } from "@/types";
 
 /**
@@ -23,7 +24,7 @@ export function CaseRow({
     day: "numeric",
     year: "2-digit",
     timeZone: "UTC",
-  }).format(new Date(post.createdAt));
+  }).format(new Date(incidentDate(post)));
 
   return (
     <article className="group relative grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 px-3 py-4 transition-colors hover:bg-bg-surface sm:grid-cols-[7.5rem_minmax(0,1fr)_9rem_7rem_6rem] sm:items-center sm:gap-x-6 sm:px-4">

@@ -3,6 +3,7 @@ import { VoteButtons } from "./VoteButtons";
 import { TagBadge } from "./TagBadge";
 import { SeverityPill } from "./SeverityPill";
 import { severityStyle } from "@/lib/constants/severity";
+import { incidentDate } from "@/lib/utils/incident-date";
 import type { Post } from "@/types";
 
 type PostCardProps = { post: Post; commentCount?: number };
@@ -15,7 +16,7 @@ export function PostCard({ post, commentCount }: PostCardProps) {
     day: "numeric",
     year: "numeric",
     timeZone: "UTC",
-  }).format(new Date(post.createdAt));
+  }).format(new Date(incidentDate(post)));
 
   const cost =
     post.estimatedCostUsd != null

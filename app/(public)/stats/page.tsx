@@ -176,7 +176,7 @@ export default async function StatsPage() {
         {stats.recentByMonth.length > 0 && (
           <section className="lg:col-span-2">
             <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
-              Cases Filed — Last 12 Months
+              Cases by Month Reported
             </div>
             <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-5">
               <div

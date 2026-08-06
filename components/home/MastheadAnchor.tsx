@@ -15,8 +15,8 @@ export function MastheadAnchor({ data }: { data: RegistryOverview }) {
   if (data.totalCases === 0) return null;
 
   const max = Math.max(...LEVELS.map((l) => data.bySeverity[l] ?? 0), 1);
-  const filed = data.latestFiledAt
-    ? new Date(data.latestFiledAt).toISOString().slice(0, 10)
+  const reported = data.latestIncidentAt
+    ? new Date(data.latestIncidentAt).toISOString().slice(0, 10)
     : null;
 
   return (
@@ -70,7 +70,9 @@ export function MastheadAnchor({ data }: { data: RegistryOverview }) {
 
         <figcaption className="flex items-center justify-between gap-3 border-t border-border-default px-4 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-text-tertiary">
           <span>{data.byAgent.length} agents implicated</span>
-          {filed && <span className="tabular-nums">Last filed {filed}</span>}
+          {reported && (
+            <span className="tabular-nums">Last reported {reported}</span>
+          )}
         </figcaption>
       </div>
     </figure>

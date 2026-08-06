@@ -22,6 +22,7 @@ import {
   type RegistryOverview,
 } from "@/lib/db/posts";
 import { formatUsd, monthLabel, percentOf } from "@/lib/utils/format";
+import { incidentMonth } from "@/lib/utils/incident-date";
 import type { Post } from "@/types";
 
 // Both the overview and the taxonomy index read the same aggregate; memoise it
@@ -214,7 +215,8 @@ const SEVERITY_BANDS: { key: string; title: string; levels: number[] }[] = [
 ];
 
 /**
- * The feed is clustered rather than flat. New cases group by filing month,
+ * The feed is clustered rather than flat. New cases group by the month the
+ * incident was reported,
  * everything else groups by severity band, so a visitor can see the shape of
  * the page before reading a single title.
  */
@@ -222,13 +224,13 @@ function groupPosts(posts: Post[], tab: FeedTab): FeedGroup[] {
   if (tab === "new" || tab === "week") {
     const byMonth = new Map<string, Post[]>();
     for (const post of posts) {
-      const month = post.createdAt.slice(0, 7);
+      const month = incidentMonth(post) ?? post.createdAt.slice(0, 7);
       byMonth.set(month, [...(byMonth.get(month) ?? []), post]);
     }
     return Array.from(byMonth.entries()).map(([month, group]) => ({
       key: month,
       title: monthLabel(month),
-      note: `${group.length} filed`,
+      note: `${group.length} cases`,
       posts: group,
     }));
   }
@@ -299,7 +301,7 @@ async function PostsFeed({
               <span>Incident</span>
               <span>Agent</span>
               <span className="text-right">Damage</span>
-              <span className="text-right">Filed</span>
+              <span className="text-right">Date</span>
             </div>
             <div className="divide-y divide-border-default border-b border-border-default">
               {group.posts.map((post) => (
