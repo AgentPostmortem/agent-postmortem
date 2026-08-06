@@ -16,7 +16,7 @@ const EMAIL_PATTERN = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
  * +1-555-555-5555, (555) 555-5555, 555.555.5555, +44 7700 900123, etc.
  */
 const PHONE_PATTERN =
-  /(?:\+?(\d{1,3})[-.\s]?)?(?:\((\d{1,4})\)[-.\s]?)?(\d{1,4})[-.\s]?(\d{1,4})[-.\s]?(\d{1,9})(?:\s?(?:#|x\.?|ext\.?|extension)\s?\d+)?/g;
+  /(?<!\d)(?:\+?(\d{1,3})[-.\s]?)?(?:\((\d{1,4})\)[-.\s]?)?(\d{1,4})[-.\s]?(\d{1,4})[-.\s]?(\d{1,9})(?:\s?(?:#|x\.?|ext\.?|extension)\s?\d+)?(?!\d)/g;
 
 /** Minimum digit count for something to qualify as a phone number */
 const MIN_PHONE_DIGITS = 7;
