@@ -44,7 +44,7 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded border border-border-default bg-bg-surface">
+    <div className="overflow-hidden rounded-sm border border-border-default bg-bg-surface">
       <div className="flex items-center gap-3 border-b border-border-default bg-bg-elevated px-4 py-2.5">
         <span className="flex h-5 w-5 items-center justify-center rounded-full border border-border-strong font-mono text-[10px] text-text-tertiary">
           {number}
@@ -68,20 +68,18 @@ function FieldLabel({
   return (
     <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
       {children}
-      {required && <span className="ml-1 text-accent-red">*</span>}
+      {required && <span className="ml-1 text-accent">*</span>}
     </label>
   );
 }
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return (
-    <p className="mt-1 font-mono text-[10px] text-accent-red">{message}</p>
-  );
+  return <p className="mt-1 font-mono text-[10px] text-accent">{message}</p>;
 }
 
 const inputBase =
-  "w-full rounded border border-border-default bg-bg-elevated px-3 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-colors focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-border-strong";
+  "w-full rounded-sm border border-border-default bg-bg-elevated px-3 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-colors focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-border-strong";
 
 export function SubmitForm() {
   const [form, setForm] = useState<FormData>({
@@ -203,9 +201,9 @@ export function SubmitForm() {
 
   if (status === "success") {
     return (
-      <div className="rounded border border-border-default bg-bg-surface p-8 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded border border-border-strong bg-bg-elevated">
-          <span className="text-accent-red">
+      <div className="rounded-sm border border-border-default bg-bg-surface p-8 text-center">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-sm border border-border-strong bg-bg-elevated">
+          <span className="text-accent">
             <CheckIcon size={16} />
           </span>
         </div>
@@ -227,7 +225,7 @@ export function SubmitForm() {
             Contact{" "}
             <a
               href="mailto:hello@agentpostmortem.com"
-              className="text-accent-red hover:underline"
+              className="text-accent hover:underline"
             >
               hello@agentpostmortem.com
             </a>{" "}
@@ -237,7 +235,7 @@ export function SubmitForm() {
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/"
-            className="rounded border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+            className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
           >
             <span className="inline-flex items-center gap-1.5">
               <ArrowLeftIcon size={10} /> Browse Cases
@@ -245,14 +243,14 @@ export function SubmitForm() {
           </Link>
           <Link
             href="/hall-of-fame"
-            className="rounded border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+            className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
           >
             Hall of Fame
           </Link>
           <Link
             href="/submit"
             onClick={() => setStatus("idle")}
-            className="rounded border border-accent-red bg-accent-red/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-colors hover:bg-accent-red/20"
+            className="rounded-sm border border-accent bg-accent/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-strong transition-colors hover:bg-accent/20"
           >
             File Another
           </Link>
@@ -353,7 +351,7 @@ export function SubmitForm() {
                     Number(e.target.value) as 1 | 2 | 3 | 4 | 5,
                   )
                 }
-                className="w-full accent-accent-red"
+                className="w-full accent-accent"
               />
               <div className="flex items-center justify-between">
                 <div className="flex gap-1">
@@ -364,8 +362,8 @@ export function SubmitForm() {
                         "h-1.5 w-6 rounded-full transition-colors",
                         n <= damageLevel
                           ? damageLevel >= 4
-                            ? "bg-accent-red"
-                            : "bg-accent-red/50"
+                            ? "bg-accent"
+                            : "bg-accent/50"
                           : "bg-border-strong",
                       )}
                     />
@@ -375,9 +373,7 @@ export function SubmitForm() {
                   <span
                     className={cn(
                       "font-mono text-xs font-semibold",
-                      damageLevel >= 4
-                        ? "text-accent-red"
-                        : "text-text-secondary",
+                      damageLevel >= 4 ? "text-accent" : "text-text-secondary",
                     )}
                   >
                     {damageLevel} — {damageInfo.label}
@@ -433,9 +429,9 @@ export function SubmitForm() {
                 type="button"
                 onClick={() => toggleTag(tag.slug)}
                 className={cn(
-                  "rounded border px-2.5 py-1 font-mono text-xs transition-all",
+                  "rounded-sm border px-2.5 py-1 font-mono text-xs transition-all",
                   active
-                    ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
+                    ? "border-accent bg-accent-soft text-accent-strong"
                     : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                 )}
               >
@@ -457,13 +453,13 @@ export function SubmitForm() {
                 <img
                   src={src}
                   alt={`Preview ${i + 1}`}
-                  className="h-20 w-20 rounded border border-border-default object-cover"
+                  className="h-20 w-20 rounded-sm border border-border-default object-cover"
                 />
                 <button
                   type="button"
                   onClick={() => removeFile(i)}
                   aria-label="Remove screenshot"
-                  className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-bg-elevated border border-border-strong font-mono text-xs text-text-secondary hover:text-accent-red"
+                  className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-bg-elevated border border-border-strong font-mono text-xs text-text-secondary hover:text-accent"
                 >
                   <CloseIcon size={10} />
                 </button>
@@ -472,7 +468,7 @@ export function SubmitForm() {
           </div>
         )}
         {screenshotFiles.length < 5 && (
-          <div className="rounded border border-dashed border-border-strong bg-bg-elevated p-6 text-center">
+          <div className="rounded-sm border border-dashed border-border-strong bg-bg-elevated p-6 text-center">
             <input
               type="file"
               id="screenshot-upload"
@@ -510,9 +506,9 @@ export function SubmitForm() {
                 set("isAnonymous", opt === "anonymous");
               }}
               className={cn(
-                "rounded border py-2.5 font-mono text-[11px] uppercase tracking-wider transition-all",
+                "rounded-sm border py-2.5 font-mono text-[11px] uppercase tracking-wider transition-all",
                 attribution === opt
-                  ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
+                  ? "border-accent bg-accent-soft text-accent-strong"
                   : "border-border-default text-text-tertiary hover:border-border-strong",
               )}
             >
@@ -561,8 +557,8 @@ export function SubmitForm() {
 
       {/* Error */}
       {status === "error" && (
-        <div className="rounded border border-accent-red bg-accent-red-soft px-4 py-3">
-          <p className="font-mono text-xs text-accent-red">
+        <div className="rounded-sm border border-accent bg-accent-soft px-4 py-3">
+          <p className="font-mono text-xs text-accent">
             Submission failed. Please try again or email
             hello@agentpostmortem.com.
           </p>
@@ -573,7 +569,7 @@ export function SubmitForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-accent-red bg-accent-red py-3 font-mono text-[11px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-red-muted hover:bg-accent-red-muted disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-sm border border-accent bg-accent py-3 font-mono text-[11px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {status === "submitting" ? (
           "Filing Case…"

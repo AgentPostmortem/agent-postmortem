@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
 import { Pagination } from "@/components/ui/Pagination";
+import { SeverityPill } from "@/components/post/SeverityPill";
 import { ArrowRightIcon, CloseIcon, PlusIcon } from "@/components/ui/icons";
 import {
   fetchFeedPosts,
@@ -85,7 +86,7 @@ async function HomepageStats() {
 
   return (
     <div
-      className={`mt-7 grid ${statsGridClass} gap-px overflow-hidden rounded border border-border-default bg-border-default`}
+      className={`mt-7 grid ${statsGridClass} gap-px overflow-hidden rounded-sm border border-border-default bg-border-default`}
     >
       {statItems.map((stat) => (
         <div
@@ -93,11 +94,11 @@ async function HomepageStats() {
           className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5"
         >
           <div
-            className={`font-mono text-lg font-semibold tabular-nums sm:text-2xl ${stat.red ? "text-accent-red-muted" : "text-text-primary"}`}
+            className={`font-mono text-lg font-bold tabular-nums sm:text-2xl ${stat.red ? "text-accent" : "text-text-primary"}`}
           >
             {stat.value}
           </div>
-          <div className="mt-0.5 font-mono text-[8px] uppercase tracking-widest text-text-tertiary sm:text-[9px]">
+          <div className="mt-1 font-mono text-[8px] uppercase tracking-[0.18em] text-text-tertiary sm:text-[9px]">
             {stat.label}
           </div>
         </div>
@@ -108,7 +109,7 @@ async function HomepageStats() {
 
 function StatsSkeleton() {
   return (
-    <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded border border-border-default bg-border-default">
+    <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded-sm border border-border-default bg-border-default">
       {[0, 1, 2].map((i) => (
         <div key={i} className="bg-bg-surface px-3 py-3 sm:px-5 sm:py-3.5">
           <div className="h-6 w-16 animate-pulse rounded bg-border-strong sm:h-8" />
@@ -150,7 +151,7 @@ async function PostsFeed({
 
   return (
     <>
-      <div className="space-y-2">
+      <div className="divide-y divide-border-default overflow-hidden rounded-sm border border-border-default [&>article]:rounded-none [&>article]:border-0">
         {posts.map((post) => (
           <PostCard
             key={post.id}
@@ -183,7 +184,7 @@ function PostsSkeleton() {
       {[0, 1, 2, 3, 4].map((i) => (
         <div
           key={i}
-          className="h-28 animate-pulse rounded border border-border-default bg-bg-surface"
+          className="h-28 animate-pulse rounded-sm border border-border-default bg-bg-surface"
         />
       ))}
     </div>
@@ -207,13 +208,16 @@ export default function HomePage({ searchParams }: PageProps) {
           <span className="stamp stamp-muted">Public Registry</span>
         </div>
 
-        <h1 className="font-serif text-4xl font-normal leading-[1.1] tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
+        <h1 className="font-serif text-4xl font-medium leading-[1.05] tracking-[-0.02em] text-text-primary sm:text-5xl lg:text-[3.75rem]">
           Every AI Agent
           <br />
           <span className="text-text-secondary">Failure,</span>{" "}
-          <span className="relative font-medium text-accent-red-muted">
+          <span className="relative text-accent">
             Documented.
-            <span className="absolute -bottom-1 left-0 h-px w-full bg-accent-red/50" />
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-1 left-0 h-px w-full bg-accent/60"
+            />
           </span>
         </h1>
 
@@ -235,11 +239,11 @@ export default function HomePage({ searchParams }: PageProps) {
               type="text"
               name="q"
               placeholder="Search cases… deleted database, hallucination, OpenAI"
-              className="flex-1 rounded border border-border-default bg-bg-surface px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent-red focus:outline-none"
+              className="flex-1 rounded-sm border border-border-default bg-bg-surface px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none"
             />
             <button
               type="submit"
-              className="rounded border border-border-default bg-bg-elevated px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent-red hover:text-accent-red"
+              className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent"
             >
               Search
             </button>
@@ -249,7 +253,7 @@ export default function HomePage({ searchParams }: PageProps) {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Link
             href="/submit"
-            className="inline-flex items-center gap-2 rounded-full border border-accent-red/60 bg-accent-red-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted transition-all hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas"
+            className="inline-flex items-center gap-2 rounded-sm border border-accent/60 bg-accent-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas"
           >
             <PlusIcon size={10} /> File a Case Report
           </Link>
@@ -282,7 +286,7 @@ export default function HomePage({ searchParams }: PageProps) {
                     className={[
                       "relative pb-3 pr-5 font-mono text-[11px] uppercase tracking-wider transition-colors",
                       isActive
-                        ? "text-text-primary after:absolute after:bottom-0 after:left-0 after:right-5 after:h-0.5 after:bg-accent-red"
+                        ? "text-text-primary after:absolute after:bottom-0 after:left-0 after:right-5 after:h-0.5 after:bg-accent"
                         : "text-text-tertiary hover:text-text-secondary",
                     ].join(" ")}
                   >
@@ -309,9 +313,9 @@ export default function HomePage({ searchParams }: PageProps) {
                       key={f.value || "all-agent"}
                       href={href}
                       className={[
-                        "rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors",
+                        "rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors",
                         isActive
-                          ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
+                          ? "border-accent bg-accent-soft text-accent"
                           : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                       ].join(" ")}
                     >
@@ -322,7 +326,7 @@ export default function HomePage({ searchParams }: PageProps) {
                 {activeAgent && (
                   <Link
                     href={`/?tab=${activeTab}${activeSeverity ? `&severity=${activeSeverity}` : ""}`}
-                    className="rounded border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent-red hover:text-accent-red"
+                    className="rounded-sm border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent hover:text-accent"
                     title="Clear agent filter"
                   >
                     <CloseIcon size={9} />
@@ -345,9 +349,9 @@ export default function HomePage({ searchParams }: PageProps) {
                       key={f.value || "all-severity"}
                       href={href}
                       className={[
-                        "rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors",
+                        "rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors",
                         isActive
-                          ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
+                          ? "border-accent bg-accent-soft text-accent"
                           : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                       ].join(" ")}
                     >
@@ -358,7 +362,7 @@ export default function HomePage({ searchParams }: PageProps) {
                 {activeSeverity && (
                   <Link
                     href={`/?tab=${activeTab}${activeAgent ? `&agent=${activeAgent}` : ""}`}
-                    className="rounded border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent-red hover:text-accent-red"
+                    className="rounded-sm border border-border-default px-1.5 py-0.5 font-mono text-[10px] text-text-tertiary transition-colors hover:border-accent hover:text-accent"
                     title="Clear severity filter"
                   >
                     <CloseIcon size={9} />
@@ -366,6 +370,16 @@ export default function HomePage({ searchParams }: PageProps) {
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Severity legend: ticks and labels, so colour is never the only cue */}
+          <div className="mb-3 flex flex-wrap items-center gap-2 border-y border-border-default py-2">
+            <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
+              Legend
+            </span>
+            {[5, 4, 3, 2, 1].map((lvl) => (
+              <SeverityPill key={lvl} level={lvl} />
+            ))}
           </div>
 
           {/* Posts — streams in after fetchFeedPosts resolves */}
@@ -394,14 +408,14 @@ export default function HomePage({ searchParams }: PageProps) {
                 <Link
                   key={slug}
                   href={`/agent/${slug}`}
-                  className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+                  className="rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
                 >
                   {name}
                 </Link>
               ))}
               <Link
                 href="/agent"
-                className="inline-flex items-center gap-1.5 rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent-red"
+                className="inline-flex items-center gap-1.5 rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent"
               >
                 All <ArrowRightIcon size={10} />
               </Link>
@@ -420,14 +434,14 @@ export default function HomePage({ searchParams }: PageProps) {
                 <Link
                   key={slug}
                   href={`/tag/${slug}`}
-                  className="rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-accent-red"
+                  className="rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-border-strong hover:text-accent"
                 >
                   #{slug}
                 </Link>
               ))}
               <Link
                 href="/tag"
-                className="inline-flex items-center gap-1.5 rounded border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent-red"
+                className="inline-flex items-center gap-1.5 rounded-sm border border-border-default bg-bg-surface px-3 py-1.5 font-mono text-[11px] text-text-tertiary transition-colors hover:text-accent"
               >
                 All <ArrowRightIcon size={10} />
               </Link>
@@ -459,7 +473,7 @@ export default function HomePage({ searchParams }: PageProps) {
               ))}
               <Link
                 href="/agent"
-                className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
+                className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent"
               >
                 <span className="inline-flex items-center gap-1.5">
                   All agents <ArrowRightIcon size={9} />
@@ -478,14 +492,14 @@ export default function HomePage({ searchParams }: PageProps) {
                 <Link
                   key={slug}
                   href={`/tag/${slug}`}
-                  className="block py-3 font-mono text-xs text-text-secondary transition-colors hover:text-accent-red"
+                  className="block py-3 font-mono text-xs text-text-secondary transition-colors hover:text-accent"
                 >
                   #{slug}
                 </Link>
               ))}
               <Link
                 href="/tag"
-                className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent-red"
+                className="mt-1 block py-2 font-mono text-[10px] uppercase tracking-wider text-text-tertiary hover:text-accent"
               >
                 <span className="inline-flex items-center gap-1.5">
                   All tags <ArrowRightIcon size={9} />
@@ -499,7 +513,7 @@ export default function HomePage({ searchParams }: PageProps) {
               </p>
               <Link
                 href="/submit"
-                className="flex items-center justify-center gap-1.5 rounded-full border border-accent-red/60 bg-accent-red-soft px-3 py-2 text-center font-mono text-[10px] uppercase tracking-wider text-accent-red-muted transition-all hover:border-accent-red-muted hover:bg-accent-red hover:text-bg-canvas"
+                className="flex items-center justify-center gap-1.5 rounded-sm border border-accent/60 bg-accent-soft px-3 py-2 text-center font-mono text-[10px] uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-bg-canvas"
               >
                 <PlusIcon size={9} /> File Report
               </Link>
@@ -519,7 +533,7 @@ function SidebarCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded border border-border-default bg-bg-surface p-4">
+    <div className="rounded-sm border border-border-default bg-bg-surface p-4">
       <div className="mb-3 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
         {title}
       </div>
@@ -530,18 +544,18 @@ function SidebarCard({
 
 function EmptyFeed() {
   return (
-    <div className="rounded border border-dashed border-border-default py-16 text-center">
-      <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded border border-border-strong">
+    <div className="rounded-sm border border-dashed border-border-default py-16 text-center">
+      <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-border-strong">
         <span className="text-text-tertiary">
           <CloseIcon size={14} />
         </span>
       </div>
-      <p className="font-serif text-lg text-text-secondary">
+      <p className="font-serif text-lg font-medium text-text-secondary">
         No cases on file yet.
       </p>
       <p className="mt-2 text-sm text-text-tertiary">
         Connect Supabase or{" "}
-        <Link href="/submit" className="text-accent-red hover:underline">
+        <Link href="/submit" className="text-accent hover:underline">
           file the first report
         </Link>
         .

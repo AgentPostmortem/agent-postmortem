@@ -13,7 +13,7 @@ export function EmptyState({
   action = { label: "File the first report", href: "/submit" },
 }: EmptyStateProps) {
   return (
-    <div className="rounded border border-dashed border-border-default py-16 text-center">
+    <div className="rounded-sm border border-dashed border-border-default py-16 text-center">
       <p className="font-serif text-lg text-text-secondary">{title}</p>
       {description && (
         <p className="mt-2 text-sm text-text-tertiary">{description}</p>
@@ -22,7 +22,7 @@ export function EmptyState({
         <p className="mt-2 text-sm text-text-tertiary">
           <Link
             href={action.href}
-            className="inline-flex items-center gap-1.5 text-accent-red hover:text-accent-red-muted hover:underline"
+            className="inline-flex items-center gap-1.5 text-accent hover:text-accent-strong hover:underline"
           >
             {action.label} <ArrowRightIcon size={10} />
           </Link>

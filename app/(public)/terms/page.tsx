@@ -18,7 +18,7 @@ export default function TermsPage() {
         </h1>
       </div>
 
-      <div className="prose prose-invert max-w-none space-y-8 text-text-secondary [&_h2]:font-serif [&_h2]:font-normal [&_h2]:text-text-primary [&_a]:text-accent-red [&_a:hover]:underline">
+      <div className="prose prose-invert max-w-none space-y-8 text-text-secondary [&_h2]:font-serif [&_h2]:font-normal [&_h2]:text-text-primary [&_a]:text-accent [&_a:hover]:underline">
         <p>
           These terms govern your use of AgentPostmortem (agentpostmortem.com).
           By accessing or submitting to the registry, you agree to them. If you

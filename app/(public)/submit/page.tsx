@@ -31,7 +31,7 @@ export default function SubmitPage() {
       </div>
 
       {/* Guidelines */}
-      <div className="mb-8 overflow-hidden rounded border border-border-default bg-bg-surface">
+      <div className="mb-8 overflow-hidden rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default px-4 py-2.5">
           <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
             What makes a strong case
@@ -45,7 +45,7 @@ export default function SubmitPage() {
             "Concrete impact: financial, operational, or reputational",
           ].map((item) => (
             <li key={item} className="flex items-start gap-3 px-4 py-2.5">
-              <span className="mt-1 text-accent-red">
+              <span className="mt-1 text-accent">
                 <ArrowRightIcon size={10} />
               </span>
               <span className="text-sm text-text-secondary">{item}</span>

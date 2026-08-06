@@ -17,8 +17,8 @@ const SEVERITY_COLOR: Record<number, string> = {
   1: "text-text-tertiary",
   2: "text-text-tertiary",
   3: "text-text-secondary",
-  4: "text-accent-red/80",
-  5: "text-accent-red",
+  4: "text-accent/80",
+  5: "text-accent",
 };
 
 const SEVERITY_LABEL: Record<number, string> = {
@@ -65,7 +65,7 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
         />
       ) : (
         <>
-          <div className="overflow-x-auto rounded border border-border-default bg-bg-surface">
+          <div className="overflow-x-auto rounded-sm border border-border-default bg-bg-surface">
             {/* Header row */}
             <div className="flex items-center gap-4 border-b border-border-default bg-bg-elevated px-4 py-2">
               <span className="w-8 font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
@@ -111,7 +111,7 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
                         className={[
                           "font-mono text-sm font-bold tabular-nums",
                           rank === 0
-                            ? "text-accent-red"
+                            ? "text-accent"
                             : rank < 3
                               ? "text-text-secondary"
                               : "text-text-tertiary",
@@ -137,7 +137,7 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
                         {cost && (
                           <>
                             <span className="text-border-strong">·</span>
-                            <span className="font-mono text-[10px] font-semibold text-accent-red">
+                            <span className="font-mono text-[10px] font-semibold text-accent">
                               ~{cost}
                             </span>
                           </>
@@ -146,7 +146,7 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
                       <Link href={`/case/${post.caseNumber.toLowerCase()}`}>
                         <p
                           className={[
-                            "mt-0.5 font-serif leading-snug text-text-primary transition-colors hover:text-accent-red",
+                            "mt-0.5 font-serif leading-snug text-text-primary transition-colors hover:text-accent",
                             isTop3 ? "text-base" : "text-sm",
                           ].join(" ")}
                         >

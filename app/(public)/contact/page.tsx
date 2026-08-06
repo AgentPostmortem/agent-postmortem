@@ -18,7 +18,7 @@ export default function ContactPage() {
         </h1>
       </div>
 
-      <div className="prose prose-invert max-w-none space-y-8 text-text-secondary [&_h2]:font-serif [&_h2]:font-normal [&_h2]:text-text-primary [&_a]:text-accent-red [&_a:hover]:underline">
+      <div className="prose prose-invert max-w-none space-y-8 text-text-secondary [&_h2]:font-serif [&_h2]:font-normal [&_h2]:text-text-primary [&_a]:text-accent [&_a:hover]:underline">
         <p>
           The best way to reach us is by email. We try to respond within a few
           business days.
