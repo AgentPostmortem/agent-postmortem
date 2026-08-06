@@ -27,8 +27,8 @@ const STATUS_CONFIG = {
     label: "Approved — Live",
     description:
       "Your case has been approved and is publicly visible in the registry.",
-    color: "text-accent-red",
-    dot: "bg-accent-red",
+    color: "text-accent",
+    dot: "bg-accent",
   },
   rejected: {
     label: "Not Published",
@@ -111,7 +111,7 @@ export function StatusClient() {
         </h1>
       </div>
 
-      <div className="rounded border border-border-default bg-bg-surface px-6 py-6">
+      <div className="rounded-sm border border-border-default bg-bg-surface px-6 py-6">
         {/* Status indicator */}
         <div className="mb-5 flex items-center gap-3">
           <span className={`inline-block h-2 w-2 rounded-full ${cfg.dot}`} />
@@ -156,7 +156,7 @@ export function StatusClient() {
               <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
                 Case Number
               </span>
-              <span className="font-mono text-xs text-accent-red">
+              <span className="font-mono text-xs text-accent">
                 {data.caseNumber}
               </span>
             </div>
@@ -168,7 +168,7 @@ export function StatusClient() {
         {data.status === "approved" && data.caseNumber && (
           <Link
             href={`/case/${data.caseNumber.toLowerCase()}`}
-            className="rounded border border-accent-red bg-accent-red/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-red-muted hover:bg-accent-red/20"
+            className="rounded-sm border border-accent bg-accent/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-strong hover:bg-accent/20"
           >
             <span className="inline-flex items-center gap-1.5">
               View Case <ArrowRightIcon size={10} />
@@ -178,14 +178,14 @@ export function StatusClient() {
         {data.status !== "rejected" && (
           <Link
             href={`/edit/${token}`}
-            className="rounded border border-border-default bg-bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary hover:border-border-strong hover:text-text-primary"
+            className="rounded-sm border border-border-default bg-bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary hover:border-border-strong hover:text-text-primary"
           >
             Edit Submission
           </Link>
         )}
         <Link
           href="/"
-          className="rounded border border-border-default bg-bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:border-border-strong hover:text-text-secondary"
+          className="rounded-sm border border-border-default bg-bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:border-border-strong hover:text-text-secondary"
         >
           <span className="inline-flex items-center gap-1.5">
             <ArrowLeftIcon size={10} /> Registry

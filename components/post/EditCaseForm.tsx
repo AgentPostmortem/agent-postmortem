@@ -24,7 +24,7 @@ interface EditablePost {
 type FieldErrors = Partial<Record<keyof SubmitFormValues, string>>;
 
 const inputBase =
-  "w-full rounded border border-border-default bg-bg-elevated px-3 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-colors focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-border-strong";
+  "w-full rounded-sm border border-border-default bg-bg-elevated px-3 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-colors focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-border-strong";
 
 export function EditCaseForm({
   token,
@@ -104,7 +104,7 @@ export function EditCaseForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="rounded border border-border-default bg-bg-surface">
+      <div className="rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-4 py-2.5">
           <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
             Submission Details
@@ -129,7 +129,7 @@ export function EditCaseForm({
                 ))}
               </select>
               {errors.agentSlug ? (
-                <p className="mt-1 font-mono text-[10px] text-accent-red">
+                <p className="mt-1 font-mono text-[10px] text-accent">
                   {errors.agentSlug}
                 </p>
               ) : null}
@@ -153,7 +153,7 @@ export function EditCaseForm({
                     ) as SubmitFormValues["damageLevel"],
                   )
                 }
-                className="mt-3 w-full accent-accent-red"
+                className="mt-3 w-full accent-accent"
               />
               <p className="mt-2 font-mono text-xs text-text-secondary">
                 Level {form.damageLevel} of 5
@@ -172,7 +172,7 @@ export function EditCaseForm({
               className={inputBase}
             />
             {errors.title ? (
-              <p className="mt-1 font-mono text-[10px] text-accent-red">
+              <p className="mt-1 font-mono text-[10px] text-accent">
                 {errors.title}
               </p>
             ) : null}
@@ -201,7 +201,7 @@ export function EditCaseForm({
               className={cn(inputBase, "resize-y")}
             />
             {errors.outcome ? (
-              <p className="mt-1 font-mono text-[10px] text-accent-red">
+              <p className="mt-1 font-mono text-[10px] text-accent">
                 {errors.outcome}
               </p>
             ) : null}
@@ -227,7 +227,7 @@ export function EditCaseForm({
         </div>
       </div>
 
-      <div className="rounded border border-border-default bg-bg-surface">
+      <div className="rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-4 py-2.5">
           <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
             Classification
@@ -243,9 +243,9 @@ export function EditCaseForm({
                   type="button"
                   onClick={() => toggleTag(tag.slug)}
                   className={cn(
-                    "rounded border px-2.5 py-1 font-mono text-xs transition-all",
+                    "rounded-sm border px-2.5 py-1 font-mono text-xs transition-all",
                     active
-                      ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
+                      ? "border-accent bg-accent-soft text-accent-strong"
                       : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
                   )}
                 >
@@ -255,14 +255,14 @@ export function EditCaseForm({
             })}
           </div>
           {errors.tags ? (
-            <p className="mt-2 font-mono text-[10px] text-accent-red">
+            <p className="mt-2 font-mono text-[10px] text-accent">
               {errors.tags}
             </p>
           ) : null}
         </div>
       </div>
 
-      <div className="rounded border border-border-default bg-bg-surface">
+      <div className="rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-4 py-2.5">
           <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
             Attribution
@@ -274,7 +274,7 @@ export function EditCaseForm({
               type="checkbox"
               checked={form.isAnonymous}
               onChange={(event) => set("isAnonymous", event.target.checked)}
-              className="accent-accent-red"
+              className="accent-accent"
             />
             Keep this submission anonymous
           </label>
@@ -295,7 +295,7 @@ export function EditCaseForm({
         </div>
       </div>
 
-      <div className="rounded border border-border-default bg-bg-surface">
+      <div className="rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-4 py-2.5">
           <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
             Evidence
@@ -310,7 +310,7 @@ export function EditCaseForm({
                   <img
                     src={src}
                     alt={`Uploaded evidence ${index + 1}`}
-                    className="rounded border border-border-default"
+                    className="rounded-sm border border-border-default"
                   />
                 </div>
               ))}
@@ -328,7 +328,7 @@ export function EditCaseForm({
       </div>
 
       {status === "success" ? (
-        <div className="rounded border border-border-default bg-bg-surface px-4 py-3">
+        <div className="rounded-sm border border-border-default bg-bg-surface px-4 py-3">
           <p className="text-sm text-text-secondary">
             Changes saved. Your submission has been returned to the moderation
             queue for review.
@@ -337,8 +337,8 @@ export function EditCaseForm({
       ) : null}
 
       {status === "error" ? (
-        <div className="rounded border border-accent-red bg-accent-red-soft px-4 py-3">
-          <p className="font-mono text-xs text-accent-red">
+        <div className="rounded-sm border border-accent bg-accent-soft px-4 py-3">
+          <p className="font-mono text-xs text-accent">
             We couldn&apos;t save your changes. Please review the form and try
             again.
           </p>
@@ -348,7 +348,7 @@ export function EditCaseForm({
       <button
         type="submit"
         disabled={status === "saving"}
-        className="w-full rounded-full border border-accent-red bg-accent-red py-3 font-mono text-[11px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-red-muted hover:bg-accent-red-muted disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-sm border border-accent bg-accent py-3 font-mono text-[11px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
       >
         {status === "saving" ? "Saving…" : "Save Changes"}
       </button>

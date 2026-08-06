@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendApprovalEmail } from "@/lib/resend/send";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 function checkAdminAuth(req: NextRequest): boolean {
   const auth = req.headers.get("x-admin-password");
@@ -71,7 +72,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   }
 
   if (parsed.data.status === "approved" && data.submitter_email) {
-    const caseUrl = `https://agentpostmortem.com/case/${data.case_number}`;
+    const caseUrl = `${getSiteUrl()}/case/${data.case_number}`;
     try {
       await sendApprovalEmail({
         to: data.submitter_email,

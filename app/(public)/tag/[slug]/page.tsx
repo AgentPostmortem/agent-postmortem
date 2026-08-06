@@ -62,7 +62,7 @@ export default async function TagPage({ params }: PageProps) {
       </div>
 
       {/* Header */}
-      <div className="mb-8 overflow-hidden rounded border border-border-default bg-bg-surface">
+      <div className="mb-8 overflow-hidden rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-5 py-2.5">
           <span className="font-mono text-[9px] uppercase tracking-widest text-text-tertiary">
             Classification Tag
@@ -77,7 +77,7 @@ export default async function TagPage({ params }: PageProps) {
               {tag.description}
             </p>
           </div>
-          <div className="rounded border border-border-default bg-bg-elevated px-4 py-3">
+          <div className="rounded-sm border border-border-default bg-bg-elevated px-4 py-3">
             <div className="font-mono text-xl font-semibold text-text-primary">
               {posts.length}
             </div>
@@ -95,9 +95,9 @@ export default async function TagPage({ params }: PageProps) {
             key={t.slug}
             href={`/tag/${t.slug}`}
             className={[
-              "rounded border px-2.5 py-1 font-mono text-xs transition-colors",
+              "rounded-sm border px-2.5 py-1 font-mono text-xs transition-colors",
               t.slug === params.slug
-                ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
+                ? "border-accent bg-accent-soft text-accent-strong"
                 : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
             ].join(" ")}
           >

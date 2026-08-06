@@ -13,7 +13,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     <div
       ref={ref}
       className={cn(
-        "rounded border border-border-default",
+        "rounded-sm border border-border-default",
         elevated ? "bg-bg-elevated" : "bg-bg-surface",
         className,
       )}

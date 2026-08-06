@@ -64,7 +64,7 @@ export function VoteButtons({
           className={cn(
             "leading-none transition-colors disabled:opacity-40",
             vote === "up"
-              ? "text-accent-red"
+              ? "text-accent"
               : "text-text-tertiary hover:text-text-secondary",
           )}
         >
@@ -75,7 +75,7 @@ export function VoteButtons({
         <span
           className={cn(
             "font-mono text-[11px] font-medium tabular-nums leading-none",
-            vote === "up" ? "text-accent-red" : "text-text-secondary",
+            vote === "up" ? "text-accent" : "text-text-secondary",
           )}
         >
           {fmt(score)}
@@ -106,9 +106,9 @@ export function VoteButtons({
         disabled={loading}
         aria-label="Upvote"
         className={cn(
-          "flex items-center gap-1.5 rounded border px-2.5 py-1.5 font-mono text-xs transition-all disabled:opacity-40",
+          "flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 font-mono text-xs transition-all disabled:opacity-40",
           vote === "up"
-            ? "border-accent-red bg-accent-red-soft text-accent-red-muted"
+            ? "border-accent bg-accent-soft text-accent-strong"
             : "border-border-default text-text-tertiary hover:border-border-strong hover:text-text-secondary",
         )}
       >
@@ -122,7 +122,7 @@ export function VoteButtons({
         disabled={loading}
         aria-label="Downvote"
         className={cn(
-          "rounded border px-2 py-1.5 text-xs transition-all disabled:opacity-40",
+          "rounded-sm border px-2 py-1.5 text-xs transition-all disabled:opacity-40",
           vote === "down"
             ? "border-border-strong text-text-secondary"
             : "border-border-default text-text-tertiary hover:border-border-strong",

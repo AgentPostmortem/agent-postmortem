@@ -82,7 +82,7 @@ export async function GET(
         style={{
           width: "1200px",
           height: "630px",
-          backgroundColor: "#0b0b0c",
+          backgroundColor: "#0c0b0a",
           display: "flex",
           flexDirection: "column",
           padding: "60px 80px",
@@ -98,7 +98,7 @@ export async function GET(
             left: 0,
             right: 0,
             height: "4px",
-            backgroundColor: "#e2674e",
+            backgroundColor: "#f5a524",
           }}
         />
 
@@ -128,7 +128,7 @@ export async function GET(
                 fontSize: "22px",
                 letterSpacing: "3px",
                 textTransform: "uppercase",
-                color: "#e2674e",
+                color: "#f5a524",
                 fontWeight: 700,
               }}
             >
@@ -233,8 +233,8 @@ export async function GET(
                     width: "44px",
                     height: "8px",
                     borderRadius: "3px",
-                    backgroundColor: pip <= damageLevel ? "#e2674e" : "#18181b",
-                    border: `1px solid ${pip <= damageLevel ? "#e2674e" : "#2e2e33"}`,
+                    backgroundColor: pip <= damageLevel ? "#f5a524" : "#1c1917",
+                    border: `1px solid ${pip <= damageLevel ? "#f5a524" : "#33302b"}`,
                   }}
                 />
               ))}
@@ -263,7 +263,7 @@ export async function GET(
                 Est. Damage
               </span>
               <span
-                style={{ fontSize: "36px", color: "#e2674e", fontWeight: 700 }}
+                style={{ fontSize: "36px", color: "#f5a524", fontWeight: 700 }}
               >
                 {costFormatted}
               </span>

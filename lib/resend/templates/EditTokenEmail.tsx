@@ -29,7 +29,7 @@ export function EditTokenEmail({
       </head>
       <body
         style={{
-          backgroundColor: "#0b0b0c",
+          backgroundColor: "#0c0b0a",
           fontFamily: "Georgia, serif",
           margin: "0",
           padding: "0",
@@ -39,7 +39,7 @@ export function EditTokenEmail({
           width="100%"
           cellPadding="0"
           cellSpacing="0"
-          style={{ backgroundColor: "#0b0b0c" }}
+          style={{ backgroundColor: "#0c0b0a" }}
         >
           <tbody>
             <tr>
@@ -60,7 +60,7 @@ export function EditTokenEmail({
                     <tr>
                       <td
                         style={{
-                          backgroundColor: "#e2674e",
+                          backgroundColor: "#f5a524",
                           height: "3px",
                           fontSize: "0",
                           lineHeight: "0",
@@ -91,7 +91,7 @@ export function EditTokenEmail({
                             fontSize: "16px",
                             letterSpacing: "0.15em",
                             textTransform: "uppercase",
-                            color: "#e2674e",
+                            color: "#f5a524",
                             margin: "0",
                             fontWeight: "bold",
                           }}
@@ -162,10 +162,10 @@ export function EditTokenEmail({
                                   href={editUrl}
                                   style={{
                                     display: "inline-block",
-                                    backgroundColor: "#1f0a0a",
-                                    border: "1px solid #e2674e",
+                                    backgroundColor: "#1c1206",
+                                    border: "1px solid #f5a524",
                                     borderRadius: "3px",
-                                    color: "#e2674e",
+                                    color: "#f5a524",
                                     fontFamily: "monospace",
                                     fontSize: "11px",
                                     fontWeight: "bold",

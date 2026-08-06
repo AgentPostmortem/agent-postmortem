@@ -39,28 +39,32 @@ export function NewsletterSignup() {
 
   return (
     <form onSubmit={submit} className="flex max-w-xs flex-col gap-2">
-      <label className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+      <label
+        htmlFor="newsletter-email"
+        className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+      >
         Get the weekly digest by email
       </label>
       <div className="flex gap-2">
         <input
+          id="newsletter-email"
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="min-w-0 flex-1 rounded border border-border-default bg-bg-surface px-2.5 py-1.5 font-mono text-[11px] text-text-primary placeholder:text-text-tertiary focus:border-border-strong focus:outline-none"
+          className="min-w-0 flex-1 rounded-sm border border-border-default bg-bg-surface px-2.5 py-1.5 font-mono text-[11px] text-text-primary placeholder:text-text-tertiary focus:border-border-strong focus:outline-none"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="shrink-0 rounded-full border border-accent-red bg-accent-red px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-red-muted hover:bg-accent-red-muted disabled:opacity-50"
+          className="shrink-0 rounded-sm border border-accent bg-accent px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:opacity-50"
         >
           {status === "loading" ? "…" : "Subscribe"}
         </button>
       </div>
       {status === "err" && (
-        <p className="font-mono text-[10px] text-accent-red">
+        <p className="font-mono text-[10px] text-accent">
           Could not subscribe. Check the email and try again.
         </p>
       )}

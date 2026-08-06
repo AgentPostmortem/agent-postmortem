@@ -1,15 +1,14 @@
 "use client";
 import { useState } from "react";
 import { CheckIcon } from "@/components/ui/icons";
+import { getSiteUrl } from "@/lib/utils/urls";
 
 export function CopyLinkButton({ caseNumber }: { caseNumber: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <button
       onClick={() => {
-        navigator.clipboard.writeText(
-          `https://agentpostmortem.com/case/${caseNumber}`,
-        );
+        navigator.clipboard.writeText(`${getSiteUrl()}/case/${caseNumber}`);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       }}
