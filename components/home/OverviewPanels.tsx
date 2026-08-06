@@ -14,7 +14,7 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="min-w-0 bg-bg-canvas">
+    <section className="plate min-w-0 bg-bg-surface/45">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-border-default px-5 py-3">
         <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-secondary">
           {title}

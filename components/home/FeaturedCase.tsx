@@ -20,7 +20,7 @@ export function FeaturedCase({ post }: { post: Post }) {
   }).format(new Date(post.createdAt));
 
   return (
-    <article className="border-y border-border-default">
+    <article className="plate relative rounded-sm border border-border-strong bg-bg-surface/40 px-5 sm:px-7">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border-default py-3">
         <span className="stamp stamp-red">Worst on file</span>
         <span className="font-mono text-[10px] tracking-[0.12em] text-text-tertiary">

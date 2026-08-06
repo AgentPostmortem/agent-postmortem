@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CaseRow } from "@/components/post/CaseRow";
 import { Pagination } from "@/components/ui/Pagination";
 import { FeaturedCase } from "@/components/home/FeaturedCase";
+import { MastheadAnchor } from "@/components/home/MastheadAnchor";
 import {
   AgentPanel,
   FailureModePanel,
@@ -72,6 +73,13 @@ interface PageProps {
 
 /* ---------------------------------------------------------------- overview */
 
+/** Splits "$542.2M" into its numeral and its magnitude suffix for display. */
+function splitFigure(value: string): { head: string; suffix: string } {
+  const match = /^(\$[\d.,]+)([A-Za-z]*)$/.exec(value);
+  if (!match) return { head: value, suffix: "" };
+  return { head: match[1], suffix: match[2] };
+}
+
 function CounterStrip({ data }: { data: RegistryOverview }) {
   const damage = formatUsd(data.totalDamageUsd);
   const severe = (data.bySeverity[5] ?? 0) + (data.bySeverity[4] ?? 0);
@@ -83,39 +91,58 @@ function CounterStrip({ data }: { data: RegistryOverview }) {
       label: `Severe or worse (${percentOf(severe, data.totalCases)}%)`,
     },
     { value: data.byAgent.length.toString(), label: "Agents implicated" },
-    ...(damage
-      ? [
-          {
-            value: damage,
-            label: `Damage across ${data.quantifiedCases} quantified cases`,
-            accent: true,
-          },
-        ]
-      : []),
   ];
 
+  const figure = damage ? splitFigure(damage) : null;
+
   return (
-    <dl className="grid grid-cols-2 gap-x-8 gap-y-8 border-y border-border-default py-8 sm:grid-cols-4">
-      {items.map((item) => (
-        <div key={item.label} className="min-w-0">
-          <dt className="sr-only">{item.label}</dt>
-          <dd>
-            <span
-              className={`block font-mono text-[1.75rem] font-medium leading-none tabular-nums sm:text-[2.25rem] ${
-                item.accent ? "text-accent" : "text-text-primary"
-              }`}
-            >
-              {item.value}
+    <dl className="grid gap-px overflow-hidden rounded-sm border border-border-strong bg-border-default lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      {figure && (
+        <div className="plate-deep relative flex min-w-0 flex-col justify-center px-6 py-9 sm:px-9 sm:py-11">
+          <div
+            aria-hidden="true"
+            className="aura left-2 top-2 h-40 w-64 sm:h-52 sm:w-96"
+          />
+          <dt className="relative font-mono text-[9px] uppercase tracking-[0.22em] text-accent/80">
+            Total documented damage
+          </dt>
+          <dd className="relative mt-4">
+            <span className="figure-display block text-[4.25rem] font-semibold sm:text-[6rem] lg:text-[7.5rem]">
+              {figure.head}
+              {figure.suffix && (
+                <span className="text-[0.44em] font-medium tracking-[0.02em]">
+                  {figure.suffix}
+                </span>
+              )}
             </span>
-            <span
-              aria-hidden="true"
-              className="mt-2.5 block font-mono text-[9px] uppercase leading-relaxed tracking-[0.16em] text-text-tertiary"
-            >
-              {item.label}
+            <span className="mt-5 block max-w-[34ch] font-mono text-[10px] uppercase leading-relaxed tracking-[0.16em] text-text-tertiary">
+              Damage across {data.quantifiedCases} quantified cases
             </span>
           </dd>
         </div>
-      ))}
+      )}
+
+      <div className="plate grid min-w-0 grid-cols-1 gap-px bg-border-default sm:grid-cols-3 lg:grid-cols-1">
+        {items.map((item) => (
+          <div
+            key={item.label}
+            className="min-w-0 bg-bg-surface/60 px-6 py-5 sm:px-6 sm:py-6"
+          >
+            <dt className="sr-only">{item.label}</dt>
+            <dd className="flex items-baseline justify-between gap-4 lg:block">
+              <span className="block font-mono text-[1.75rem] font-medium leading-none tabular-nums text-text-primary sm:text-[2.125rem]">
+                {item.value}
+              </span>
+              <span
+                aria-hidden="true"
+                className="block max-w-[22ch] text-right font-mono text-[9px] uppercase leading-relaxed tracking-[0.16em] text-text-tertiary lg:mt-2.5 lg:text-left"
+              >
+                {item.label}
+              </span>
+            </dd>
+          </div>
+        ))}
+      </div>
     </dl>
   );
 }
@@ -143,7 +170,7 @@ async function RegistryOverviewSection() {
         />
       </div>
 
-      <div className="grid gap-px bg-border-default md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-px overflow-hidden rounded-sm border border-border-strong bg-border-default md:grid-cols-2 xl:grid-cols-4">
         <SeverityPanel data={data} />
         <FailureModePanel data={data} />
         <AgentPanel data={data} />
@@ -151,6 +178,11 @@ async function RegistryOverviewSection() {
       </div>
     </section>
   );
+}
+
+async function MastheadAnchorSection() {
+  const data = await getOverview();
+  return <MastheadAnchor data={data} />;
 }
 
 function OverviewSkeleton() {
@@ -416,15 +448,25 @@ export default function HomePage({ searchParams }: PageProps) {
   return (
     <div className="shell py-12 sm:py-16">
       {/* Masthead: compact, so the data starts above the fold */}
-      <header className="border-b border-border-default pb-12">
-        <div className="mb-6 flex flex-wrap items-center gap-2">
+      <header className="relative isolate border-b border-border-default pb-12">
+        {/* Glow bleed is clipped so the page never scrolls sideways */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+        >
+          <div
+            aria-hidden="true"
+            className="aura -left-24 -top-32 h-[26rem] w-[38rem] opacity-70"
+          />
+        </div>
+        <div className="relative mb-6 flex flex-wrap items-center gap-2">
           <span className="stamp stamp-red">Unrestricted</span>
           <span className="stamp stamp-muted">Public Registry</span>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end">
+        <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end">
           <div>
-            <h1 className="max-w-[16ch] font-serif text-[2.5rem] font-medium leading-[0.98] tracking-[-0.03em] text-text-primary sm:text-6xl lg:text-[4.25rem]">
+            <h1 className="max-w-[15ch] font-serif text-[2.75rem] font-semibold leading-[0.94] tracking-[-0.028em] text-text-primary sm:text-[4rem] lg:text-[5rem]">
               Every AI Agent{" "}
               <span className="text-text-secondary">Failure,</span>{" "}
               <span className="relative text-accent">
@@ -477,6 +519,13 @@ export default function HomePage({ searchParams }: PageProps) {
                 How it works <ArrowRightIcon size={10} />
               </Link>
             </div>
+
+            {/* Visual anchor, drawn entirely from approved case rows */}
+            <div className="mt-8 text-left">
+              <Suspense fallback={null}>
+                <MastheadAnchorSection />
+              </Suspense>
+            </div>
           </div>
         </div>
       </header>
@@ -495,7 +544,7 @@ export default function HomePage({ searchParams }: PageProps) {
         <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-border-default">
           <h2
             id="feed-heading"
-            className="pb-3 font-serif text-[1.375rem] font-medium leading-none tracking-[-0.015em] text-text-primary sm:text-[1.625rem]"
+            className="pb-3 font-serif text-[1.625rem] font-semibold leading-none tracking-[-0.02em] text-text-primary sm:text-[2.125rem]"
           >
             Case feed
           </h2>
