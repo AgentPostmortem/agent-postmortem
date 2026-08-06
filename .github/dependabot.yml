@@ -40,6 +40,36 @@ updates:
         dependency-type: production
         patterns:
           - "*"
+    ignore:
+      # These majors each need a hand-driven migration, so let a human lead them
+      # instead of reopening a red PR every Monday. Minor and patch bumps still flow.
+      # next 14 -> 16 and react 18 -> 19: async params breaking change across route handlers.
+      - dependency-name: next
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react-dom
+        update-types: ["version-update:semver-major"]
+      - dependency-name: eslint-config-next
+        update-types: ["version-update:semver-major"]
+      # peers next >= 15.5.21, so it is blocked until the Next migration lands.
+      - dependency-name: "@opennextjs/cloudflare"
+        update-types: ["version-update:semver-major"]
+      # tailwind v3 -> v4 needs @tailwindcss/postcss and a CSS-first theme migration.
+      - dependency-name: tailwindcss
+        update-types: ["version-update:semver-major"]
+      # eslint 9/10 conflicts with the pinned eslint-config-next peer range.
+      - dependency-name: eslint
+        update-types: ["version-update:semver-major"]
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      - dependency-name: vitest
+        update-types: ["version-update:semver-major"]
+      # supabase-js typing change needs regenerated database types first.
+      - dependency-name: "@supabase/ssr"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@supabase/supabase-js"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
