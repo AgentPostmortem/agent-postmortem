@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendApprovalEmail } from "@/lib/resend/send";
 import { getSiteUrl } from "@/lib/utils/urls";
+import { updateWithFreshCaseNumber } from "@/lib/db/case-number";
 
 function checkAdminAuth(req: NextRequest): boolean {
   const auth = req.headers.get("x-admin-password");
@@ -32,36 +33,44 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
   const supabase = createSupabaseAdminClient();
 
-  // Assign case number on approval if not already set
-  let caseNumber: string | null = null;
+  // Does this post still need a case number?
+  let needsCaseNumber = false;
   if (parsed.data.status === "approved") {
     const { data: existing } = await supabase
       .from("posts")
       .select("case_number")
       .eq("id", params.id)
       .single();
-
-    if (!existing?.case_number) {
-      const { count } = await supabase
-        .from("posts")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "approved");
-      const seq = ((count ?? 0) + 1).toString().padStart(4, "0");
-      caseNumber = `APM-${seq}`;
-    }
+    needsCaseNumber = !existing?.case_number;
   }
 
-  const updatePayload =
-    caseNumber !== null
-      ? { status: parsed.data.status, case_number: caseNumber }
-      : { status: parsed.data.status };
+  const runUpdate = (payload: {
+    status: "approved" | "rejected";
+    case_number?: string;
+  }) =>
+    supabase
+      .from("posts")
+      .update(payload)
+      .eq("id", params.id)
+      .select("id, status, case_number, submitter_email, title")
+      .single();
 
-  const { data, error } = await supabase
-    .from("posts")
-    .update(updatePayload)
-    .eq("id", params.id)
-    .select("id, status, case_number, submitter_email, title")
-    .single();
+  // Case numbers are permanent, so the next one comes from the highest number
+  // on file rather than a count of approved posts. Retired numbers are never
+  // handed out again, and concurrent approvals retry on unique violations.
+  const { data, error } = needsCaseNumber
+    ? await updateWithFreshCaseNumber({
+        listCaseNumbers: async () => {
+          const { data: rows } = await supabase
+            .from("posts")
+            .select("case_number")
+            .not("case_number", "is", null);
+          return (rows ?? []).map((row) => row.case_number);
+        },
+        update: (caseNumber) =>
+          runUpdate({ status: parsed.data.status, case_number: caseNumber }),
+      })
+    : await runUpdate({ status: parsed.data.status });
 
   if (error || !data) {
     console.error("[admin/posts/id] update error:", error);
