@@ -138,7 +138,8 @@ Tags follow the same pattern — add to `lib/constants/tags.ts` and include the 
 ### UI / bug fixes
 
 - Keep changes focused — one fix or feature per PR
-- Match the existing design tokens (`bg-canvas`, `accent-red`, `accent-red-muted`, `text-tertiary`, etc.) defined in `tailwind.config.ts`. Use `text-accent-red-muted` (not `text-accent-red`) when placing red text on `bg-accent-red-soft` backgrounds to pass WCAG AA contrast.
+- Match the existing design tokens defined in `tailwind.config.ts`. Write them as the utilities a contributor actually types, e.g. `bg-bg-canvas`, `text-text-primary`, `border-border-default` — the color keys (`bg-canvas`, `text-primary`, `border-default`) need the Tailwind prefix in front. The one brand accent is `accent` / `accent-soft` / `accent-strong`.
+- Severity has its own scale, kept separate from the brand accent: `sev-critical`, `sev-high`, `sev-medium`, `sev-low`, each with a `-soft` variant. Per the doc comment on `SEVERITY_STYLES` in `lib/constants/severity.ts`, every consumer must also render the label or the tick count — never colour alone.
 - Test on both mobile and desktop before submitting
 
 ### New features
