@@ -18,13 +18,23 @@ interface CommentsResponse {
 
 function CommentAnchorLink({ commentId }: { commentId: string }) {
   const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
 
-  function copy() {
+  async function copy() {
     const url = `${window.location.origin}${window.location.pathname}#c-${commentId}`;
-    navigator.clipboard.writeText(url).then(() => {
+    if (!navigator.clipboard) {
+      setFailed(true);
+      setTimeout(() => setFailed(false), 1500);
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    });
+    } catch {
+      setFailed(true);
+      setTimeout(() => setFailed(false), 1500);
+    }
   }
 
   return (
@@ -33,9 +43,11 @@ function CommentAnchorLink({ commentId }: { commentId: string }) {
       className="font-mono text-[10px] text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 hover:text-text-secondary"
       aria-label="Copy link to this comment"
     >
-      <span aria-hidden="true">{copied ? "Copied" : "#"}</span>
+      <span aria-hidden="true">
+        {copied ? "Copied" : failed ? "Failed" : "#"}
+      </span>
       <span aria-live="polite" className="sr-only">
-        {copied ? "Copied" : ""}
+        {copied ? "Copied" : failed ? "Failed to copy" : ""}
       </span>
     </button>
   );
