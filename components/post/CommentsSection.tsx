@@ -30,10 +30,13 @@ function CommentAnchorLink({ commentId }: { commentId: string }) {
   return (
     <button
       onClick={copy}
-      className="font-mono text-[10px] text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100 hover:text-text-secondary"
-      title="Copy link to comment"
+      className="font-mono text-[10px] text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 hover:text-text-secondary"
+      aria-label="Copy link to this comment"
     >
-      {copied ? "Copied" : "#"}
+      <span aria-hidden="true">{copied ? "Copied" : "#"}</span>
+      <span aria-live="polite" className="sr-only">
+        {copied ? "Copied" : ""}
+      </span>
     </button>
   );
 }
