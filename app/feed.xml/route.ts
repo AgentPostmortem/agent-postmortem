@@ -27,12 +27,16 @@ export async function GET() {
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
+      const agentName = (agent?.name ?? "Unknown Agent")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
       return `    <item>
       <title>${title}</title>
       <link>${url}</link>
       <guid isPermaLink="true">${url}</guid>
       <description>${desc}</description>
-      <author>${agent?.name ?? "Unknown Agent"}</author>
+      <category>${agentName}</category>
       <pubDate>${new Date(p.created_at).toUTCString()}</pubDate>
     </item>`;
     })
