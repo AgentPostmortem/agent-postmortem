@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHash } from "crypto";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { consumeSharedRateLimit } from "@/lib/rate-limit/shared";
-
-function hashIp(ip: string): string {
-  const pepper = process.env.IP_HASH_PEPPER ?? "default-pepper";
-  return createHash("sha256")
-    .update(ip + pepper)
-    .digest("hex");
-}
-
-function getIp(req: NextRequest): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-}
+import { hashIp, getClientIp } from "@/lib/utils/hash";
 
 interface CommentBody {
   post_id?: unknown;
@@ -65,7 +54,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const ip = getIp(req);
+    const ip = getClientIp(req.headers);
     const ip_hash = hashIp(ip);
 
     const rateLimit = await consumeSharedRateLimit(
@@ -97,7 +86,8 @@ export async function POST(req: NextRequest) {
 
     if (error) throw error;
     return NextResponse.json({ comment: data }, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error("[comments] error:", err);
     return NextResponse.json(
       { error: "Failed to post comment" },
       { status: 500 },
