@@ -23,49 +23,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  const staticRoutes: {
+    path: string;
+    changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
+    priority: number;
+  }[] = [
+    { path: "", changeFrequency: "daily", priority: 1 },
+    { path: "/submit", changeFrequency: "yearly", priority: 0.5 },
+    { path: "/about", changeFrequency: "yearly", priority: 0.4 },
+    { path: "/agent", changeFrequency: "weekly", priority: 0.6 },
+    { path: "/tag", changeFrequency: "weekly", priority: 0.6 },
+    { path: "/hall-of-fame", changeFrequency: "daily", priority: 0.8 },
+    { path: "/teams", changeFrequency: "yearly", priority: 0.4 },
+    { path: "/stats", changeFrequency: "weekly", priority: 0.6 },
+    { path: "/tools", changeFrequency: "monthly", priority: 0.5 },
+    { path: "/contact", changeFrequency: "yearly", priority: 0.3 },
+    { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
+    { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
+  ];
+
   return [
-    {
-      url: siteUrl,
+    ...staticRoutes.map((r) => ({
+      url: `${siteUrl}${r.path}`,
       lastModified: new Date(),
-      changeFrequency: "daily" as const,
-      priority: 1,
-    },
-    {
-      url: `${siteUrl}/submit`,
-      lastModified: new Date(),
-      changeFrequency: "yearly" as const,
-      priority: 0.5,
-    },
-    {
-      url: `${siteUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "yearly" as const,
-      priority: 0.4,
-    },
-    {
-      url: `${siteUrl}/agent`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/tag`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/hall-of-fame`,
-      lastModified: new Date(),
-      changeFrequency: "daily" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/teams`,
-      lastModified: new Date(),
-      changeFrequency: "yearly" as const,
-      priority: 0.4,
-    },
+      changeFrequency: r.changeFrequency,
+      priority: r.priority,
+    })),
     ...postUrls,
     ...AGENTS.map((a) => ({
       url: `${siteUrl}/agent/${a.slug}`,

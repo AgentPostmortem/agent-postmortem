@@ -31,7 +31,10 @@ export function Pagination({
   }
 
   return (
-    <div className="mt-6 flex items-center justify-center gap-1 font-mono text-[11px]">
+    <nav
+      aria-label="Pagination"
+      className="mt-6 flex items-center justify-center gap-1 font-mono text-[11px]"
+    >
       {currentPage > 1 ? (
         <Link
           href={hrefForPage(currentPage - 1)}
@@ -40,20 +43,29 @@ export function Pagination({
           <ArrowLeftIcon size={10} /> Prev
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
+        <span
+          aria-disabled="true"
+          className="inline-flex items-center gap-1.5 rounded-sm border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40"
+        >
           <ArrowLeftIcon size={10} /> Prev
         </span>
       )}
 
       {pages.map((p, i) =>
         p === "…" ? (
-          <span key={`ellipsis-${i}`} className="px-1 text-text-tertiary">
+          <span
+            key={`ellipsis-${i}`}
+            aria-hidden="true"
+            className="px-1 text-text-tertiary"
+          >
             …
           </span>
         ) : (
           <Link
             key={p}
             href={hrefForPage(p)}
+            aria-current={p === currentPage ? "page" : undefined}
+            aria-label={`Page ${p}`}
             className={[
               "rounded-sm border px-2.5 py-1.5 transition-colors",
               p === currentPage
@@ -74,10 +86,13 @@ export function Pagination({
           Next <ArrowRightIcon size={10} />
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40">
+        <span
+          aria-disabled="true"
+          className="inline-flex items-center gap-1.5 rounded-sm border border-border-default px-2.5 py-1.5 text-text-tertiary opacity-40"
+        >
           Next <ArrowRightIcon size={10} />
         </span>
       )}
-    </div>
+    </nav>
   );
 }
