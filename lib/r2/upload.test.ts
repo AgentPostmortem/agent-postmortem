@@ -39,19 +39,13 @@ describe("getPresignedUploadUrl", () => {
     ["image/webp", "webp"],
     ["image/gif", "gif"],
   ])("maps %s to a .%s key", async (contentType, ext) => {
-    const { key } = await getPresignedUploadUrl(
-      "whatever.html",
-      contentType,
-    );
+    const { key } = await getPresignedUploadUrl("whatever.html", contentType);
 
     expect(key).toMatch(new RegExp(`^screenshots/[^/]+\\.${ext}$`));
   });
 
   it("ignores a hostile filename with a disallowed extension", async () => {
-    const { key } = await getPresignedUploadUrl(
-      "payload.html",
-      "image/png",
-    );
+    const { key } = await getPresignedUploadUrl("payload.html", "image/png");
 
     expect(key.endsWith(".html")).toBe(false);
     expect(key.endsWith(".png")).toBe(true);
