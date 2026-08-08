@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isOwnedScreenshotUrl } from "@/lib/utils/urls";
 
 export const submitSchema = z.object({
   /** Slug of the agent involved (from AGENTS constant) */
@@ -47,11 +48,24 @@ export const submitSchema = z.object({
     .optional()
     .or(z.literal("")),
 
-  /** R2 object keys or public URLs for screenshot evidence */
+  /** Public URLs for screenshot evidence — must point at our own R2 bucket */
   screenshots: z
-    .array(z.string().url())
+    .array(
+      z
+        .string()
+        .url()
+        .refine(isOwnedScreenshotUrl, "Screenshot URL is not allowed."),
+    )
     .max(5, "Maximum 5 screenshots per submission.")
     .optional(),
 });
 
 export type SubmitFormValues = z.infer<typeof submitSchema>;
+
+/** Shared validator for the `screenshotUrls` field the submit/edit API routes accept. */
+export const screenshotUrlsSchema = z
+  .array(
+    z.string().url().refine(isOwnedScreenshotUrl, "Screenshot URL is not allowed."),
+  )
+  .max(5)
+  .optional();

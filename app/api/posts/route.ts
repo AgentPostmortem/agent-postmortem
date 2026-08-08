@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import { submitSchema } from "@/lib/schemas/submit";
+import { submitSchema, screenshotUrlsSchema } from "@/lib/schemas/submit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendEditTokenEmail } from "@/lib/resend/send";
 import { hashIp, getClientIp } from "@/lib/utils/hash";
@@ -13,7 +12,7 @@ const WINDOW_SECONDS = 60 * 60;
 const MAX_SUBMISSIONS = 3;
 
 const bodySchema = submitSchema.extend({
-  screenshotUrls: z.array(z.string().url()).max(5).optional(),
+  screenshotUrls: screenshotUrlsSchema,
 });
 
 export async function POST(req: NextRequest) {
