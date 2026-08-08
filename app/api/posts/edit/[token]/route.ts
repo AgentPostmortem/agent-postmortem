@@ -1,12 +1,11 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { submitSchema } from "@/lib/schemas/submit";
+import { submitSchema, screenshotUrlsSchema } from "@/lib/schemas/submit";
 import { redactPii } from "@/lib/utils/pii";
 
 const editSchema = submitSchema.extend({
-  screenshotUrls: z.array(z.string().url()).max(5).optional(),
+  screenshotUrls: screenshotUrlsSchema,
 });
 
 interface EditablePostRow {
