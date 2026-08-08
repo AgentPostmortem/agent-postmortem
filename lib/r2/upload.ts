@@ -9,6 +9,27 @@ import { getR2PublicBaseUrl } from "@/lib/utils/urls";
 
 const R2_ENDPOINT = `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
 
+const EXT_BY_CONTENT_TYPE: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+
+/**
+ * Maps a validated content type to a storage extension. Never derive the
+ * extension from a user-supplied filename — it isn't checked against the
+ * allowlist the route validates `contentType` with.
+ */
+function extensionForContentType(contentType: string): string {
+  return EXT_BY_CONTENT_TYPE[contentType] ?? "bin";
+}
+
+/** Strips the filename down to characters safe for an S3 metadata header. */
+function sanitizeFilenameForMetadata(filename: string): string {
+  return filename.replace(/[^\w.-]/g, "_").slice(0, 255);
+}
+
 function getR2Client() {
   return new S3Client({
     region: "auto",
@@ -38,7 +59,7 @@ export async function getPresignedUploadUrl(
   contentType: string,
   folder = "screenshots",
 ): Promise<PresignUploadResult> {
-  const ext = filename.split(".").pop() ?? "bin";
+  const ext = extensionForContentType(contentType);
   const key = `${folder}/${randomUUID()}.${ext}`;
 
   const client = getR2Client();
@@ -46,6 +67,7 @@ export async function getPresignedUploadUrl(
     Bucket: process.env.R2_BUCKET_NAME!,
     Key: key,
     ContentType: contentType,
+    Metadata: { "original-filename": sanitizeFilenameForMetadata(filename) },
   });
 
   const uploadUrl = await getSignedUrl(client, command, { expiresIn: 300 });
