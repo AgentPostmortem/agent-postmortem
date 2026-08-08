@@ -65,7 +65,10 @@ export type SubmitFormValues = z.infer<typeof submitSchema>;
 /** Shared validator for the `screenshotUrls` field the submit/edit API routes accept. */
 export const screenshotUrlsSchema = z
   .array(
-    z.string().url().refine(isOwnedScreenshotUrl, "Screenshot URL is not allowed."),
+    z
+      .string()
+      .url()
+      .refine(isOwnedScreenshotUrl, "Screenshot URL is not allowed."),
   )
   .max(5)
   .optional();

@@ -57,10 +57,14 @@ describe("isOwnedScreenshotUrl", () => {
   it("rejects a malformed key on our own host", () => {
     process.env.R2_PUBLIC_URL = "https://cdn.example.com";
     expect(
-      isOwnedScreenshotUrl("https://cdn.example.com/screenshots/../../etc/passwd"),
+      isOwnedScreenshotUrl(
+        "https://cdn.example.com/screenshots/../../etc/passwd",
+      ),
     ).toBe(false);
     expect(
-      isOwnedScreenshotUrl("https://cdn.example.com/uploads/not-a-screenshot.png"),
+      isOwnedScreenshotUrl(
+        "https://cdn.example.com/uploads/not-a-screenshot.png",
+      ),
     ).toBe(false);
   });
 
