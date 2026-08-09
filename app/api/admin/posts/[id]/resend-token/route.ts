@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendEditTokenEmail } from "@/lib/resend/send";
-import { randomBytes, createHash } from "crypto";
+import { randomBytes } from "crypto";
+import { hashEditToken } from "@/lib/utils/hash";
 
 export async function POST(
   req: NextRequest,
@@ -24,7 +25,7 @@ export async function POST(
   }
 
   const token = randomBytes(32).toString("hex");
-  const tokenHash = createHash("sha256").update(token).digest("hex");
+  const tokenHash = hashEditToken(token);
   const expiresAt = new Date(
     Date.now() + 30 * 24 * 60 * 60 * 1000,
   ).toISOString();

@@ -1,8 +1,8 @@
-import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { submitSchema, screenshotUrlsSchema } from "@/lib/schemas/submit";
 import { redactPii } from "@/lib/utils/pii";
+import { hashEditToken } from "@/lib/utils/hash";
 
 const editSchema = submitSchema.extend({
   screenshotUrls: screenshotUrlsSchema,
@@ -24,10 +24,6 @@ interface EditablePostRow {
   post_tags: Array<{ tags: { slug: string | null } | null }> | null;
 }
 
-function getTokenHash(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
-
 interface RouteContext {
   params: { token: string };
 }
@@ -35,7 +31,7 @@ interface RouteContext {
 export async function GET(_req: NextRequest, { params }: RouteContext) {
   try {
     const supabase = createSupabaseAdminClient();
-    const tokenHash = getTokenHash(params.token);
+    const tokenHash = hashEditToken(params.token);
 
     const { data, error } = await supabase
       .from("posts")
@@ -115,7 +111,7 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
       );
     }
 
-    const tokenHash = getTokenHash(params.token);
+    const tokenHash = hashEditToken(params.token);
     const supabase = createSupabaseAdminClient();
 
     const { data: existing, error: existingError } = await supabase

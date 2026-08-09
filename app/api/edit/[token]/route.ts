@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { createHash } from "crypto";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { redactPii } from "@/lib/utils/pii";
-
-function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
+import { hashEditToken } from "@/lib/utils/hash";
 
 interface RouteParams {
   params: { token: string };
@@ -16,7 +12,7 @@ export async function GET(
   _req: NextRequest,
   { params }: RouteParams,
 ): Promise<NextResponse> {
-  const tokenHash = hashToken(params.token);
+  const tokenHash = hashEditToken(params.token);
   const supabase = createSupabaseAdminClient();
 
   const { data, error } = await supabase
@@ -58,7 +54,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: RouteParams,
 ): Promise<NextResponse> {
-  const tokenHash = hashToken(params.token);
+  const tokenHash = hashEditToken(params.token);
   const supabase = createSupabaseAdminClient();
 
   // Verify token resolves to a post
