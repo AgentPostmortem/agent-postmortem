@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHash } from "crypto";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-
-function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
+import { hashEditToken } from "@/lib/utils/hash";
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: { token: string } },
 ): Promise<NextResponse> {
-  const tokenHash = hashToken(params.token);
+  const tokenHash = hashEditToken(params.token);
   const supabase = createSupabaseAdminClient();
 
   const { data, error } = await supabase

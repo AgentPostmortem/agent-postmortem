@@ -1,4 +1,4 @@
-import { createHmac } from "crypto";
+import { createHash, createHmac } from "crypto";
 
 /**
  * Hash an IP address using HMAC-SHA256 with a secret pepper.
@@ -32,4 +32,18 @@ export function getClientIp(headers: Headers): string {
     return forwarded.split(",")[0].trim();
   }
   return headers.get("x-real-ip") ?? "unknown";
+}
+
+/**
+ * Hash an edit token with SHA-256 for storage as `posts.edit_token_hash`.
+ *
+ * The raw token is sent to the submitter and never stored; only this hash
+ * lives in the database. Do not change the algorithm here without a
+ * migration plan, existing rows were written with this exact scheme.
+ *
+ * @param token - Raw edit token (hex string from randomBytes)
+ * @returns Hex-encoded SHA-256 hash
+ */
+export function hashEditToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
 }

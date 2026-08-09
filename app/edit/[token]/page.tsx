@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { createHash } from "crypto";
 import { notFound } from "next/navigation";
 import { EditCaseForm } from "@/components/post/EditCaseForm";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { SubmitFormValues } from "@/lib/schemas/submit";
+import { hashEditToken } from "@/lib/utils/hash";
 
 export const metadata: Metadata = {
   title: "Edit Case — AgentPostmortem",
@@ -30,13 +30,9 @@ interface EditablePostRow {
   post_tags: Array<{ tags: { slug: string | null } | null }> | null;
 }
 
-function getTokenHash(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
-
 export default async function EditSubmissionPage({ params }: PageProps) {
   const supabase = createSupabaseAdminClient();
-  const tokenHash = getTokenHash(params.token);
+  const tokenHash = hashEditToken(params.token);
 
   const [{ data: post }, { data: agents }, { data: tags }] = await Promise.all([
     supabase
