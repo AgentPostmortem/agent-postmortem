@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { submitSchema, screenshotUrlsSchema } from "@/lib/schemas/submit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendEditTokenEmail } from "@/lib/resend/send";
-import { hashIp, getClientIp } from "@/lib/utils/hash";
+import { hashIp, getClientIp, hashEditToken } from "@/lib/utils/hash";
 import { redactPii } from "@/lib/utils/pii";
-import { randomBytes, createHash } from "crypto";
+import { randomBytes } from "crypto";
 import { logEvent } from "@/lib/observability/events";
 import { consumeSharedRateLimit } from "@/lib/rate-limit/shared";
 
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
 
     // Generate edit token — raw token sent to user, hash stored in DB
     const rawToken = randomBytes(32).toString("hex");
-    const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+    const tokenHash = hashEditToken(rawToken);
 
     // Insert post (status = pending, goes to moderation queue)
     const { data: post, error: postErr } = await supabase

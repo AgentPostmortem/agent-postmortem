@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { getClientIp, hashIp } from "./hash";
+import { getClientIp, hashEditToken, hashIp } from "./hash";
 
 describe("hashIp", () => {
   const originalEnv = { ...process.env };
@@ -58,5 +58,19 @@ describe("getClientIp", () => {
     const headers = new Headers();
 
     expect(getClientIp(headers)).toBe("unknown");
+  });
+});
+
+describe("hashEditToken", () => {
+  it("is deterministic for the same input", () => {
+    expect(hashEditToken("fixed-test-token")).toBe(
+      hashEditToken("fixed-test-token"),
+    );
+  });
+
+  it("matches a known digest for a fixed input", () => {
+    expect(hashEditToken("fixed-test-token")).toBe(
+      "abae2c734c2b0249ef1d413fdf30c332c6875fde570f9bbeef4295966f0b4943",
+    );
   });
 });

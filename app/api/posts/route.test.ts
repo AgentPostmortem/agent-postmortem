@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const sendEditTokenEmail = vi.fn();
 const hashIp = vi.fn(() => "hashed-ip");
 const getClientIp = vi.fn(() => "127.0.0.1");
+const hashEditToken = vi.fn(() => "hashed-edit-token");
 const consumeSharedRateLimit = vi.fn(async () => ({
   allowed: true,
   remaining: 2,
@@ -23,6 +24,7 @@ vi.mock("@/lib/resend/send", () => ({
 vi.mock("@/lib/utils/hash", () => ({
   hashIp,
   getClientIp,
+  hashEditToken,
 }));
 
 vi.mock("@/lib/rate-limit/shared", () => ({
