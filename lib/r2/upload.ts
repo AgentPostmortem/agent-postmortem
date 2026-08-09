@@ -7,17 +7,40 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "crypto";
 import { getR2PublicBaseUrl } from "@/lib/utils/urls";
 
-const R2_ENDPOINT = `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+declare global {
+  var _r2Client: S3Client | undefined;
+}
 
-function getR2Client() {
-  return new S3Client({
+function getR2Client(): S3Client {
+  if (globalThis._r2Client) return globalThis._r2Client;
+
+  const accountId = process.env.R2_ACCOUNT_ID;
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+
+  if (!accountId || !accessKeyId || !secretAccessKey) {
+    throw new Error(
+      "Missing R2 credentials in environment variables (R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY).",
+    );
+  }
+  if (!process.env.R2_BUCKET_NAME) {
+    throw new Error("Missing R2_BUCKET_NAME in environment variables.");
+  }
+
+  const client = new S3Client({
     region: "auto",
-    endpoint: R2_ENDPOINT,
+    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
     credentials: {
-      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+      accessKeyId,
+      secretAccessKey,
     },
   });
+
+  if (process.env.NODE_ENV !== "production") {
+    globalThis._r2Client = client;
+  }
+
+  return client;
 }
 
 interface PresignUploadResult {
