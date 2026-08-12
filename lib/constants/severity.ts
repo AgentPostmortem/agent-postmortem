@@ -17,6 +17,18 @@ export const SEVERITY_DESCRIPTIONS: Record<1 | 2 | 3 | 4 | 5, string> = {
 export type SeverityLevel = 1 | 2 | 3 | 4 | 5;
 
 /**
+ * Whether a number is a real damage level.
+ *
+ * Severity arrives as a URL query string and reaches the database through
+ * parseInt, so `?severity=99` and `?severity=abc` are both reachable. The
+ * column only holds 1 to 5, and supabase-js now types it as that union, which
+ * is what surfaced this: the filter was being built from unvalidated input.
+ */
+export function isSeverityLevel(value: number): value is SeverityLevel {
+  return Number.isInteger(value) && value >= 1 && value <= 5;
+}
+
+/**
  * Visual encoding for each severity level. Severity is core content, so it gets
  * its own semantic scale, separate from the amber brand accent. Every consumer
  * must also render the label or the tick count, never colour alone.

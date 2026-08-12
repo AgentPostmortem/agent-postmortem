@@ -139,7 +139,15 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "posts_agent_id_fkey";
+            columns: ["agent_id"];
+            isOneToOne: false;
+            referencedRelation: "agents";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       tags: {
         Row: {
@@ -169,7 +177,22 @@ export type Database = {
         Row: { post_id: string; tag_id: string };
         Insert: { post_id: string; tag_id: string };
         Update: { post_id?: string; tag_id?: string };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "post_tags_post_id_fkey";
+            columns: ["post_id"];
+            isOneToOne: false;
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "post_tags_tag_id_fkey";
+            columns: ["tag_id"];
+            isOneToOne: false;
+            referencedRelation: "tags";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       votes: {
         Row: {
@@ -193,7 +216,15 @@ export type Database = {
           direction?: "up" | "down";
           created_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "votes_post_id_fkey";
+            columns: ["post_id"];
+            isOneToOne: false;
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       comments: {
         Row: {
@@ -226,7 +257,15 @@ export type Database = {
           status?: "visible" | "hidden" | "removed";
           created_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "comments_post_id_fkey";
+            columns: ["post_id"];
+            isOneToOne: false;
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       rate_limits: {
         Row: {
@@ -301,7 +340,15 @@ export type Database = {
           resolved?: boolean;
           created_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "reports_post_id_fkey";
+            columns: ["post_id"];
+            isOneToOne: false;
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: Record<string, never>;
