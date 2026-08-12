@@ -1,6 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Post } from "@/types";
-import type { SeverityLevel } from "@/lib/constants/severity";
+import { isSeverityLevel, type SeverityLevel } from "@/lib/constants/severity";
 import { incidentDate, incidentMonth } from "@/lib/utils/incident-date";
 import {
   bucketByYear,
@@ -63,7 +63,11 @@ export async function fetchFeedPosts(
       .range(from, to);
 
     if (agentSlug) query = query.eq("agents.slug", agentSlug);
-    if (severity != null) query = query.eq("damage_level", severity);
+    // Only filter on a level the column can actually hold. An out of range
+    // severity in the URL used to be passed straight through.
+    if (severity != null && isSeverityLevel(severity)) {
+      query = query.eq("damage_level", severity);
+    }
 
     if (year) {
       // Match incidentDate(): the source publication date decides the year,
