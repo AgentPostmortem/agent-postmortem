@@ -4,6 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { PostCard } from "@/components/post/PostCard";
 import { AGENTS } from "@/lib/constants/agents";
+import {
+  isSeverityLevel,
+  SEVERITY_LABELS,
+  type SeverityLevel,
+} from "@/lib/constants/severity";
 import type { Post } from "@/types";
 import { ChevronDownIcon, ChevronUpIcon } from "@/components/ui/icons";
 
@@ -11,13 +16,7 @@ interface SearchResponse {
   posts?: Post[];
 }
 
-const SEVERITY_LABELS: Record<number, string> = {
-  1: "Minimal",
-  2: "Low",
-  3: "Moderate",
-  4: "Severe",
-  5: "Critical",
-};
+const SEVERITY_LEVELS: SeverityLevel[] = [1, 2, 3, 4, 5];
 
 export function SearchResults({
   initialQuery,
@@ -28,8 +27,8 @@ export function SearchResults({
 }) {
   const [query, setQuery] = useState(initialQuery);
   const [agentFilter, setAgentFilter] = useState("");
-  const [minSeverity, setMinSeverity] = useState(1);
-  const [maxSeverity, setMaxSeverity] = useState(5);
+  const [minSeverity, setMinSeverity] = useState<SeverityLevel>(1);
+  const [maxSeverity, setMaxSeverity] = useState<SeverityLevel>(5);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const [results, setResults] = useState<Post[]>(initialResults);
@@ -211,7 +210,7 @@ export function SearchResults({
                   aria-labelledby="filter-severity-label"
                   className="flex gap-1"
                 >
-                  {[1, 2, 3, 4, 5].map((lvl) => {
+                  {SEVERITY_LEVELS.map((lvl) => {
                     const inRange = lvl >= minSeverity && lvl <= maxSeverity;
                     return (
                       <button
@@ -231,9 +230,15 @@ export function SearchResults({
                             setMinSeverity(1);
                             setMaxSeverity(5);
                           } else if (lvl === minSeverity) {
-                            setMinSeverity(lvl + 1);
+                            const nextLevel = lvl + 1;
+                            if (isSeverityLevel(nextLevel)) {
+                              setMinSeverity(nextLevel);
+                            }
                           } else if (lvl === maxSeverity) {
-                            setMaxSeverity(lvl - 1);
+                            const previousLevel = lvl - 1;
+                            if (isSeverityLevel(previousLevel)) {
+                              setMaxSeverity(previousLevel);
+                            }
                           } else {
                             setMinSeverity(lvl);
                             setMaxSeverity(lvl);
