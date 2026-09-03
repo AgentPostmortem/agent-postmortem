@@ -1,100 +1,86 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About AgentPostmortem",
   description:
-    "Why we built a public ledger for AI agent failures and how we handle privacy.",
+    "We documented how AI agents fail in production, then built the install service that avoids every one of those failures.",
 };
 
 export default function AboutPage() {
   return (
     <div className="shell max-w-2xl py-12 sm:py-16">
       <div className="mb-10 border-b border-border-default pb-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+        <p className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
           About
         </p>
-        <h1 className="mt-2 font-serif text-3xl font-normal text-text-primary">
-          Why This Exists
+        <h1 className="mt-2 font-sans text-3xl font-bold tracking-tight text-text-primary">
+          We have seen every way agents fail. We install the ones that
+          don&apos;t.
         </h1>
       </div>
 
-      <div className="prose prose-invert max-w-none space-y-8 text-text-secondary [&_h2]:font-serif [&_h2]:font-normal [&_h2]:text-text-primary [&_a]:text-accent [&_a:hover]:underline">
+      <div className="prose max-w-none space-y-8 text-text-secondary [&_h2]:font-sans [&_h2]:font-bold [&_h2]:text-text-primary [&_a]:text-accent [&_a:hover]:underline">
         <p>
-          Aviation has the NTSB. Medicine has morbidity and mortality
-          conferences. Software has postmortems. But AI agents (systems making
-          autonomous decisions with real-world consequences) have nothing.
-          Failures happen quietly, root causes are never shared, and the
-          industry learns nothing.
+          I&apos;m Royal Simpson Pinto, an AI and product engineer. I spent
+          months documenting real AI agent failures in production: deleted
+          data, wrong recipients, surprise bills, exposed credentials. That
+          public registry still exists on this site, and every guardrail in
+          my installs traces back to a case in it.
         </p>
 
         <p>
-          AgentPostmortem is a structured public ledger for AI agent failures.
-          Every case is numbered, tagged, and searchable. The goal is not to
-          shame vendors or teams. The goal is to give practitioners a shared
-          base of evidence so we don&apos;t keep making the same mistakes.
+          The lesson from all those cases is simple. Agents fail when they
+          get unlimited access, no audit trail, and nobody approving the
+          risky calls. So that is exactly what my installs refuse to do:
+          scoped keys, every action logged, and a human approval step for
+          anything irreversible.
         </p>
 
-        <h2>How We Handle Privacy</h2>
+        <h2>What I sell</h2>
 
         <p>
-          All submissions can be anonymous. We redact emails, phone numbers, and
-          other obvious PII from submitted text before it reaches our database.
-          IP addresses are hashed with a secret pepper and never stored in
-          plaintext. If you provide an email, it&apos;s used only to deliver
-          your private edit link and is not retained after delivery. Screenshot
-          uploads are stored as provided, so submitters should remove sensitive
-          information before uploading evidence.
+          One thing: a 14-day pilot that puts an agent on one of your
+          support or portal workflows. Triage plus guarded refunds within
+          your policy, or portal pulls with screenshot proof. $1,200 fixed,
+          and the second half is only due if it closes real work. After
+          that, $400 per month care, pause anytime.
         </p>
 
-        <h2>What Makes a Good Case Report</h2>
+        <p>
+          <a href="/pilot">
+            Book the pilot here
+          </a>
+          . I reply within a day.
+        </p>
+
+        <h2>Why trust a solo builder</h2>
 
         <ul>
-          <li>A specific, reproducible incident, not a general complaint</li>
-          <li>The instruction or prompt that triggered the failure</li>
-          <li>What the agent actually did versus what was intended</li>
-          <li>Concrete damages: financial, reputational, operational</li>
-          <li>Evidence where possible (screenshots, logs)</li>
+          <li>Fifteen-plus products live and maintained, not mockups</li>
+          <li>
+            1,500-plus open source contributions, including GSoC and Linux
+            Foundation programs
+          </li>
+          <li>
+            The backends behind the pilot are all running in production and
+            linked from the <a href="/tools">proof page</a>
+          </li>
         </ul>
 
-        <h2>Moderation</h2>
+        <h2>The failure registry</h2>
 
         <p>
-          Every submission is reviewed before publication. We reject cases that
-          are vague, unverifiable, or appear to be targeted harassment. Approved
-          cases are assigned a permanent case number (APM-0001) and indexed
-          immediately.
-        </p>
-
-        <h2>Open Source</h2>
-
-        <p>
-          AgentPostmortem is open source. The registry code is publicly
-          available, and contributions, bug reports, and new agent/tag additions
-          are welcome on{" "}
-          <a
-            href="https://github.com/AgentPostmortem/agentpostmortem"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
-          .
-        </p>
-
-        <h2>For Teams</h2>
-
-        <p>
-          If you run AI agents at scale and need private incident tracking,
-          compliance exports, or API access, see our{" "}
-          <Link href="/teams">Teams offering</Link>.
+          The public case registry remains online as a reference: numbered,
+          tagged, searchable reports of agent incidents, with a moderation
+          queue and anonymous submissions. It no longer defines this site;
+          it is the evidence shelf the installs stand on.
         </p>
 
         <div id="contact">
           <h2>Contact</h2>
 
           <p>
-            For editorial questions, case disputes, or partnership inquiries:{" "}
+            For pilot bookings, questions, or case disputes:{" "}
             <a href="mailto:hello@agentpostmortem.com">
               hello@agentpostmortem.com
             </a>
@@ -104,7 +90,7 @@ export default function AboutPage() {
         <div className="mt-10 border-t border-border-default pt-6">
           <p className="font-mono text-xs text-text-tertiary">
             AgentPostmortem is an independent project. We are not affiliated
-            with Anthropic, OpenAI, Google, Microsoft, or any AI vendor listed
+            with Anthropic, OpenAI, Google, Microsoft, or any AI vendor named
             in the case database.
           </p>
         </div>

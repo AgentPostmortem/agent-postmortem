@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Tools — AgentPostmortem",
+  title: "Proof — AgentPostmortem",
   description:
-    "The agent operating suite: tools for building, testing, operating, and supervising AI agents.",
+    "The live backends behind the 14-day pilot: support triage, portal ops, and approvals, all running in production.",
 };
 
 type Tool = {
@@ -231,21 +231,28 @@ export default function ToolsPage() {
   return (
     <div className="shell max-w-5xl py-12 sm:py-16">
       <div className="mb-10 border-b border-border-default pb-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
-          Agent operating suite
+        <p className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
+          Proof, not products
         </p>
-        <h1 className="mt-2 font-serif text-3xl font-normal text-text-primary">
-          Tools
+        <h1 className="mt-2 font-sans text-3xl font-bold tracking-tight text-text-primary">
+          What the pilot runs on
         </h1>
         <p className="mt-3 max-w-2xl text-text-secondary">
-          Tools for building, testing, operating, and supervising AI agents,
-          built alongside this failure registry. Everything below is live.
+          These backends run the 14-day pilot behind the scenes. They are
+          not separate products to evaluate. Try any of them live, then{" "}
+          <a
+            href="/pilot"
+            className="text-accent hover:underline"
+          >
+            book the pilot
+          </a>
+          .
         </p>
       </div>
 
       <section className="mb-12">
-        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent">
-          Agents &amp; operations
+        <h2 className="mb-4 font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-accent">
+          Runs the pilot
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {AGENTS.map((tool) => (
@@ -255,8 +262,8 @@ export default function ToolsPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent">
-          Tooling &amp; evals
+        <h2 className="mb-4 font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-accent">
+          Evals &amp; safety tooling
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {TOOLING.map((tool) => (
@@ -266,7 +273,7 @@ export default function ToolsPage() {
       </section>
 
       <section className="mt-12">
-        <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-accent">
+        <h2 className="mb-4 font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-accent">
           Curated lists &amp; skills packs
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -275,6 +282,21 @@ export default function ToolsPage() {
           ))}
         </div>
       </section>
+
+      <div className="mt-10 rounded-sm border border-accent/40 bg-accent-soft p-5">
+        <p className="text-sm leading-relaxed text-text-secondary">
+          One support or portal workflow, live in 14 days with guardrails
+          from day one. $1,200 fixed, second half only if it closes real
+          work.{" "}
+          <a
+            href="/pilot"
+            className="font-medium text-accent hover:underline"
+          >
+            Book the pilot
+          </a>
+          .
+        </p>
+      </div>
 
       <div className="mt-10 border-t border-border-default pt-6">
         <p className="font-mono text-xs text-text-tertiary">
