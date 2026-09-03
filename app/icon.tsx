@@ -10,7 +10,7 @@ export default function Icon() {
         width: 32,
         height: 32,
         background: "#0c0b0a",
-        border: "1.5px solid #f5a524",
+        border: "1.5px solid #34d399",
         borderRadius: 6,
         display: "flex",
         flexDirection: "column",
@@ -21,13 +21,13 @@ export default function Icon() {
       }}
     >
       <div
-        style={{ width: 18, height: 2, background: "#f5a524", borderRadius: 1 }}
+        style={{ width: 18, height: 2, background: "#34d399", borderRadius: 1 }}
       />
       <div
         style={{
           width: 18,
           height: 1.5,
-          background: "#f5a524",
+          background: "#34d399",
           borderRadius: 1,
           opacity: 0.65,
         }}
@@ -36,7 +36,7 @@ export default function Icon() {
         style={{
           width: 11,
           height: 1.5,
-          background: "#f5a524",
+          background: "#34d399",
           borderRadius: 1,
           opacity: 0.4,
         }}

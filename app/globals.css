@@ -6,32 +6,27 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color-scheme: light;
   }
 
   body {
-    /* Ruled-paper texture plus a warm archival wash at the top of the page,
-       so the sheet has depth instead of reading as one flat panel. */
+    /* Faint emerald wash at the top of the page plus a subtle ledger
+       ruling, so the sheet has depth instead of reading as one flat panel. */
     background-image:
       radial-gradient(
         120% 62% at 50% -18%,
-        rgba(245, 165, 36, 0.09),
+        rgba(5, 150, 105, 0.06),
         transparent 62%
-      ),
-      radial-gradient(
-        70% 42% at 88% 4%,
-        rgba(229, 72, 77, 0.045),
-        transparent 68%
       ),
       linear-gradient(
         to bottom,
-        rgba(242, 237, 228, 0.028) 1px,
+        rgba(28, 25, 23, 0.028) 1px,
         transparent 1px
       );
     background-size:
       100% 1400px,
-      100% 1200px,
-      100% 30px;
-    background-repeat: no-repeat, no-repeat, repeat;
+      100% 28px;
+    background-repeat: no-repeat, repeat;
     background-attachment: scroll;
   }
 
@@ -44,22 +39,22 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #2a2622;
+    background: #d6d3d1;
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #46403a;
+    background: #a8a29e;
   }
 
-  /* Signal amber text selection */
+  /* Signal emerald text selection */
   ::selection {
-    background: #f5a524;
-    color: #0c0b0a;
+    background: #059669;
+    color: #ffffff;
   }
 
   /* Visible, consistent keyboard focus everywhere */
   :focus-visible {
-    outline: 2px solid #f5a524;
+    outline: 2px solid #059669;
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -101,14 +96,14 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Warm ambient glow, used behind the masthead and the damage figure. */
+  /* Soft ambient glow, used behind mastheads and figures. */
   .aura {
     position: absolute;
     z-index: 0;
     pointer-events: none;
     background: radial-gradient(
       closest-side,
-      rgba(245, 165, 36, 0.15),
+      rgba(5, 150, 105, 0.14),
       transparent 72%
     );
     filter: blur(28px);

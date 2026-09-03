@@ -14,7 +14,7 @@ export function LogoIcon({ size = 28 }: { size?: number }) {
         width="28"
         height="28"
         rx="4"
-        stroke="#f5a524"
+        stroke="#34d399"
         strokeWidth="1.5"
       />
       <line
@@ -22,7 +22,7 @@ export function LogoIcon({ size = 28 }: { size?: number }) {
         y1="10"
         x2="24"
         y2="10"
-        stroke="#f5a524"
+        stroke="#34d399"
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -31,7 +31,7 @@ export function LogoIcon({ size = 28 }: { size?: number }) {
         y1="15.5"
         x2="24"
         y2="15.5"
-        stroke="#f5a524"
+        stroke="#34d399"
         strokeWidth="1.5"
         strokeLinecap="round"
         opacity="0.65"
@@ -41,12 +41,12 @@ export function LogoIcon({ size = 28 }: { size?: number }) {
         y1="21"
         x2="17"
         y2="21"
-        stroke="#f5a524"
+        stroke="#34d399"
         strokeWidth="1.5"
         strokeLinecap="round"
         opacity="0.4"
       />
-      <circle cx="24" cy="24" r="3" fill="#f5a524" />
+      <circle cx="24" cy="24" r="3" fill="#34d399" />
     </svg>
   );
 }
