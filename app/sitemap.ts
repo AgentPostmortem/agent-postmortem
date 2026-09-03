@@ -29,12 +29,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: number;
   }[] = [
     { path: "", changeFrequency: "daily", priority: 1 },
+    { path: "/pilot", changeFrequency: "monthly", priority: 0.9 },
     { path: "/submit", changeFrequency: "yearly", priority: 0.5 },
     { path: "/about", changeFrequency: "yearly", priority: 0.4 },
     { path: "/agent", changeFrequency: "weekly", priority: 0.6 },
     { path: "/tag", changeFrequency: "weekly", priority: 0.6 },
     { path: "/hall-of-fame", changeFrequency: "daily", priority: 0.8 },
-    { path: "/teams", changeFrequency: "yearly", priority: 0.4 },
     { path: "/stats", changeFrequency: "weekly", priority: 0.6 },
     { path: "/tools", changeFrequency: "monthly", priority: 0.5 },
     { path: "/contact", changeFrequency: "yearly", priority: 0.3 },
