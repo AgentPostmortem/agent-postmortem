@@ -1,143 +1,34 @@
 import Link from "next/link";
-import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 
-const SUITE_LINKS = [
+const PROOF_LINKS = [
   {
     href: "https://resolvd.agentpostmortem.com",
     label: "Resolvd",
-    description: "Support operations",
+    description: "Support triage, live demo",
     mark: "R",
-  },
-  {
-    href: "https://greenlite.agentpostmortem.com",
-    label: "Greenlite",
-    description: "Human approvals",
-    mark: "G",
-  },
-  {
-    href: "https://relayg.agentpostmortem.com",
-    label: "RelayG",
-    description: "Triage state machine",
-    mark: "Rg",
   },
   {
     href: "https://webhands.agentpostmortem.com",
     label: "Webhands",
-    description: "Browser agents",
+    description: "Portal ops, live demo",
     mark: "W",
   },
   {
-    href: "https://bridgekit.agentpostmortem.com",
-    label: "Bridgekit",
-    description: "Scoped MCP server",
-    mark: "B",
-  },
-  {
-    href: "https://tracecase.agentpostmortem.com",
-    label: "Tracecase",
-    description: "Agent CI",
-    mark: "T",
-  },
-  {
-    href: "https://mcp.agentpostmortem.com",
-    label: "Casebook MCP",
-    description: "Failure registry MCP",
-    mark: "C",
-  },
-  {
-    href: "https://chat.agentpostmortem.com",
-    label: "Casebook Chat",
-    description: "Cited investigation",
-    mark: "Cc",
-  },
-  {
-    href: "https://injection-arena.agentpostmortem.com",
-    label: "Injection Arena",
-    description: "Injection challenge",
-    mark: "I",
-  },
-  {
-    href: "https://www.npmjs.com/package/@royalpinto007/mcp-audit",
-    label: "MCP-audit",
-    description: "MCP security scanner",
-    mark: "M",
-  },
-  {
-    href: "https://www.npmjs.com/package/@royalpinto007/skill-audit",
-    label: "Skill-audit",
-    description: "Agent-skill security scanner",
-    mark: "Sa",
-  },
-  {
-    href: "https://www.npmjs.com/package/ctxtrim",
-    label: "Ctxtrim",
-    description: "Trim AI-context token cost",
-    mark: "Ct",
-  },
-  {
-    href: "https://www.npmjs.com/package/@royalpinto007/evalgate",
-    label: "Evalgate",
-    description: "Prompt regression CI",
-    mark: "E",
-  },
-  {
-    href: "https://pypi.org/project/ctxlens-cli/",
-    label: "Ctxlens",
-    description: "Context profiler",
-    mark: "Cx",
-  },
-  {
-    href: "https://pypi.org/project/answerproof/",
-    label: "Answerproof",
-    description: "Verifiable RAG receipts",
-    mark: "A",
-  },
-  {
-    href: "https://github.com/royalpinto007/Agentrace",
-    label: "Agentrace",
-    description: "Agent observability",
-    mark: "Ar",
-  },
-  {
-    href: "https://github.com/royalpinto007/Voiceeval",
-    label: "Voiceeval",
-    description: "Voice agent evals",
-    mark: "V",
-  },
-  {
-    href: "https://github.com/royalpinto007/VaultRAG",
-    label: "VaultRAG",
-    description: "Permission-aware RAG",
-    mark: "Vr",
-  },
-  {
-    href: "https://github.com/royalpinto007/Tenantq",
-    label: "Tenantq",
-    description: "Multi-tenant vector search",
-    mark: "Tq",
+    href: "https://greenlite.agentpostmortem.com",
+    label: "Greenlite",
+    description: "Phone approvals, live",
+    mark: "G",
   },
 ];
 
 const LINK_GROUPS = [
   {
-    label: "Organisation",
+    label: "Product",
     links: [
+      { href: "/tools", label: "Proof" },
+      { href: "/#pilot", label: "Pricing" },
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
-      { href: "/teams", label: "Teams" },
-    ],
-  },
-  {
-    label: "Registry",
-    links: [
-      { href: "/hall-of-fame", label: "Hall of Fame" },
-      { href: "/stats", label: "Stats" },
-      { href: "/submit", label: "File a Report" },
-      {
-        href: "https://github.com/AgentPostmortem/agentpostmortem",
-        label: "GitHub",
-        external: true,
-      },
     ],
   },
   {
@@ -153,20 +44,40 @@ export function Footer() {
   return (
     <footer className="mt-24 border-t border-border-default">
       <div className="shell py-12">
+        <div className="mb-10 rounded-sm border border-accent/40 bg-accent-soft p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
+                14-day pilot, $1,200 fixed
+              </p>
+              <p className="mt-1 text-sm text-text-secondary">
+                One support or portal workflow, live with guardrails. Second
+                half only if it closes real work.
+              </p>
+            </div>
+            <Link
+              href="/pilot"
+              className="inline-flex shrink-0 items-center justify-center rounded-sm border border-accent/60 bg-accent px-4 py-2.5 font-sans text-sm font-semibold text-bg-canvas transition-colors hover:opacity-90"
+            >
+              Book the pilot
+            </Link>
+          </div>
+        </div>
+
         <div className="mb-10">
           <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
-                Agent operating suite
+                Proof: live backends
               </p>
               <p className="mt-1 text-sm text-text-secondary">
-                Tools for building, testing, operating, and supervising AI
-                agents.
+                These power the pilot behind the scenes. Not separate products
+                to evaluate.
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
-            {SUITE_LINKS.map((product) => (
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            {PROOF_LINKS.map((product) => (
               <a
                 key={product.href}
                 href={product.href}
@@ -181,7 +92,7 @@ export function Footer() {
                   <span className="block truncate font-mono text-xs text-text-primary transition-colors group-hover:text-accent">
                     {product.label}
                   </span>
-                  <span className="mt-0.5 block truncate font-mono text-[9px] text-text-tertiary">
+                  <span className="mt-0.5 block truncate font-sans text-xs text-text-tertiary">
                     {product.description}
                   </span>
                 </span>
@@ -195,19 +106,15 @@ export function Footer() {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-sm bg-accent" />
-              <span className="font-serif text-sm text-text-primary">
+              <span className="font-sans text-sm font-bold text-text-primary">
                 AgentPostmortem
               </span>
             </div>
-            <p className="max-w-[18rem] font-mono text-[11px] leading-relaxed text-text-tertiary">
-              An independent public ledger of AI agent failures, aggregated from
-              public reports. Not affiliated with or endorsed by any company or
-              product named. Reports may be unverified — always check the linked
-              source.
+            <p className="max-w-[18rem] font-sans text-[13px] leading-relaxed text-text-tertiary">
+              Ops agents installed with guardrails, built on documented
+              failure evidence. Failure reports quoted on this site are
+              aggregated from public sources and may be unverified.
             </p>
-            <div className="mt-4">
-              <NewsletterSignup />
-            </div>
           </div>
 
           {/* Link groups */}
@@ -222,7 +129,7 @@ export function Footer() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="font-mono text-xs text-text-tertiary transition-colors hover:text-text-secondary"
+                    className="font-sans text-sm text-text-secondary transition-colors hover:text-text-primary"
                     {...("external" in link && link.external
                       ? { target: "_blank", rel: "noopener noreferrer" }
                       : {})}
@@ -236,7 +143,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 border-t border-border-default pt-6">
-          <p className="font-mono text-[10px] text-text-tertiary">
+          <p className="font-sans text-xs text-text-tertiary">
             © <span suppressHydrationWarning>{new Date().getFullYear()}</span>{" "}
             AgentPostmortem. Open source.
           </p>
