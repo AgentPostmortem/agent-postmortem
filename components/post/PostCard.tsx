@@ -58,7 +58,7 @@ export function PostCard({ post, commentCount }: PostCardProps) {
             </span>
             <Link
               href={`/agent/${post.agentSlug}`}
-              className="truncate font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:text-text-primary"
+              className="truncate font-sans text-[13px] font-semibold text-text-secondary transition-colors hover:text-text-primary"
             >
               {post.agentName}
             </Link>
@@ -77,7 +77,7 @@ export function PostCard({ post, commentCount }: PostCardProps) {
 
         {/* Title */}
         <Link href={`/case/${post.caseNumber.toLowerCase()}`}>
-          <h2 className="font-serif text-[1.02rem] font-medium leading-snug tracking-tight text-text-primary transition-colors group-hover:text-accent">
+          <h2 className="font-sans text-[1.02rem] font-semibold leading-snug tracking-tight text-text-primary transition-colors group-hover:text-accent">
             {post.title}
           </h2>
         </Link>
@@ -99,7 +99,7 @@ export function PostCard({ post, commentCount }: PostCardProps) {
           )}
           <span className="ml-auto flex items-center gap-3">
             {!post.isAnonymous && post.authorHandle && (
-              <span className="font-mono text-[10px] text-text-tertiary">
+              <span className="font-sans text-xs text-text-tertiary">
                 via @{post.authorHandle}
               </span>
             )}

@@ -41,7 +41,7 @@ export function NewsletterSignup() {
     <form onSubmit={submit} className="flex max-w-xs flex-col gap-2">
       <label
         htmlFor="newsletter-email"
-        className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+        className="font-sans text-[13px] font-semibold text-text-tertiary"
       >
         Get the weekly digest by email
       </label>
@@ -58,13 +58,13 @@ export function NewsletterSignup() {
         <button
           type="submit"
           disabled={status === "loading"}
-          className="shrink-0 rounded-sm border border-accent bg-accent px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:opacity-50"
+          className="shrink-0 rounded-sm border border-accent bg-accent px-3 py-1.5 font-sans text-[13px] font-semibold text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:opacity-50"
         >
           {status === "loading" ? "…" : "Subscribe"}
         </button>
       </div>
       {status === "err" && (
-        <p className="font-mono text-[10px] text-accent">
+        <p className="font-sans text-xs font-medium text-accent">
           Could not subscribe. Check the email and try again.
         </p>
       )}

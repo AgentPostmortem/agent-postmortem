@@ -6,7 +6,7 @@ export default function NotFound() {
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
       <div className="mb-6 flex items-center gap-2">
         <div className="h-1.5 w-1.5 rounded-sm bg-accent" />
-        <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+        <span className="font-sans text-[13px] font-semibold text-text-tertiary">
           Case Not Found
         </span>
       </div>
@@ -15,7 +15,7 @@ export default function NotFound() {
         404
       </div>
 
-      <h1 className="mt-4 font-serif text-2xl font-normal text-text-primary">
+      <h1 className="mt-4 font-sans text-2xl font-bold tracking-tight text-text-primary">
         No case on file.
       </h1>
 
@@ -27,13 +27,13 @@ export default function NotFound() {
       <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-sm border border-accent/60 bg-accent-soft px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-strong transition-all hover:border-accent-strong hover:bg-accent hover:text-bg-canvas"
+          className="inline-flex items-center gap-2 rounded-sm border border-accent/60 bg-accent-soft px-5 py-2.5 font-sans text-sm font-semibold text-accent-strong transition-all hover:border-accent-strong hover:bg-accent hover:text-bg-canvas"
         >
           <ArrowLeftIcon size={10} /> Back to Registry
         </Link>
         <Link
           href="/submit"
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary transition-colors hover:text-text-primary"
+          className="inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-text-tertiary transition-colors hover:text-text-primary"
         >
           File a Report <ArrowRightIcon size={10} />
         </Link>

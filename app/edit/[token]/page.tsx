@@ -88,14 +88,14 @@ export default async function EditSubmissionPage({ params }: PageProps) {
         <p className="font-mono text-xs uppercase tracking-widest text-accent">
           Private Edit Link
         </p>
-        <h1 className="mt-2 font-serif text-3xl text-text-primary sm:text-4xl">
+        <h1 className="mt-2 font-sans text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
           Update Your Submission
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-secondary">
           Any edits you save will send the submission back through moderation
           review before it appears publicly again.
         </p>
-        <div className="mt-4 flex flex-wrap gap-3 font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+        <div className="mt-4 flex flex-wrap gap-3 font-sans text-[13px] font-semibold text-text-tertiary">
           <span>Status: {editablePost.status}</span>
           <span>Case: {editablePost.case_number ?? "Pending approval"}</span>
         </div>

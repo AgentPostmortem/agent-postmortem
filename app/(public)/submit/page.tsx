@@ -15,11 +15,11 @@ export default function SubmitPage() {
       <div className="mb-8">
         <div className="mb-3 flex items-center gap-3">
           <span className="stamp stamp-red">Case Intake Form</span>
-          <span className="font-mono text-[10px] text-text-tertiary">
+          <span className="font-sans text-xs text-text-tertiary">
             REF: APM-PENDING
           </span>
         </div>
-        <h1 className="font-serif text-3xl font-normal text-text-primary sm:text-4xl">
+        <h1 className="font-sans text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
           File a Case Report
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-text-secondary">

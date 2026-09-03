@@ -49,7 +49,7 @@ export default async function TagPage({ params }: PageProps) {
   return (
     <div className="shell py-12 sm:py-16">
       {/* Breadcrumb */}
-      <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
+      <div className="mb-6 flex items-center gap-2 font-sans text-xs text-text-tertiary">
         <Link href="/" className="hover:text-text-secondary">
           Registry
         </Link>
@@ -70,7 +70,7 @@ export default async function TagPage({ params }: PageProps) {
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 p-5">
           <div>
-            <h1 className="font-serif text-3xl font-normal text-text-primary">
+            <h1 className="font-sans text-3xl font-bold tracking-tight text-text-primary">
               #{tag.label}
             </h1>
             <p className="mt-2 max-w-lg text-sm leading-relaxed text-text-secondary">

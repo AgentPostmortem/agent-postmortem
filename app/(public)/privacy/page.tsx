@@ -10,15 +10,15 @@ export default function PrivacyPage() {
   return (
     <div className="shell max-w-2xl py-12 sm:py-16">
       <div className="mb-10 border-b border-border-default pb-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+        <p className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
           Registry / Privacy Policy
         </p>
-        <h1 className="mt-2 font-serif text-3xl font-normal text-text-primary">
+        <h1 className="mt-2 font-sans text-3xl font-bold tracking-tight text-text-primary">
           Privacy Policy
         </h1>
       </div>
 
-      <div className="prose prose-invert max-w-none space-y-8 text-text-secondary [&_h2]:font-serif [&_h2]:font-normal [&_h2]:text-text-primary [&_a]:text-accent [&_a:hover]:underline">
+      <div className="prose max-w-none space-y-8 text-text-secondary [&_h2]:font-sans [&_h2]:font-bold [&_h2]:text-text-primary [&_a]:text-accent [&_a:hover]:underline">
         <p>
           We built AgentPostmortem to be as privacy-respecting as a public
           registry can be. This policy explains what information we collect, how

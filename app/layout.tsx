@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono, Fraunces } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { getSiteUrl } from "@/lib/utils/urls";
 import "./globals.css";
 
@@ -7,16 +7,6 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-display",
-  display: "swap",
-});
-
-// Editorial display face. Fraunces is a warm, high-contrast old-style serif:
-// it reads as an official record rather than a dashboard, and it gives the
-// page a genuine voice against the mono used for all registry data.
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-serif",
   display: "swap",
 });
 
@@ -31,27 +21,27 @@ const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: {
-    default: "AgentPostmortem — AI Failure Case Files",
+    default: "AgentPostmortem — Ops agents, installed",
     template: "%s | AgentPostmortem",
   },
   description:
-    "A public ledger of AI agent failures. Real cases, real damages. Submitted anonymously. Read so you don't repeat.",
+    "Done-for-you pilot: an agent that closes support tickets within policy and runs portal ops with screenshot proof. Live in 14 days.",
   metadataBase: new URL(siteUrl),
   openGraph: {
     siteName: "AgentPostmortem",
     type: "website",
     locale: "en_US",
-    title: "AgentPostmortem — AI Failure Case Files",
+    title: "AgentPostmortem — Ops agents, installed",
     description:
-      "A public ledger of AI agent failures. Real cases, real damages. Submitted anonymously. Read so you don't repeat.",
+      "Done-for-you pilot: an agent that closes support tickets within policy and runs portal ops with screenshot proof. Live in 14 days.",
     url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
     site: "@agentpostmortem",
-    title: "AgentPostmortem — AI Failure Case Files",
+    title: "AgentPostmortem — Ops agents, installed",
     description:
-      "A public ledger of AI agent failures. Real cases, real damages. Submitted anonymously.",
+      "Done-for-you pilot: an agent that closes support tickets and runs portal ops. Live in 14 days.",
   },
   robots: {
     index: true,
@@ -75,7 +65,7 @@ export default function RootLayout({
     name: "AgentPostmortem",
     url: siteUrl,
     description:
-      "A public registry of documented AI agent failures and operational lessons.",
+      "Done-for-you AI agent installs for support and ops teams, built on documented failure evidence.",
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteUrl}/search?q={search_term_string}`,
@@ -87,7 +77,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${fraunces.variable}`}
+      className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bg-canvas text-text-primary font-sans antialiased">
         <div aria-hidden="true" className="grain" />

@@ -40,7 +40,7 @@ function CommentAnchorLink({ commentId }: { commentId: string }) {
   return (
     <button
       onClick={copy}
-      className="font-mono text-[10px] text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 hover:text-text-secondary"
+      className="font-sans text-xs text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 hover:text-text-secondary"
       aria-label="Copy link to this comment"
     >
       <span aria-hidden="true">
@@ -129,7 +129,7 @@ export function CommentsSection({ postId }: { postId: string }) {
 
   return (
     <div className="mt-10 border-t border-border-default pt-8" id="discussion">
-      <div className="mb-5 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+      <div className="mb-5 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
         Discussion{comments.length > 0 ? ` · ${comments.length}` : ""}
       </div>
 
@@ -177,7 +177,7 @@ export function CommentsSection({ postId }: { postId: string }) {
                       : `@${c.author_handle}`}
                   </span>
                   <span className="text-border-strong">·</span>
-                  <span className="font-mono text-[10px] text-text-tertiary">
+                  <span className="font-sans text-xs text-text-tertiary">
                     {new Intl.DateTimeFormat("en-US", {
                       month: "short",
                       day: "numeric",
@@ -246,7 +246,7 @@ export function CommentsSection({ postId }: { postId: string }) {
         <button
           type="submit"
           disabled={submitting || body.trim().length < 3}
-          className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-sans text-sm font-semibold text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
         >
           {submitting ? "Posting…" : "Post Comment"}
         </button>

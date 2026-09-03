@@ -46,10 +46,10 @@ function FormSection({
   return (
     <div className="overflow-hidden rounded-sm border border-border-default bg-bg-surface">
       <div className="flex items-center gap-3 border-b border-border-default bg-bg-elevated px-4 py-2.5">
-        <span className="flex h-5 w-5 items-center justify-center rounded-full border border-border-strong font-mono text-[10px] text-text-tertiary">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full border border-border-strong font-sans text-xs text-text-tertiary">
           {number}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-tertiary">
+        <span className="font-sans text-[13px] font-semibold text-text-tertiary">
           {title}
         </span>
       </div>
@@ -70,7 +70,7 @@ function FieldLabel({
   return (
     <label
       htmlFor={htmlFor}
-      className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+      className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
     >
       {children}
       {required && <span className="ml-1 text-accent">*</span>}
@@ -80,7 +80,7 @@ function FieldLabel({
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <p className="mt-1 font-mono text-[10px] text-accent">{message}</p>;
+  return <p className="mt-1 font-sans text-xs font-medium text-accent">{message}</p>;
 }
 
 const inputBase =
@@ -212,7 +212,7 @@ export function SubmitForm() {
             <CheckIcon size={16} />
           </span>
         </div>
-        <h2 className="font-serif text-xl text-text-primary">Case Filed</h2>
+        <h2 className="font-sans text-xl font-bold tracking-tight text-text-primary">Case Filed</h2>
         <p className="mt-2 text-sm text-text-secondary">
           Your report is in the moderation queue. Once approved, it will be
           assigned a permanent case number.
@@ -240,7 +240,7 @@ export function SubmitForm() {
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/"
-            className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+            className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-sans text-sm font-semibold text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
           >
             <span className="inline-flex items-center gap-1.5">
               <ArrowLeftIcon size={10} /> Browse Cases
@@ -248,14 +248,14 @@ export function SubmitForm() {
           </Link>
           <Link
             href="/hall-of-fame"
-            className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+            className="rounded-sm border border-border-default bg-bg-elevated px-4 py-2 font-sans text-sm font-semibold text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
           >
             Hall of Fame
           </Link>
           <Link
             href="/submit"
             onClick={() => setStatus("idle")}
-            className="rounded-sm border border-accent bg-accent/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-strong transition-colors hover:bg-accent/20"
+            className="rounded-sm border border-accent bg-accent/10 px-4 py-2 font-sans text-sm font-semibold text-accent-strong transition-colors hover:bg-accent/20"
           >
             File Another
           </Link>
@@ -308,7 +308,7 @@ export function SubmitForm() {
             />
             <div className="mt-1 flex justify-between">
               <FieldError message={errors.title} />
-              <span className="ml-auto font-mono text-[10px] text-text-tertiary">
+              <span className="ml-auto font-sans text-xs text-text-tertiary">
                 {(form.title ?? "").length}/120
               </span>
             </div>
@@ -397,7 +397,7 @@ export function SubmitForm() {
                   >
                     {damageLevel} — {damageInfo.label}
                   </span>
-                  <p className="font-mono text-[10px] text-text-tertiary">
+                  <p className="font-sans text-xs text-text-tertiary">
                     {damageInfo.desc}
                   </p>
                 </div>
@@ -431,7 +431,7 @@ export function SubmitForm() {
                 className={cn(inputBase, "pl-7")}
               />
             </div>
-            <p className="mt-1 font-mono text-[10px] text-text-tertiary">
+            <p className="mt-1 font-sans text-xs text-text-tertiary">
               USD. Best estimate — leave blank if unknown.
             </p>
           </div>
@@ -503,7 +503,7 @@ export function SubmitForm() {
                 Click to upload
                 <span className="ml-1 text-text-secondary">PNG, JPG, WEBP</span>
               </div>
-              <div className="mt-1 font-mono text-[10px] text-text-tertiary">
+              <div className="mt-1 font-sans text-xs text-text-tertiary">
                 Max 5MB per file · {5 - screenshotFiles.length} remaining
               </div>
               <div className="mt-2 text-xs text-text-tertiary">
@@ -528,7 +528,7 @@ export function SubmitForm() {
                 set("isAnonymous", opt === "anonymous");
               }}
               className={cn(
-                "rounded-sm border py-2.5 font-mono text-[11px] uppercase tracking-wider transition-all",
+                "rounded-sm border py-2.5 font-sans text-sm font-semibold transition-all",
                 attribution === opt
                   ? "border-accent bg-accent-soft text-accent-strong"
                   : "border-border-default text-text-tertiary hover:border-border-strong",
@@ -575,7 +575,7 @@ export function SubmitForm() {
             className={inputBase}
           />
           <FieldError message={errors.email} />
-          <p className="mt-1 font-mono text-[10px] text-text-tertiary">
+          <p className="mt-1 font-sans text-xs text-text-tertiary">
             Used only to send your private edit link. Not stored after delivery.
           </p>
         </div>
@@ -595,7 +595,7 @@ export function SubmitForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-sm border border-accent bg-accent py-3 font-mono text-[11px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-sm border border-accent bg-accent py-3 font-sans text-sm font-semibold text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {status === "submitting" ? (
           "Filing Case…"
@@ -606,7 +606,7 @@ export function SubmitForm() {
         )}
       </button>
 
-      <p className="text-center font-mono text-[10px] text-text-tertiary">
+      <p className="text-center font-sans text-xs text-text-tertiary">
         All submissions are reviewed before publication · PII automatically
         redacted
       </p>

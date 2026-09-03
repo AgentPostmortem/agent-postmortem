@@ -68,7 +68,7 @@ export function CaseRow({
         <p className="mt-1 line-clamp-1 max-w-[80ch] text-[0.8rem] leading-relaxed text-text-tertiary">
           {post.outcome}
         </p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] text-text-tertiary">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-xs text-text-tertiary">
           {post.tags.slice(0, 3).map((tag) => (
             <span key={tag}>#{tag}</span>
           ))}

@@ -14,7 +14,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className="rounded-sm border border-dashed border-border-default py-16 text-center">
-      <p className="font-serif text-lg text-text-secondary">{title}</p>
+      <p className="font-sans text-lg font-medium text-text-secondary">{title}</p>
       {description && (
         <p className="mt-2 text-sm text-text-tertiary">{description}</p>
       )}

@@ -20,12 +20,12 @@ export function SectionHeading({
     <div className="mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-border-default pb-3">
       <h2
         id={id}
-        className="font-serif text-[1.625rem] font-semibold leading-none tracking-[-0.02em] text-text-primary sm:text-[2.125rem]"
+        className="font-sans text-[1.625rem] font-bold leading-none tracking-[-0.02em] text-text-primary sm:text-[2.125rem]"
       >
         {title}
       </h2>
       {meta ? (
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-text-tertiary">
+        <span className="font-sans text-[13px] font-semibold text-text-tertiary">
           {meta}
         </span>
       ) : null}

@@ -106,7 +106,7 @@ export function EditCaseForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-4 py-2.5">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+          <span className="font-sans text-[13px] font-semibold text-text-tertiary">
             Submission Details
           </span>
         </div>
@@ -115,7 +115,7 @@ export function EditCaseForm({
             <div>
               <label
                 htmlFor="edit-agent"
-                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+                className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
               >
                 Agent
               </label>
@@ -133,7 +133,7 @@ export function EditCaseForm({
                 ))}
               </select>
               {errors.agentSlug ? (
-                <p className="mt-1 font-mono text-[10px] text-accent">
+                <p className="mt-1 font-sans text-xs font-medium text-accent">
                   {errors.agentSlug}
                 </p>
               ) : null}
@@ -142,7 +142,7 @@ export function EditCaseForm({
             <div>
               <label
                 htmlFor="edit-severity"
-                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+                className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
               >
                 Severity
               </label>
@@ -172,7 +172,7 @@ export function EditCaseForm({
           <div>
             <label
               htmlFor="edit-title"
-              className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
             >
               Title
             </label>
@@ -184,7 +184,7 @@ export function EditCaseForm({
               className={inputBase}
             />
             {errors.title ? (
-              <p className="mt-1 font-mono text-[10px] text-accent">
+              <p className="mt-1 font-sans text-xs font-medium text-accent">
                 {errors.title}
               </p>
             ) : null}
@@ -193,7 +193,7 @@ export function EditCaseForm({
           <div>
             <label
               htmlFor="edit-prompt"
-              className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
             >
               Prompt / Instruction
             </label>
@@ -209,7 +209,7 @@ export function EditCaseForm({
           <div>
             <label
               htmlFor="edit-outcome"
-              className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
             >
               What happened
             </label>
@@ -221,7 +221,7 @@ export function EditCaseForm({
               className={cn(inputBase, "resize-y")}
             />
             {errors.outcome ? (
-              <p className="mt-1 font-mono text-[10px] text-accent">
+              <p className="mt-1 font-sans text-xs font-medium text-accent">
                 {errors.outcome}
               </p>
             ) : null}
@@ -230,7 +230,7 @@ export function EditCaseForm({
           <div>
             <label
               htmlFor="edit-cost"
-              className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+              className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
             >
               Estimated Damage (USD)
             </label>
@@ -253,7 +253,7 @@ export function EditCaseForm({
 
       <div className="rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-4 py-2.5">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+          <span className="font-sans text-[13px] font-semibold text-text-tertiary">
             Classification
           </span>
         </div>
@@ -279,7 +279,7 @@ export function EditCaseForm({
             })}
           </div>
           {errors.tags ? (
-            <p className="mt-2 font-mono text-[10px] text-accent">
+            <p className="mt-2 font-sans text-xs font-medium text-accent">
               {errors.tags}
             </p>
           ) : null}
@@ -288,7 +288,7 @@ export function EditCaseForm({
 
       <div className="rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-4 py-2.5">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+          <span className="font-sans text-[13px] font-semibold text-text-tertiary">
             Attribution
           </span>
         </div>
@@ -307,7 +307,7 @@ export function EditCaseForm({
             <div>
               <label
                 htmlFor="edit-handle"
-                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+                className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
               >
                 Handle or Company
               </label>
@@ -325,7 +325,7 @@ export function EditCaseForm({
 
       <div className="rounded-sm border border-border-default bg-bg-surface">
         <div className="border-b border-border-default bg-bg-elevated px-4 py-2.5">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+          <span className="font-sans text-[13px] font-semibold text-text-tertiary">
             Evidence
           </span>
         </div>
@@ -348,7 +348,7 @@ export function EditCaseForm({
               No screenshots attached.
             </p>
           )}
-          <p className="font-mono text-[10px] text-text-tertiary">
+          <p className="font-sans text-xs text-text-tertiary">
             Screenshot replacement is not supported from this edit page yet. If
             you need evidence removed, email hello@agentpostmortem.com.
           </p>
@@ -376,7 +376,7 @@ export function EditCaseForm({
       <button
         type="submit"
         disabled={status === "saving"}
-        className="w-full rounded-sm border border-accent bg-accent py-3 font-mono text-[11px] uppercase tracking-wider text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-sm border border-accent bg-accent py-3 font-sans text-sm font-semibold text-bg-canvas transition-all hover:border-accent-strong hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
       >
         {status === "saving" ? "Saving…" : "Save Changes"}
       </button>

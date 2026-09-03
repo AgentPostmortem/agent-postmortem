@@ -237,7 +237,7 @@ export default function AdminPage() {
           <p className="mb-2 font-mono text-xs uppercase tracking-widest text-accent text-center">
             AgentPostmortem
           </p>
-          <p className="mb-6 font-mono text-xs uppercase tracking-widest text-text-tertiary text-center">
+          <p className="mb-6 font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary text-center">
             Admin Access
           </p>
           <form onSubmit={handleAuth} className="space-y-4">
@@ -275,7 +275,7 @@ export default function AdminPage() {
               <p className="font-mono text-xs uppercase tracking-widest text-accent">
                 Admin
               </p>
-              <h1 className="font-serif text-xl text-text-primary">
+              <h1 className="font-sans text-xl font-bold tracking-tight text-text-primary">
                 Moderation Dashboard
               </h1>
             </div>
@@ -356,7 +356,7 @@ export default function AdminPage() {
                   fetchComments(s, authedPassword);
                 }}
                 className={[
-                  "rounded-sm border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-colors",
+                  "rounded-sm border px-3 py-1.5 font-sans text-[13px] font-semibold transition-colors",
                   commentStatus === s
                     ? "border-accent bg-accent/10 text-accent"
                     : "border-border-default text-text-tertiary hover:text-text-secondary",
@@ -383,7 +383,7 @@ export default function AdminPage() {
                   className="rounded-sm border border-border-default bg-bg-surface p-4"
                 >
                   <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
+                    <div className="flex items-center gap-2 font-sans text-xs text-text-tertiary">
                       <span>
                         {c.is_anonymous || !c.author_handle
                           ? "Anonymous"
@@ -509,7 +509,7 @@ export default function AdminPage() {
                         </p>
                         <button
                           onClick={() => setEditing((e) => !e)}
-                          className="shrink-0 rounded-sm border border-border-default px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent"
+                          className="shrink-0 rounded-sm border border-border-default px-2 py-0.5 font-sans text-[13px] font-semibold text-text-secondary transition-colors hover:border-accent hover:text-accent"
                         >
                           {editing ? "Cancel" : "Edit fields"}
                         </button>
@@ -526,7 +526,7 @@ export default function AdminPage() {
                           }
                         />
                       ) : (
-                        <h3 className="mt-1 font-serif text-lg leading-snug text-text-primary">
+                        <h3 className="mt-1 font-sans text-lg font-semibold leading-snug text-text-primary">
                           {selected.title}
                         </h3>
                       )}
@@ -540,7 +540,7 @@ export default function AdminPage() {
 
                   <dl className="space-y-4 text-sm">
                     <div>
-                      <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                      <dt className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                         Agent
                       </dt>
                       <dd className="mt-0.5 text-text-secondary">
@@ -550,7 +550,7 @@ export default function AdminPage() {
 
                     <div className="flex gap-6">
                       <div>
-                        <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                        <dt className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                           Severity
                         </dt>
                         <dd className="mt-0.5 text-text-secondary">
@@ -559,7 +559,7 @@ export default function AdminPage() {
                       </div>
                       {selected.estimated_cost_usd != null && (
                         <div>
-                          <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                          <dt className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                             Est. Cost
                           </dt>
                           <dd className="mt-0.5 text-text-secondary">
@@ -570,7 +570,7 @@ export default function AdminPage() {
                     </div>
 
                     <div>
-                      <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                      <dt className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                         Attribution
                       </dt>
                       <dd className="mt-0.5 text-text-secondary">
@@ -593,7 +593,7 @@ export default function AdminPage() {
 
                     {selected.post_tags.length > 0 && (
                       <div>
-                        <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                        <dt className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                           Tags
                         </dt>
                         <dd className="mt-1 flex flex-wrap gap-1">
@@ -610,7 +610,7 @@ export default function AdminPage() {
 
                     {editing && (
                       <div>
-                        <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                        <dt className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                           Damage Level
                         </dt>
                         <dd className="mt-1">
@@ -635,7 +635,7 @@ export default function AdminPage() {
                     )}
 
                     <div>
-                      <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                      <dt className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                         Outcome
                       </dt>
                       {editing ? (
@@ -669,7 +669,7 @@ export default function AdminPage() {
 
                     {selected.prompt && (
                       <div>
-                        <dt className="font-mono text-xs uppercase tracking-widest text-text-tertiary">
+                        <dt className="font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                           Prompt
                         </dt>
                         <dd className="mt-1 text-text-secondary leading-relaxed max-h-32 overflow-y-auto scrollbar-none text-xs font-mono bg-bg-elevated rounded p-2">
@@ -704,7 +704,7 @@ export default function AdminPage() {
                       <button
                         onClick={() => handleResendToken(selected.id)}
                         disabled={actionLoading}
-                        className="rounded-sm border border-border-default px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+                        className="rounded-sm border border-border-default px-3 py-1.5 font-sans text-[13px] font-semibold text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
                       >
                         Resend Edit Link
                       </button>

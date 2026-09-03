@@ -71,7 +71,7 @@ export function StatusClient() {
   if (notFound || !data) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <p className="font-serif text-2xl text-text-primary">
+        <p className="font-sans text-2xl font-bold tracking-tight text-text-primary">
           Submission not found
         </p>
         <p className="mt-3 text-sm text-text-tertiary">
@@ -97,7 +97,7 @@ export function StatusClient() {
 
   return (
     <div className="mx-auto max-w-xl px-4 py-10 sm:px-6">
-      <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
+      <div className="mb-6 flex items-center gap-2 font-sans text-xs text-text-tertiary">
         <Link href="/" className="hover:text-text-secondary">
           Registry
         </Link>
@@ -106,7 +106,7 @@ export function StatusClient() {
       </div>
 
       <div className="mb-8">
-        <h1 className="font-serif text-3xl font-normal text-text-primary">
+        <h1 className="font-sans text-3xl font-bold tracking-tight text-text-primary">
           Submission Status
         </h1>
       </div>
@@ -128,7 +128,7 @@ export function StatusClient() {
 
         <div className="space-y-3 border-t border-border-default pt-5">
           <div className="flex items-start justify-between gap-4">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+            <span className="font-sans text-[13px] font-semibold text-text-tertiary">
               Title
             </span>
             <span className="text-right text-sm text-text-primary">
@@ -136,7 +136,7 @@ export function StatusClient() {
             </span>
           </div>
           <div className="flex items-center justify-between gap-4">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+            <span className="font-sans text-[13px] font-semibold text-text-tertiary">
               Agent
             </span>
             <span className="font-mono text-xs text-text-secondary">
@@ -144,7 +144,7 @@ export function StatusClient() {
             </span>
           </div>
           <div className="flex items-center justify-between gap-4">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+            <span className="font-sans text-[13px] font-semibold text-text-tertiary">
               Submitted
             </span>
             <span className="font-mono text-xs text-text-secondary">
@@ -153,7 +153,7 @@ export function StatusClient() {
           </div>
           {data.caseNumber && (
             <div className="flex items-center justify-between gap-4">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+              <span className="font-sans text-[13px] font-semibold text-text-tertiary">
                 Case Number
               </span>
               <span className="font-mono text-xs text-accent">
@@ -168,7 +168,7 @@ export function StatusClient() {
         {data.status === "approved" && data.caseNumber && (
           <Link
             href={`/case/${data.caseNumber.toLowerCase()}`}
-            className="rounded-sm border border-accent bg-accent/10 px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-accent-strong hover:bg-accent/20"
+            className="rounded-sm border border-accent bg-accent/10 px-4 py-2 font-sans text-sm font-semibold text-accent-strong hover:bg-accent/20"
           >
             <span className="inline-flex items-center gap-1.5">
               View Case <ArrowRightIcon size={10} />
@@ -178,14 +178,14 @@ export function StatusClient() {
         {data.status !== "rejected" && (
           <Link
             href={`/edit/${token}`}
-            className="rounded-sm border border-border-default bg-bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-secondary hover:border-border-strong hover:text-text-primary"
+            className="rounded-sm border border-border-default bg-bg-surface px-4 py-2 font-sans text-sm font-semibold text-text-secondary hover:border-border-strong hover:text-text-primary"
           >
             Edit Submission
           </Link>
         )}
         <Link
           href="/"
-          className="rounded-sm border border-border-default bg-bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:border-border-strong hover:text-text-secondary"
+          className="rounded-sm border border-border-default bg-bg-surface px-4 py-2 font-sans text-sm font-semibold text-text-tertiary hover:border-border-strong hover:text-text-secondary"
         >
           <span className="inline-flex items-center gap-1.5">
             <ArrowLeftIcon size={10} /> Registry

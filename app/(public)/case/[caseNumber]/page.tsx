@@ -179,12 +179,12 @@ export default async function CasePage({ params }: PageProps) {
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="stamp stamp-red">{post.caseNumber}</span>
               <SeverityPill level={post.damageLevel} />
-              <span className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
+              <span className="font-sans text-[13px] font-semibold text-text-tertiary">
                 Reported {formattedDate}
               </span>
             </div>
 
-            <h1 className="font-serif text-[2rem] font-medium leading-[1.05] tracking-[-0.03em] text-text-primary sm:text-[3rem]">
+            <h1 className="font-sans text-[2rem] font-bold leading-[1.05] tracking-[-0.03em] text-text-primary sm:text-[3rem]">
               {post.title}
             </h1>
 
@@ -357,7 +357,7 @@ export default async function CasePage({ params }: PageProps) {
                 <span className="block text-sm leading-6 text-text-primary">
                   {post.sourceTitle ?? "Read the source report"}
                 </span>
-                <span className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-text-tertiary">
+                <span className="mt-1 block font-sans text-[13px] font-semibold text-text-tertiary">
                   {sourceDomain} ↗
                 </span>
               </a>
@@ -423,7 +423,7 @@ export default async function CasePage({ params }: PageProps) {
           {/* Related cases */}
           {related.length > 0 && (
             <div className="mt-14 border-t border-border-default pt-8">
-              <h2 className="mb-5 font-mono text-[10px] uppercase tracking-[0.2em] text-text-tertiary">
+              <h2 className="mb-5 font-sans text-[13px] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
                 More Cases
               </h2>
               <div className="space-y-2">
@@ -439,7 +439,7 @@ export default async function CasePage({ params }: PageProps) {
             <div className="flex gap-5">
               <Link
                 href="/"
-                className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+                className="font-sans text-sm font-semibold text-text-tertiary hover:text-text-primary"
               >
                 <span className="inline-flex items-center gap-1.5">
                   <ArrowLeftIcon size={10} /> All Cases
@@ -447,7 +447,7 @@ export default async function CasePage({ params }: PageProps) {
               </Link>
               <Link
                 href={`/agent/${post.agentSlug}`}
-                className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+                className="font-sans text-sm font-semibold text-text-tertiary hover:text-text-primary"
               >
                 <span className="inline-flex items-center gap-1.5">
                   More {post.agentName} <ArrowRightIcon size={10} />
@@ -460,7 +460,7 @@ export default async function CasePage({ params }: PageProps) {
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${post.title}" — AI agent failure case ${post.caseNumber}`)}&url=${encodeURIComponent(`${getSiteUrl()}/case/${post.caseNumber}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+                className="font-sans text-sm font-semibold text-text-tertiary hover:text-text-primary"
               >
                 <span className="inline-flex items-center gap-1.5">
                   Share on X <ArrowRightIcon size={10} />

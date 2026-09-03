@@ -30,7 +30,7 @@ export default async function AgentsIndexPage() {
   return (
     <div className="shell py-12 sm:py-16">
       {/* Breadcrumb */}
-      <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
+      <div className="mb-6 flex items-center gap-2 font-sans text-xs text-text-tertiary">
         <Link href="/" className="hover:text-text-secondary">
           Registry
         </Link>
@@ -39,7 +39,7 @@ export default async function AgentsIndexPage() {
       </div>
 
       <div className="mb-8">
-        <h1 className="font-serif text-3xl font-normal text-text-primary">
+        <h1 className="font-sans text-3xl font-bold tracking-tight text-text-primary">
           Agent Index
         </h1>
         <p className="mt-2 text-sm text-text-secondary">
@@ -50,7 +50,7 @@ export default async function AgentsIndexPage() {
       <div className="space-y-8">
         {companies.map((company) => (
           <div key={company}>
-            <div className="mb-3 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+            <div className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
               {company}
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
@@ -69,7 +69,7 @@ export default async function AgentsIndexPage() {
                             {agent.name}
                           </span>
                           {count > 0 && (
-                            <span className="rounded bg-accent/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-strong">
+                            <span className="rounded bg-accent/10 px-1.5 py-0.5 font-sans text-xs font-medium text-accent-strong">
                               {count}
                             </span>
                           )}

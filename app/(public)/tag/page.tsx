@@ -21,7 +21,7 @@ export default async function TagsIndexPage() {
   return (
     <div className="shell py-12 sm:py-16">
       {/* Breadcrumb */}
-      <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
+      <div className="mb-6 flex items-center gap-2 font-sans text-xs text-text-tertiary">
         <Link href="/" className="hover:text-text-secondary">
           Registry
         </Link>
@@ -30,7 +30,7 @@ export default async function TagsIndexPage() {
       </div>
 
       <div className="mb-8">
-        <h1 className="font-serif text-3xl font-normal text-text-primary">
+        <h1 className="font-sans text-3xl font-bold tracking-tight text-text-primary">
           Failure Categories
         </h1>
         <p className="mt-2 text-sm text-text-secondary">
@@ -54,7 +54,7 @@ export default async function TagsIndexPage() {
                       #{tag.slug}
                     </span>
                     {count > 0 && (
-                      <span className="rounded bg-accent/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-strong">
+                      <span className="rounded bg-accent/10 px-1.5 py-0.5 font-sans text-xs font-medium text-accent-strong">
                         {count}
                       </span>
                     )}

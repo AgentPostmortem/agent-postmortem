@@ -49,7 +49,7 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
         <div className="mb-3 flex items-center gap-2">
           <span className="stamp stamp-red">Hall of Fame</span>
         </div>
-        <h1 className="font-serif text-4xl font-normal text-text-primary">
+        <h1 className="font-sans text-4xl font-bold tracking-tight text-text-primary">
           Most Catastrophic Failures
         </h1>
         <p className="mt-3 text-sm text-text-secondary">
@@ -124,7 +124,7 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
                     {/* Content */}
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                        <span className="font-mono text-[10px] text-text-tertiary">
+                        <span className="font-sans text-xs text-text-tertiary">
                           {post.caseNumber}
                         </span>
                         <span className="text-border-strong">·</span>
@@ -146,7 +146,7 @@ export default async function HallOfFamePage({ searchParams }: PageProps) {
                       <Link href={`/case/${post.caseNumber.toLowerCase()}`}>
                         <p
                           className={[
-                            "mt-0.5 font-serif leading-snug text-text-primary transition-colors hover:text-accent",
+                            "mt-0.5 font-sans font-semibold leading-snug text-text-primary transition-colors hover:text-accent",
                             isTop3 ? "text-base" : "text-sm",
                           ].join(" ")}
                         >

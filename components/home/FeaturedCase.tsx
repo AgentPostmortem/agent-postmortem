@@ -28,14 +28,14 @@ export function FeaturedCase({ post }: { post: Post }) {
           {post.caseNumber}
         </span>
         <SeverityPill level={post.damageLevel} />
-        <span className="ml-auto font-mono text-[10px] text-text-tertiary">
+        <span className="ml-auto font-sans text-xs text-text-tertiary">
           {date}
         </span>
       </div>
 
       <div className="grid gap-8 py-7 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <div className="min-w-0">
-          <h3 className="max-w-[24ch] font-serif text-2xl font-medium leading-[1.15] tracking-[-0.02em] text-text-primary sm:text-[2rem]">
+          <h3 className="max-w-[24ch] font-sans text-2xl font-bold leading-[1.15] tracking-[-0.02em] text-text-primary sm:text-[2rem]">
             <Link
               href={`/case/${post.caseNumber.toLowerCase()}`}
               className="transition-colors hover:text-accent"
@@ -53,7 +53,7 @@ export function FeaturedCase({ post }: { post: Post }) {
           </div>
           <Link
             href={`/case/${post.caseNumber.toLowerCase()}`}
-            className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-accent hover:text-accent-strong"
+            className="mt-4 inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-accent hover:text-accent-strong"
           >
             Read the case file <ArrowRightIcon size={10} />
           </Link>

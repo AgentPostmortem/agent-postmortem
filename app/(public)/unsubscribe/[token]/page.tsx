@@ -23,7 +23,7 @@ export default async function UnsubscribePage({
 
   return (
     <div className="mx-auto max-w-md px-4 py-24 text-center sm:px-6">
-      <h1 className="font-serif text-2xl font-normal text-text-primary">
+      <h1 className="font-sans text-2xl font-bold tracking-tight text-text-primary">
         {data ? "Unsubscribed" : "Link not found"}
       </h1>
       <p className="mt-3 text-sm leading-relaxed text-text-secondary">
@@ -33,7 +33,7 @@ export default async function UnsubscribePage({
       </p>
       <a
         href="/"
-        className="mt-6 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+        className="mt-6 inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-text-tertiary hover:text-text-primary"
       >
         <ArrowLeftIcon size={10} /> Back to the registry
       </a>

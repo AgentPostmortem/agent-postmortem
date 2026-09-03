@@ -26,7 +26,7 @@ export function CopyLinkButton({ caseNumber }: { caseNumber: string }) {
   return (
     <button
       onClick={copy}
-      className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-text-tertiary hover:text-text-primary"
+      className="inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-text-tertiary hover:text-text-primary"
     >
       {copied ? (
         <>

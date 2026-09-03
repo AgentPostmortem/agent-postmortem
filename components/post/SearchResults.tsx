@@ -101,7 +101,7 @@ export function SearchResults({
   return (
     <div className="shell py-12 sm:py-16">
       {/* Breadcrumb */}
-      <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
+      <div className="mb-6 flex items-center gap-2 font-sans text-xs text-text-tertiary">
         <Link href="/" className="hover:text-text-secondary">
           Registry
         </Link>
@@ -110,7 +110,7 @@ export function SearchResults({
       </div>
 
       <div className="mb-6">
-        <h1 className="font-serif text-3xl font-normal text-text-primary">
+        <h1 className="font-sans text-3xl font-bold tracking-tight text-text-primary">
           Search Cases
         </h1>
       </div>
@@ -136,7 +136,7 @@ export function SearchResults({
         <button
           type="button"
           onClick={() => setFiltersOpen((o) => !o)}
-          className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-text-tertiary hover:text-text-secondary"
+          className="flex items-center gap-1.5 font-sans text-[13px] font-semibold text-text-tertiary hover:text-text-secondary"
         >
           <span>
             {filtersOpen ? (
@@ -160,7 +160,7 @@ export function SearchResults({
               setMinSeverity(1);
               setMaxSeverity(5);
             }}
-            className="font-mono text-[10px] text-text-tertiary hover:text-accent"
+            className="font-sans text-xs text-text-tertiary hover:text-accent"
           >
             Clear filters
           </button>
@@ -175,7 +175,7 @@ export function SearchResults({
             <div>
               <label
                 htmlFor="filter-agent"
-                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+                className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
               >
                 Agent
               </label>
@@ -198,7 +198,7 @@ export function SearchResults({
             <div>
               <span
                 id="filter-severity-label"
-                className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-text-tertiary"
+                className="mb-1.5 block font-sans text-[13px] font-semibold text-text-tertiary"
               >
                 Severity —{" "}
                 {minSeverity === maxSeverity
@@ -270,7 +270,7 @@ export function SearchResults({
         </div>
       ) : results.length > 0 ? (
         <div>
-          <div className="mb-4 font-mono text-[10px] uppercase tracking-widest text-text-tertiary">
+          <div className="mb-4 font-sans text-[13px] font-semibold text-text-tertiary">
             {results.length} result{results.length !== 1 ? "s" : ""} for &ldquo;
             {query}&rdquo;
             {hasActiveFilters && " (filtered)"}
@@ -283,7 +283,7 @@ export function SearchResults({
         </div>
       ) : (
         <div className="rounded-sm border border-dashed border-border-default py-16 text-center">
-          <p className="font-serif text-lg text-text-secondary">
+          <p className="font-sans text-lg font-medium text-text-secondary">
             No cases found for &ldquo;{query}&rdquo;.
           </p>
           <p className="mt-2 text-sm text-text-tertiary">

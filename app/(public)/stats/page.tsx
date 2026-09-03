@@ -54,7 +54,7 @@ export default async function StatsPage() {
 
   return (
     <div className="shell py-12 sm:py-16">
-      <div className="mb-6 flex items-center gap-2 font-mono text-[10px] text-text-tertiary">
+      <div className="mb-6 flex items-center gap-2 font-sans text-xs text-text-tertiary">
         <Link href="/" className="hover:text-text-secondary">
           Registry
         </Link>
@@ -63,7 +63,7 @@ export default async function StatsPage() {
       </div>
 
       <div className="mb-10">
-        <h1 className="font-serif text-4xl font-normal text-text-primary">
+        <h1 className="font-sans text-4xl font-bold tracking-tight text-text-primary">
           Failure Statistics
         </h1>
         <p className="mt-3 text-sm text-text-secondary">
@@ -74,26 +74,26 @@ export default async function StatsPage() {
       {/* Top-line numbers */}
       <div className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
         <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
-          <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-1 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
             Cases Filed
           </div>
-          <div className="font-serif text-3xl text-text-primary">
+          <div className="font-sans text-3xl font-bold tabular-nums text-text-primary">
             {stats.totalCases}
           </div>
         </div>
         <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
-          <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-1 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
             Est. Total Damage
           </div>
-          <div className="font-serif text-3xl text-accent">
+          <div className="font-sans text-3xl font-bold tabular-nums text-accent">
             {stats.totalDamageUsd > 0 ? formatUsd(stats.totalDamageUsd) : "—"}
           </div>
         </div>
         <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
-          <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-1 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
             Agents Implicated
           </div>
-          <div className="font-serif text-3xl text-text-primary">
+          <div className="font-sans text-3xl font-bold tabular-nums text-text-primary">
             {stats.byAgent.length}
           </div>
         </div>
@@ -102,7 +102,7 @@ export default async function StatsPage() {
       <div className="grid gap-8 lg:grid-cols-2">
         {/* By severity */}
         <section>
-          <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
             By Severity
           </div>
           <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
@@ -117,7 +117,7 @@ export default async function StatsPage() {
                       <span className="font-mono text-[10px] text-text-secondary">
                         {lvl} — {SEVERITY_LABEL[lvl]}
                       </span>
-                      <span className="font-mono text-[10px] text-text-tertiary">
+                      <span className="font-sans text-xs text-text-tertiary">
                         {count}
                       </span>
                     </div>
@@ -136,7 +136,7 @@ export default async function StatsPage() {
 
         {/* By agent */}
         <section>
-          <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
             Top Agents by Case Count
           </div>
           <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-4">
@@ -153,7 +153,7 @@ export default async function StatsPage() {
                       >
                         {agent.name}
                       </Link>
-                      <span className="font-mono text-[10px] text-text-tertiary">
+                      <span className="font-sans text-xs text-text-tertiary">
                         {agent.count}
                       </span>
                     </div>
@@ -175,7 +175,7 @@ export default async function StatsPage() {
         {/* Cases over time */}
         {stats.recentByMonth.length > 0 && (
           <section className="lg:col-span-2">
-            <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+            <div className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
               Cases by Month Reported
             </div>
             <div className="rounded-sm border border-border-default bg-bg-surface px-5 py-5">
@@ -207,7 +207,7 @@ export default async function StatsPage() {
 
         {/* By tag */}
         <section className="lg:col-span-2">
-          <div className="mb-4 font-mono text-[9px] uppercase tracking-[0.2em] text-text-tertiary">
+          <div className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">
             Top Failure Categories
           </div>
           <div className="flex flex-wrap gap-2">
