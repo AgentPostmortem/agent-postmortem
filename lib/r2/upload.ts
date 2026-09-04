@@ -7,8 +7,6 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "crypto";
 import { getR2PublicBaseUrl } from "@/lib/utils/urls";
 
-const R2_ENDPOINT = `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
-
 const EXT_BY_CONTENT_TYPE: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
@@ -30,15 +28,30 @@ function sanitizeFilenameForMetadata(filename: string): string {
   return filename.replace(/[^\w.-]/g, "_").slice(0, 255);
 }
 
-function getR2Client() {
-  return new S3Client({
+let r2: { client: S3Client; bucketName: string } | undefined;
+
+function requiredEnv(name: string): string {
+  const value = process.env[name];
+  if (!value?.trim()) {
+    throw new Error(`Missing ${name} environment variable.`);
+  }
+  return value;
+}
+
+function getR2Client(): { client: S3Client; bucketName: string } {
+  if (r2) return r2;
+
+  const accountId = requiredEnv("R2_ACCOUNT_ID");
+  const accessKeyId = requiredEnv("R2_ACCESS_KEY_ID");
+  const secretAccessKey = requiredEnv("R2_SECRET_ACCESS_KEY");
+  const bucketName = requiredEnv("R2_BUCKET_NAME");
+  const client = new S3Client({
     region: "auto",
-    endpoint: R2_ENDPOINT,
-    credentials: {
-      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-    },
+    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    credentials: { accessKeyId, secretAccessKey },
   });
+  r2 = { client, bucketName };
+  return r2;
 }
 
 interface PresignUploadResult {
@@ -62,9 +75,9 @@ export async function getPresignedUploadUrl(
   const ext = extensionForContentType(contentType);
   const key = `${folder}/${randomUUID()}.${ext}`;
 
-  const client = getR2Client();
+  const { client, bucketName } = getR2Client();
   const command = new PutObjectCommand({
-    Bucket: process.env.R2_BUCKET_NAME!,
+    Bucket: bucketName,
     Key: key,
     ContentType: contentType,
     Metadata: { "original-filename": sanitizeFilenameForMetadata(filename) },
@@ -88,9 +101,9 @@ export async function getPresignedUploadUrl(
  * Expires in 1 hour.
  */
 export async function getPresignedReadUrl(key: string): Promise<string> {
-  const client = getR2Client();
+  const { client, bucketName } = getR2Client();
   const command = new GetObjectCommand({
-    Bucket: process.env.R2_BUCKET_NAME!,
+    Bucket: bucketName,
     Key: key,
   });
 
