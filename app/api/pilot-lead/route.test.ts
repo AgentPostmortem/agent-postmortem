@@ -7,7 +7,10 @@ const consumeSharedRateLimit = vi.fn(async () => ({
   resetAt: new Date().toISOString(),
   currentCount: 1,
 }));
-const send = vi.fn(async () => ({ data: { id: "mail-1" }, error: null }));
+const send = vi.fn(async (_payload: Record<string, unknown>) => ({
+  data: { id: "mail-1" },
+  error: null,
+}));
 const logEvent = vi.fn();
 
 vi.mock("@/lib/utils/hash", () => ({
@@ -40,7 +43,8 @@ const valid = {
   email: "ada@company.com",
   company: "company.com",
   track: "support",
-  workflow: "Triage sixty Zendesk tickets every morning and refund damaged orders.",
+  workflow:
+    "Triage sixty Zendesk tickets every morning and refund damaged orders.",
 };
 
 describe("POST /api/pilot-lead", () => {
@@ -62,16 +66,21 @@ describe("POST /api/pilot-lead", () => {
 
     expect(response.status).toBe(200);
     expect(send).toHaveBeenCalledOnce();
-    const args = send.mock.calls[0][0] as Record<string, unknown>;
+    const args = send.mock.calls[0][0];
     expect(args.to).toBe("hello@agentpostmortem.com");
-    expect(args.reply_to).toBe("ada@company.com");
+    expect(args.replyTo).toBe("ada@company.com");
     expect(args.subject).toContain("Ada Lovelace");
   });
 
   it("returns every field error at once", async () => {
     const { POST } = await import("./route");
     const response = await POST(
-      createRequest({ name: "", email: "nope", track: "support", workflow: "short" }),
+      createRequest({
+        name: "",
+        email: "nope",
+        track: "support",
+        workflow: "short",
+      }),
     );
     const data = (await response.json()) as {
       errors: Record<string, string>;
@@ -98,7 +107,9 @@ describe("POST /api/pilot-lead", () => {
 
   it("answers honeypot submissions with fake success and sends nothing", async () => {
     const { POST } = await import("./route");
-    const response = await POST(createRequest({ ...valid, website: "spam-bot" }));
+    const response = await POST(
+      createRequest({ ...valid, website: "spam-bot" }),
+    );
     const data = (await response.json()) as { ok: boolean };
 
     expect(response.status).toBe(200);

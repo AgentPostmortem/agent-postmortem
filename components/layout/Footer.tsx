@@ -111,9 +111,9 @@ export function Footer() {
               </span>
             </div>
             <p className="max-w-[18rem] font-sans text-[13px] leading-relaxed text-text-tertiary">
-              Ops agents installed with guardrails, built on documented
-              failure evidence. Failure reports quoted on this site are
-              aggregated from public sources and may be unverified.
+              Ops agents installed with guardrails, built on documented failure
+              evidence. Failure reports quoted on this site are aggregated from
+              public sources and may be unverified.
             </p>
           </div>
 

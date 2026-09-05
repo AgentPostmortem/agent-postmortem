@@ -89,9 +89,9 @@ export default function HomePage() {
           </h1>
 
           <p className="mt-6 max-w-[56ch] text-lg leading-relaxed text-stone-600">
-            Done for you install for support and ops teams. Triage plus
-            small refunds within policy, portal pulls with screenshot proof,
-            risky actions paused for your one tap approval.
+            Done for you install for support and ops teams. Triage plus small
+            refunds within policy, portal pulls with screenshot proof, risky
+            actions paused for your one tap approval.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -125,7 +125,10 @@ export default function HomePage() {
         </header>
 
         {/* Plan cards */}
-        <section aria-label="How the pilot works" className="grid gap-4 md:grid-cols-3">
+        <section
+          aria-label="How the pilot works"
+          className="grid gap-4 md:grid-cols-3"
+        >
           {PLAN_CARDS.map((card, i) => (
             <div
               key={card.step}
@@ -213,8 +216,8 @@ export default function HomePage() {
             If it does not close real work, you do not pay the second half.
           </h2>
           <p className="mx-auto mt-4 max-w-[52ch] text-[16px] leading-relaxed text-emerald-100/80">
-            $1,200 fixed for the 14 day pilot. Then $400 per month care,
-            pause anytime. Reply within a day.
+            $1,200 fixed for the 14 day pilot. Then $400 per month care, pause
+            anytime. Reply within a day.
           </p>
           <Link
             href="/pilot"

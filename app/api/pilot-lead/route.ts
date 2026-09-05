@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
   const { error } = await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL ?? "noreply@agentpostmortem.com",
     to: "hello@agentpostmortem.com",
-    reply_to: email,
+    replyTo: email,
     subject: `Pilot application: ${name}`,
     html: [
       `<p><strong>Name:</strong> ${escapeHtml(name)}</p>`,
