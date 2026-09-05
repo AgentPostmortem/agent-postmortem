@@ -78,14 +78,17 @@ export default function PilotPage() {
           </span>
         </h1>
         <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-text-secondary">
-          $1,200 fixed. Second half only if it closes real work. Then $400
-          per month care, pause anytime.
+          $1,200 fixed. Second half only if it closes real work. Then $400 per
+          month care, pause anytime.
         </p>
       </header>
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start">
         <div>
-          <section aria-label="How it works" className="grid gap-4 sm:grid-cols-3">
+          <section
+            aria-label="How it works"
+            className="grid gap-4 sm:grid-cols-3"
+          >
             {STEPS.map((s) => (
               <div
                 key={s.n}
@@ -110,7 +113,10 @@ export default function PilotPage() {
             </h2>
             <ul className="mt-4 space-y-2.5">
               {INCLUDED.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-[15px] leading-relaxed text-text-secondary">
+                <li
+                  key={item}
+                  className="flex items-start gap-2.5 text-[15px] leading-relaxed text-text-secondary"
+                >
                   <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-[12px] font-bold text-emerald-700">
                     ✓
                   </span>
@@ -130,13 +136,18 @@ export default function PilotPage() {
                   <summary className="cursor-pointer list-none font-sans text-[15px] font-bold text-text-primary marker:hidden [&::-webkit-details-marker]:hidden">
                     <span className="flex items-center justify-between gap-4">
                       {f.q}
-                      <span className="text-emerald-700 transition-transform group-open:rotate-45">+</span>
+                      <span className="text-emerald-700 transition-transform group-open:rotate-45">
+                        +
+                      </span>
                     </span>
                   </summary>
                   <p className="mt-2 text-[15px] leading-relaxed text-text-secondary">
                     {f.a}{" "}
                     {f.q.startsWith("Why") && (
-                      <Link href="/tools" className="font-semibold text-emerald-700 hover:text-emerald-800">
+                      <Link
+                        href="/tools"
+                        className="font-semibold text-emerald-700 hover:text-emerald-800"
+                      >
                         See the proof.
                       </Link>
                     )}
