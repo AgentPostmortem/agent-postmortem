@@ -80,7 +80,9 @@ function FieldLabel({
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <p className="mt-1 font-sans text-xs font-medium text-accent">{message}</p>;
+  return (
+    <p className="mt-1 font-sans text-xs font-medium text-accent">{message}</p>
+  );
 }
 
 const inputBase =
@@ -212,7 +214,9 @@ export function SubmitForm() {
             <CheckIcon size={16} />
           </span>
         </div>
-        <h2 className="font-sans text-xl font-bold tracking-tight text-text-primary">Case Filed</h2>
+        <h2 className="font-sans text-xl font-bold tracking-tight text-text-primary">
+          Case Filed
+        </h2>
         <p className="mt-2 text-sm text-text-secondary">
           Your report is in the moderation queue. Once approved, it will be
           assigned a permanent case number.

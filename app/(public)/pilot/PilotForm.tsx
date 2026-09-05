@@ -42,13 +42,18 @@ function fieldClass(invalid: boolean): string {
 export function PilotForm() {
   const [values, setValues] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<PilotErrors>({});
-  const [touched, setTouched] = useState<Partial<Record<PilotField, boolean>>>({});
+  const [touched, setTouched] = useState<Partial<Record<PilotField, boolean>>>(
+    {},
+  );
   const [formError, setFormError] = useState("");
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState("");
   const refs = useRef<
     Partial<
-      Record<PilotField, HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null>
+      Record<
+        PilotField,
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null
+      >
     >
   >({});
 
@@ -75,7 +80,13 @@ export function PilotForm() {
   }
 
   function focusFirstInvalid(next: PilotErrors) {
-    const order: PilotField[] = ["name", "email", "company", "track", "workflow"];
+    const order: PilotField[] = [
+      "name",
+      "email",
+      "company",
+      "track",
+      "workflow",
+    ];
     for (const field of order) {
       if (next[field]) {
         setTouched((prev) => ({ ...prev, [field]: true }));
@@ -152,7 +163,11 @@ export function PilotForm() {
 
   const errorLine = (field: PilotField) =>
     touched[field] && errors[field] ? (
-      <p id={`pilot-${field}-error`} role="alert" className="mt-1.5 text-[13px] font-medium text-sev-critical">
+      <p
+        id={`pilot-${field}-error`}
+        role="alert"
+        className="mt-1.5 text-[13px] font-medium text-sev-critical"
+      >
         {errors[field]}
       </p>
     ) : null;
@@ -208,7 +223,8 @@ export function PilotForm() {
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="pilot-company" className={LABEL}>
-            Company or site <span className="font-normal text-text-tertiary">(optional)</span>
+            Company or site{" "}
+            <span className="font-normal text-text-tertiary">(optional)</span>
           </label>
           <input
             id="pilot-company"
@@ -284,7 +300,10 @@ export function PilotForm() {
       </div>
 
       {/* Honeypot: invisible to humans, irresistible to bots. */}
-      <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
+      <div
+        aria-hidden="true"
+        className="absolute h-px w-px overflow-hidden opacity-0"
+      >
         <label htmlFor="pilot-website">Website</label>
         <input
           id="pilot-website"
@@ -310,8 +329,8 @@ export function PilotForm() {
         </p>
       )}
       <p className="mt-3 text-[13px] leading-relaxed text-text-tertiary">
-        No payment now. Half up front only when we agree on the workflow,
-        second half only if it closes real work.
+        No payment now. Half up front only when we agree on the workflow, second
+        half only if it closes real work.
       </p>
     </form>
   );

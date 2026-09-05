@@ -20,8 +20,12 @@ export const PILOT_LIMITS = {
   workflowMax: 2000,
 } as const;
 
-function messageFor(path: string | number | undefined, code: string | undefined): string {
-  if (path === "email") return "Enter a valid work email, like ada@company.com.";
+function messageFor(
+  path: string | number | undefined,
+  code: string | undefined,
+): string {
+  if (path === "email")
+    return "Enter a valid work email, like ada@company.com.";
   if (path === "name") return "Tell us your name.";
   if (path === "company") return "Keep this under 200 characters.";
   if (path === "track") return "Pick support, portal ops, or not sure.";
@@ -37,9 +41,9 @@ function messageFor(path: string | number | undefined, code: string | undefined)
  * (instant feedback) and the API route (enforcement). Returns every field
  * error at once so the form can show them all inline.
  */
-export function validatePilot(input: unknown):
-  | { ok: true; data: PilotInput }
-  | { ok: false; errors: PilotErrors } {
+export function validatePilot(
+  input: unknown,
+): { ok: true; data: PilotInput } | { ok: false; errors: PilotErrors } {
   const parsed = pilotSchema.safeParse(input);
   if (parsed.success) return { ok: true, data: parsed.data };
 

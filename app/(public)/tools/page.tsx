@@ -238,12 +238,9 @@ export default function ToolsPage() {
           What the pilot runs on
         </h1>
         <p className="mt-3 max-w-2xl text-text-secondary">
-          These backends run the 14-day pilot behind the scenes. They are
-          not separate products to evaluate. Try any of them live, then{" "}
-          <a
-            href="/pilot"
-            className="text-accent hover:underline"
-          >
+          These backends run the 14-day pilot behind the scenes. They are not
+          separate products to evaluate. Try any of them live, then{" "}
+          <a href="/pilot" className="text-accent hover:underline">
             book the pilot
           </a>
           .
@@ -285,13 +282,9 @@ export default function ToolsPage() {
 
       <div className="mt-10 rounded-sm border border-accent/40 bg-accent-soft p-5">
         <p className="text-sm leading-relaxed text-text-secondary">
-          One support or portal workflow, live in 14 days with guardrails
-          from day one. $1,200 fixed, second half only if it closes real
-          work.{" "}
-          <a
-            href="/pilot"
-            className="font-medium text-accent hover:underline"
-          >
+          One support or portal workflow, live in 14 days with guardrails from
+          day one. $1,200 fixed, second half only if it closes real work.{" "}
+          <a href="/pilot" className="font-medium text-accent hover:underline">
             Book the pilot
           </a>
           .
